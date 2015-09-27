@@ -86,19 +86,19 @@
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="tiempobus" min="-2" max="-2" attributes="0"/>
-                                  <Component id="latencia" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lbTiempobus" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lbLatencia" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="jTextField3" min="-2" pref="80" max="-2" attributes="0"/>
-                                  <Component id="jTextField4" min="-2" pref="80" max="-2" attributes="0"/>
+                                  <Component id="txtLatencia" min="-2" pref="80" max="-2" attributes="0"/>
+                                  <Component id="txtTiempoBus" min="-2" pref="80" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <Group type="102" attributes="0">
-                              <Component id="quantum" min="-2" max="-2" attributes="0"/>
+                              <Component id="lbQuantum" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
-                              <Component id="jTextField5" min="-2" pref="80" max="-2" attributes="0"/>
+                              <Component id="txtQuantum" min="-2" pref="80" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
@@ -122,18 +122,18 @@
               <Component id="jSeparator1" min="-2" pref="10" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="latencia" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jTextField3" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="lbLatencia" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="txtLatencia" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="tiempobus" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jTextField4" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="lbTiempobus" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="txtTiempoBus" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="quantum" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jTextField5" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="lbQuantum" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="txtQuantum" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="61" max="-2" attributes="0"/>
               <Component id="Ejecutar" min="-2" max="-2" attributes="0"/>
@@ -151,28 +151,28 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="EjecutarActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JLabel" name="latencia">
+    <Component class="javax.swing.JLabel" name="lbLatencia">
       <Properties>
         <Property name="text" type="java.lang.String" value="Latencia"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="tiempobus">
+    <Component class="javax.swing.JLabel" name="lbTiempobus">
       <Properties>
         <Property name="text" type="java.lang.String" value="Tiempo Bus"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="quantum">
+    <Component class="javax.swing.JLabel" name="lbQuantum">
       <Properties>
         <Property name="text" type="java.lang.String" value="Quantum"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JSeparator" name="jSeparator1">
     </Component>
-    <Component class="javax.swing.JTextField" name="jTextField3">
+    <Component class="javax.swing.JTextField" name="txtLatencia">
     </Component>
-    <Component class="javax.swing.JTextField" name="jTextField4">
+    <Component class="javax.swing.JTextField" name="txtTiempoBus">
     </Component>
-    <Component class="javax.swing.JTextField" name="jTextField5">
+    <Component class="javax.swing.JTextField" name="txtQuantum">
     </Component>
     <Container class="javax.swing.JScrollPane" name="jScrollPane1">
       <AuxValues>
