@@ -37,16 +37,16 @@ JFileChooser fc;
     
      Runnable barrierFuncion = new Runnable(){
         public void run(){
-            
+           //quantum = ParInteger.parseInt(quantum.getText);
             ciclosReloj++;       
             for(int i = 0; i < 2; i++){
-            	if(!buzones[i].ocupado){
-                   
-                    int pcAsignado = asignarPC();
-                    if(pcAsignado != -1){
-                    	log.append("Hilo " + i + " lee hilo num " + numHilo);
-                        buzones[i].write(pcAsignado,numHilo);
-                        buzones[i].semaforoBuzon.release();
+            	if(!comunicadores[i].ocupado){
+                    int pcActual= vectPc.get(0);
+                    vectPc.remove(0);
+                    if(pcActual != -1){
+                    
+                        comunicadores[i].write(pcActual,quantum);
+                        comunicadores[i].semaforoBuzon.release();
                         System.out.println("Semaforo del hilo " + i + " liberado.");
                     }
                     else{

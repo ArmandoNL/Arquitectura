@@ -16,9 +16,8 @@ public class Comunicador {
        }
         
        //para leer instrucciones, de uso exclusivo para el procesador y HP
-       public void write(int contador,int numHilo, int miQuantum) {
+       public void write(int contador, int miQuantum) {
            hiloPC = contador;
-           numeroHilo = numHilo;
            quantum = miQuantum; 
         }
  
