@@ -36,7 +36,7 @@ JFileChooser fc;
     }
     
      Runnable barrierFuncion = new Runnable(){
-        public void run(){
+        public void run(){   
            //quantum = ParInteger.parseInt(quantum.getText);
             ciclosReloj++;       
             for(int i = 0; i < 2; i++){
