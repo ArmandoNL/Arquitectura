@@ -13,7 +13,7 @@ import javax.swing.*;
 import javax.swing.filechooser.*;
 import java.util.concurrent.*;
 
-public class HiloControlador extends javax.swing.JFrame {
+public class HiloControlador extends javax.swing.JFrame{
     
     public Comunicador[] comunicadores;
     public Nucleo[] nucleos;
@@ -31,17 +31,19 @@ public class HiloControlador extends javax.swing.JFrame {
     public int tiempoEspera;
     public int  tiempoBus;
     public int latencia;
+    private int numLineas;
 	
     public HiloControlador() {
         initComponents();
         ciclosReloj = 0;
         memTemp = new ArrayList<Integer>();
+        vectPc = new LinkedList<Integer>();
         PC = 0;
+        numLineas=0;
         barrier = new CyclicBarrier(cantHilos, barrierFuncion);
         fc = new JFileChooser();
     }
 
-   
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -223,17 +225,7 @@ public class HiloControlador extends javax.swing.JFrame {
     }//GEN-LAST:event_EjecutarActionPerformed
 
     private void FileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FileActionPerformed
-        int returnVal = fileChooser.showOpenDialog(this);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            File file = fileChooser.getSelectedFile();
-            try {
-                textarea.read( new FileReader( file.getAbsolutePath() ), null );
-            } catch (IOException ex) {
-                System.out.println("problem accessing file"+file.getAbsolutePath());
-            }
-        } else {
-            System.out.println("File access cancelled by user.");
-        }
+
     }//GEN-LAST:event_FileActionPerformed
 
     private void ExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExitActionPerformed
@@ -244,18 +236,82 @@ public class HiloControlador extends javax.swing.JFrame {
         int returnVal = fileChooser.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
-            try {
-                // What to do with the file, e.g. display it in a TextArea
-                textarea.read( new FileReader( file.getAbsolutePath() ), null );
-            } catch (IOException ex) {
-                System.out.println("problem accessing file"+file.getAbsolutePath());
+             
+         
+        Charset charset = Charset.forName("US-ASCII");
+        try(BufferedReader reader = Files.newBufferedReader(file.toPath(), charset)){
+            String lineaArchivo = "";
+            int contLineas = 0;//variable para contar el # de lineas del archivo
+            while(!"".equals(lineaArchivo = reader.readLine())){
+                contLineas++;//contamos las lineas del archivo para calcular el PC
+                String[] instrucciones = lineaArchivo.split(" ");
+                for(int i=0; i<instrucciones.length;++i){
+                    memTemp.add(Integer.parseInt(instrucciones[i]));
+                }
             }
-        } else {
+            if(numLineas == 0)
+            {
+                vectPc.add(0);
+                numLineas += contLineas*4;
+            }
+            else
+            {
+                vectPc.add(numLineas);
+                numLineas += contLineas*4;
+            }
+        }
+        catch(IOException exc){
+            System.err.println("IOException error");
+        }
+        }else{
             System.out.println("File access cancelled by user.");
         }
+        
+        imprimirMem();
     }//GEN-LAST:event_OpenActionPerformed
 
+    /*public void LlenarMemoriaPc(File archivo) {
+        //Ahora lee el archivo y guarda sus contenidos en el array de hilos
+        numLineas = 0;
+         
+        Charset charset = Charset.forName("US-ASCII");
+        try(BufferedReader reader = Files.newBufferedReader(archivo.toPath(), charset)){
+            String lineaArchivo = null;
+            int contLineas = 0;//variable para contar el # de lineas del archivo
+            while((lineaArchivo = reader.readLine()) != null){
+                contLineas++;//contamos las lineas del archivo para calcular el PC
+                String[] instrucciones = lineaArchivo.split(" ");
+                for(int i=0; i<instrucciones.length;++i){
+                    memTemp.add(Integer.parseInt(instrucciones[i]));
+                }
+            }
+            if(numLineas == 0)
+            {
+                vectPc.add(0);
+                numLineas += contLineas*4;
+            }
+            else
+            {
+                vectPc.add(numLineas);
+                numLineas += contLineas*4;
+            }
+        }
+        catch(IOException exc){
+            System.err.println("IOException error");
+        }
+    }*/
     
+    private void imprimirMem(){
+        for(int i =0; i<memTemp.size(); i++){
+            int value = memTemp.get(i);
+	    System.out.println("Element: " + value);
+        }
+        for(int i =0; i<vectPc.size(); i++){
+            int value = vectPc.poll();
+	    System.out.println("PC: " + value);
+        }
+    
+    }
     
     /**
      * @param args the command line arguments
@@ -264,6 +320,7 @@ public class HiloControlador extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new HiloControlador().setVisible(true);
+                
             }
         });
     }
