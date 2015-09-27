@@ -54,11 +54,8 @@ JFileChooser fc;
                         buzones[i].semaforoBuzon.release();
                         //System.out.println("Hilo " + i + " ha terminado.");
                     }
-                     
                 }
             }
-            
-             
         }
     };
      
