@@ -37,14 +37,11 @@ JFileChooser fc;
     
      Runnable barrierFuncion = new Runnable(){
         public void run(){
-            //primer paso: incrementar reloj
-            ciclosReloj++;
-             
-            //segundo paso: revisar cada procesador si esta libre o ocupado
-             
-            for(int i = 0; i < 3; i++){
+            
+            ciclosReloj++;       
+            for(int i = 0; i < 2; i++){
             	if(!buzones[i].ocupado){
-                    //tercer paso: revisar si hay hilos asignables
+                   
                     int pcAsignado = asignarPC();
                     if(pcAsignado != -1){
                     	log.append("Hilo " + i + " lee hilo num " + numHilo);
