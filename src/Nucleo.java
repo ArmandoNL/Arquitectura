@@ -86,6 +86,7 @@ public class Nucleo implements Runnable {
             cacheDeInstrucciones[i][columCache] = memoriaCompartida[i];
           }
       }
+      cacheDeInstrucciones[16][columCache] = bloque;
   }
   
   public void run(){}
