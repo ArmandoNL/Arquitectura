@@ -8,7 +8,7 @@ import javax.swing.*;
 public class Nucleo implements Runnable {
     
   private int[] registros;  
-  private int[] memoriaCompartida;
+  private int[] memoriaCompartida; // CAMBIAR ESTO!!!
   private int[] cacheDeDatos;
   private int[][] cacheDeInstrucciones;
   private int[] etiquetaBloqueCache;
@@ -29,7 +29,7 @@ public class Nucleo implements Runnable {
   private int numDirectorioSolicitado;
   private boolean instruccionCompletada;
   private boolean cacheSolicitada;
-  
+  private int PC;
   private Comunicador[] comunicadores;
   //public Directorio directorio;
   
@@ -73,7 +73,7 @@ public class Nucleo implements Runnable {
 	  //creo que eso es todo?*/
   }
   
-  public void TraerBloque(int hpc)
+  public void traerBloque(int hpc)
   {
       int bloque = hpc/16;
       int j = (bloque*16)+4;
@@ -89,7 +89,34 @@ public class Nucleo implements Runnable {
       cacheDeInstrucciones[16][columCache] = bloque;
   }
   
-  public void run(){}
+  public void run(){
   
+    int[] vecInstruccion = new int[4];
+    if(comunicadores[numProcesador].terminado) {
+		this.PC = -1 ;
+    }else{
+        PC = comunicadores[numProcesador].read();
+    }
+	
+	int hPC= PC;
+	int numBloc = hPC/16;
+	int blocCache= numBloc % 8;
+	int i= hPC-numBloc*16;
+	if(cacheDeInstrucciones[16][blocCache] != -1){
+		for(int j= i; j<i+4;i++){
+			int inst=0;
+			vecInstruccion[inst] = cacheDeInstrucciones[j][blocCache];
+			inst++;
+		}
+		hPC+=4;
+		ejecutarInstruccion(vecInstruccion);
+	}else{
+		traerBloque(PC);
+	
+	}
   
   }
+
+private void ejecutarInstruccion(int[] vector){}
+
+}
