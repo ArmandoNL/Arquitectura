@@ -4,15 +4,14 @@ public class Comunicador {
      
        public int hiloPC;
        public boolean ocupado;
-       public int numeroHilo;
-       public Semaphore semaforoCache, semaforoBuzon;
+       public boolean terminado;
+       public Semaphore semaforoCache, semaforoComunicador;
        public int quantum;
+
         
        public Comunicador(){
            semaforoCache = new Semaphore(1,true);
-           //semaforoDirectorio = new Semaphore(1,true);
-           semaforoBuzon = new Semaphore(1);//OJO
-           //semaforoBuzon.release();
+           semaforoComunicador = new Semaphore(1);
        }
         
        //para leer instrucciones, de uso exclusivo para el procesador y HP
