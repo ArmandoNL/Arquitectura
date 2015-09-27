@@ -10,6 +10,7 @@ public class Nucleo implements Runnable {
   private int[] registros;  
   private int[] memoriaCompartida;
   private int[] cacheDeDatos;
+  private int[][] cacheDeInstrucciones;
   private int[] etiquetaBloqueCache;
   private char[] estadoBloqueCache;
   private HiloControlador mainThread;
@@ -72,7 +73,22 @@ public class Nucleo implements Runnable {
 	  //creo que eso es todo?*/
   }
   
+  public void TraerBloque(int hpc)
+  {
+      int bloque = hpc/16;
+      int j = (bloque*16)+4;
+      int columCache = bloque%8;
+      
+      for(int palabra=1;palabra<=4;++palabra)
+      {
+          for(int i=bloque*16;i<j;i++)
+          {
+            cacheDeInstrucciones[i][columCache] = memoriaCompartida[i];
+          }
+      }
+  }
+  
   public void run(){}
   
   
-}
+  }
