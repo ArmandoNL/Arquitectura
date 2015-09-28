@@ -30,7 +30,7 @@ public class Nucleo implements Runnable {
   private boolean instruccionCompletada;
   private boolean cacheSolicitada;
   private int PC;
-    private boolean primerLeido;
+  private boolean primerLeido;
   private Comunicador[] comunicadores;
    private int quantum;
   //public Directorio directorio;
@@ -85,7 +85,7 @@ public class Nucleo implements Runnable {
       {
           for(int i=bloque*16;i<j;i++)
           {
-            cacheDeInstrucciones[i][columCache] = memoriaCompartida[i];
+            cacheDeInstrucciones[i][columCache] = arrayInstrucciones.get(i);
           }
       }
       cacheDeInstrucciones[16][columCache] = bloque;
@@ -262,6 +262,17 @@ private void ejecutarInstruccion(int[] vector){
     	System.out.print("FIN de Hilo");
     }
 
+    
+    public int[] contexto()
+    {
+        int[] vec = new int[34];
+        for(int i = 0; i<34; i++)
+        {
+            vec[i] = this.registros[i];
+        }
+        vec[33] = this.PC;
+        return vec;
+    }
 
 
 
