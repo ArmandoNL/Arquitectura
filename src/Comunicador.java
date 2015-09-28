@@ -7,6 +7,7 @@ public class Comunicador {
        public boolean terminado;
        public Semaphore semaforoCache, semaforoComunicador;
        public int quantum;
+       public int[] contexto;
 
         
        public Comunicador(){
@@ -26,9 +27,14 @@ public class Comunicador {
            return hiloPC;
        }
        
-       public int readQ(){
-           ocupado=true;
-           return quantum;
+       public int[] pedirContexto()
+       {
+           return contexto;
+       }
+       
+       public void guardarContexto(int[] vec)
+       {
+           contexto = vec;
        }
         
         

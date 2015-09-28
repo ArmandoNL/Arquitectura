@@ -32,6 +32,7 @@ public class HiloControlador extends javax.swing.JFrame{
     public int  tiempoBus;
     public int latencia;
     private int numLineas;
+    private Queue<int[]> contextos;
 	
     public HiloControlador() {
         initComponents();
