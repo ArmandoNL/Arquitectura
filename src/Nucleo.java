@@ -32,47 +32,24 @@ public class Nucleo implements Runnable {
   private int PC;
   private boolean primerLeido;
   private Comunicador[] comunicadores;
-  private int quantum;
+  private int quantumNucleo;
   //public Directorio directorio;
   
   //nuevo constructor del procesador
-  public Nucleo(HiloControlador hp, int id){
-	  
-	  this.numProcesador = id;
+  public Nucleo(HiloControlador hp, int id){	  
 	 
-	 /* mainThread = hp;
-	  buzones = mainThread.buzones;
-	  barrera = mainThread.barrier;
-	  arrayInstrucciones = mainThread.threadarray;
-	 // log = l;
-	  //directorio = new Directorio(id);
-	  registros = new int[32];
+           this.numProcesador = id;
+          done = true;
+          registros = new int[32];
 	    for(int i = 0; i < 32; i++){
 	      registros[i] = 0;
 	    }
-	    memoriaCompartida = new int[32];
-	    for(int i = 0; i < 32; i++){
-	      memoriaCompartida[i] = 0;
+            cacheDeInstrucciones = new int[8][16];
+	    for(int i = 0; i < 8; i++){                
+	      cacheDeInstrucciones[i][15] = -1;
 	    }
-	    etiquetaBloqueCache = new int[4];
-	    for(int i = 0; i < 4; i++){
-	        etiquetaBloqueCache[i] = -1;
-	      }
-	    estadoBloqueCache= new char[4];
-	    for(int i = 0; i < 4; i++){
-	        estadoBloqueCache[i] = 'I';
-	      }
-	    cacheDeDatos = new int[16];
-	    for(int i = 0; i < 16; i++){
-	      cacheDeDatos[i] = 0;
-	    }
-	    done = true;
-	    relojInicial=0;
-	    instruccionCompletada = true;
-	    cicloAtrasado = 0;
-	    directorioSolicitado = false;
- 		numDirectorioSolicitado = -1;
-	  //creo que eso es todo?*/
+	//quantumNucleo = comunicadores[numProcesador].read();
+	
   }
   
   public void traerBloque(int hpc)
@@ -129,7 +106,9 @@ private void obtenerPC(){
         PC+=4;
     }
 }
-
+private void obtenerQuantum(){
+    
+}
 
 
 
@@ -187,21 +166,21 @@ private void ejecutarInstruccion(int[] vector){
      
     int valor = registros[regFuente]+numero;
     registros[regDestino]= valor;
-    quantum--;
+    quantumNucleo--;
   }
   
   //Hace una suma de los valores de 2 registros y los guarda en un registro
   public void dadd(int regDestino, int regF1, int regF2){
     int valor = registros[regF1]+registros[regF2];
     registros[regDestino]= valor;
-    quantum--;
+    quantumNucleo--;
   }
   
   //hace una resta de los valores de 2 registros y los guarda en un registro
   public void dsub(int regDestino, int regF1, int regF2){
       int valor = registros[regF1]-registros[regF2];
       registros[regDestino]= valor;
-      quantum--;
+      quantumNucleo--;
   }
   
   //Si el valor es igual a 0 hace un salto
@@ -210,7 +189,7 @@ private void ejecutarInstruccion(int[] vector){
         if(registros[regComparacion] == 0){
             contadorPrograma += salto*4;
         }
-        quantum--;
+        quantumNucleo--;
     }
     
     //Si el valor del registro es diferente de 0 hace un salto
@@ -219,20 +198,20 @@ private void ejecutarInstruccion(int[] vector){
         if(registros[regComparacion] != 0){
             contadorPrograma += salto*4;
         }
-        quantum--;
+        quantumNucleo--;
     }
     
     //
     public void jr(int regsalto){//segunda y cuarta parte, tercera vacia
         contadorPrograma =registros[regsalto];       
-        quantum--;
+        quantumNucleo--;
     }
     
     //hace una multiplicacion de los valores de 2 registros y los guarda en un registro
     public void dmul(int regDestino, int regF1, int regF2){//segunda y cuarta parte, tercera vacia
        int valor = registros[regF1]-registros[regF2];
        registros[regDestino]= valor;
-       quantum--;
+       quantumNucleo--;
         
     }
     
@@ -240,14 +219,14 @@ private void ejecutarInstruccion(int[] vector){
     public void ddiv(int regDestino, int regF1, int regF2){//segunda y cuarta parte, tercera vacia
        int valor = registros[regF1]-registros[regF2];
        registros[regDestino]= valor;
-       quantum--;
+       quantumNucleo--;
     }
     
     //
     public void jal(int salto){//segunda y cuarta parte, tercera vacia
         registros[31]=contadorPrograma;
         contadorPrograma =contadorPrograma+salto;       
-        quantum--;
+        quantumNucleo--;
     } 
     
    //Si el procesador llego al final del hilo, se desocupa e imprime los resultados

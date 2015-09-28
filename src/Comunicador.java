@@ -26,6 +26,10 @@ public class Comunicador {
            ocupado = true;
            return hiloPC;
        }
+       public int readQ() {
+           ocupado = true;
+           return quantum;
+       }
        
        public int[] pedirContexto()
        {
