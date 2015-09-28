@@ -178,7 +178,7 @@ public class HiloControlador extends javax.swing.JFrame{
 
     Runnable barrierFuncion = new Runnable(){
         public void run(){   
-            ciclosReloj++;       
+            ciclosReloj++;   //chequear quantum    
             for(int i = 0; i < 2; i++){
             	if(!comunicadores[i].ocupado){
                     int pcActual= vectPc.poll();

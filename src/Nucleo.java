@@ -30,6 +30,7 @@ public class Nucleo implements Runnable {
   private boolean instruccionCompletada;
   private boolean cacheSolicitada;
   private int PC;
+    private boolean primerLeido;
   private Comunicador[] comunicadores;
    private int quantum;
   //public Directorio directorio;
@@ -90,15 +91,14 @@ public class Nucleo implements Runnable {
       cacheDeInstrucciones[16][columCache] = bloque;
   }
   
-  public void run(){
-  
-    int[] vecInstruccion = new int[4];
-    if(comunicadores[numProcesador].terminado) {
-		this.PC = -1 ;
-    }else{
-        PC = comunicadores[numProcesador].read();
-    }
-	
+public void run(){
+    
+    buscarEnCache();
+}
+
+private void buscarEnCache(){
+        int[] vecInstruccion = new int[4];
+        obtenerPC();
 	int hPC= PC;
 	int numBloc = hPC/16;
 	int blocCache= numBloc % 8;
@@ -112,11 +112,26 @@ public class Nucleo implements Runnable {
 		hPC+=4;
 		ejecutarInstruccion(vecInstruccion);
 	}else{
-		traerBloque(PC);
+            traerBloque(hPC);
+        }
 	
-	}
-  
-  }
+}
+ 
+private void obtenerPC(){
+    if(primerLeido){
+        if(comunicadores[numProcesador].terminado){
+            this.PC = -1 ;
+        }else{
+            PC = comunicadores[numProcesador].read();
+            primerLeido = false;
+        }
+    }else{
+        PC+=4;
+    }
+}
+
+
+
 
 private void ejecutarInstruccion(int[] vector){
       System.out.println("Hilo " + numProcesador + ": leyendo instruccion con CP: " + contadorPrograma);
