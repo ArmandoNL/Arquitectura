@@ -30,9 +30,9 @@ public class Nucleo implements Runnable {
   private boolean instruccionCompletada;
   private boolean cacheSolicitada;
   private int PC;
-    private boolean primerLeido;
+  private boolean primerLeido;
   private Comunicador[] comunicadores;
-   private int quantum;
+  private int quantum;
   //public Directorio directorio;
   
   //nuevo constructor del procesador
