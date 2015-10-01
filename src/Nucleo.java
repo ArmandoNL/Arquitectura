@@ -10,9 +10,8 @@ public class Nucleo implements Runnable {
   private ArrayList<Integer> arrayInstrucciones; //donde se inicializa??
   private CyclicBarrier barrera;
   private int contadorPrograma;
-  private Comunicador comunicador;
   private int cicloReloj;
-  private boolean done;
+  private boolean terminar;
   private final int numProcesador;
   private boolean instruccionCompletada;
   private int PC;
@@ -24,15 +23,18 @@ public class Nucleo implements Runnable {
   //public Directorio directorio;
   
   //nuevo constructor del procesador
-  public Nucleo(HiloControlador hp, int id){	  
+  public Nucleo(HiloControlador hc, int id){	  
 	 
-           this.numProcesador = id;
-          done = true;
-          registros = new int[32];
-	    for(int i = 0; i < 32; i++){
+          this.numProcesador = id;
+          mainThread = hc;
+          //terminar = true;
+          barrera = mainThread.barrier;
+          comunicadores = mainThread.comunicadores;
+          registros = new int[33];
+	    for(int i = 0; i < 33; i++){
 	      registros[i] = 0;
 	    }
-            cacheDeInstrucciones = new int[8][16];
+          cacheDeInstrucciones = new int[8][16];
 	    for(int i = 0; i < 8; i++){                
 	      cacheDeInstrucciones[i][15] = -1;
 	    }
@@ -66,8 +68,6 @@ public class Nucleo implements Runnable {
 
 private void buscarEnCache(){
         int[] vecInstruccion = new int[4];
-        
-	hPC= PC;
 	int numBloc = hPC/16;
 	int blocCache= numBloc % 8;
 	int i= hPC-numBloc*16;
@@ -89,23 +89,28 @@ private void buscarEnCache(){
 }
  
 private void obtenerPC(){
-    if(primerLeido){
-        if(comunicadores[numProcesador].terminado){
-            this.PC = -1 ;
-        }else{
-            PC = comunicadores[numProcesador].read();
-            primerLeido = false;
+    if(comunicadores[numProcesador].terminado){
+        this.PC = -1 ;
+     }else{
+        PC = comunicadores[numProcesador].read();
+        hPC =PC;
+        if(this.comunicadores[this.numProcesador].contexto[33]==hPC){
+            int vectContexto[] = new int[34];
+            vectContexto= this.comunicadores[this.numProcesador].contexto;
+            cambiarRegistro(vectContexto);
         }
-    }else{
-        PC+=4;
-    }
-}
-private void obtenerQuantum(){
-    
+     }
 }
 
 
-boolean pedirBus(){
+private void cambiarRegistro(int [] vec){
+     for(int i = 0; i<33; i++){
+         registros[i] = vec[i];
+     }
+
+}
+
+boolean pedirBus(){ //devuelve verdadero si se pudo obtener el bus, falso si está ocupado.
     if(this.comunicadores[this.numProcesador].semaforoCache.tryAcquire()){
         busOcupado = true;
         return true;
@@ -114,13 +119,14 @@ boolean pedirBus(){
     }
 }
 
-boolean liberarBus(){
+boolean liberarBus(){ //libera el bus una vez que no se necesita.
     this.comunicadores[this.numProcesador].semaforoCache.release();
     busOcupado = false;
     return true;
 }
 
-private void falloCache(){
+private void falloCache(){ //en caso 
+    primerLeido= false;
     if(pedirBus()){
         traerBloque(hPC);
         int i=0;
@@ -155,7 +161,7 @@ public int[] contexto()
         vec[33] = this.PC;
        
         //AGREGAR PC DE INICIO DE ARCHIVO A LA COLA DE PC.s
-        //mainThread.vectPc.add(PC);
+        mainThread.vectPc.add(PC);
         return vec; 
     }
 
@@ -279,7 +285,7 @@ private void ejecutarInstruccion(int[] vector){
    //Si el procesador llego al final del hilo, se desocupa e imprime los resultados
     public void fin(){
         comunicadores[numProcesador].ocupado = false;
-        done = true;
+        terminar = true;
         imprimirEstado();        
     }
     
