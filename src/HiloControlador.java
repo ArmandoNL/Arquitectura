@@ -271,7 +271,7 @@ public class HiloControlador extends javax.swing.JFrame{
         imprimirMem();
     }//GEN-LAST:event_OpenActionPerformed
 
-    /*public void LlenarMemoriaPc(File archivo) {
+    public void LlenarMemoriaPc(File archivo) {
         //Ahora lee el archivo y guarda sus contenidos en el array de hilos
         numLineas = 0;
          
@@ -300,7 +300,7 @@ public class HiloControlador extends javax.swing.JFrame{
         catch(IOException exc){
             System.err.println("IOException error");
         }
-    }*/
+    }
     
     private void imprimirMem(){
         for(int i =0; i<memTemp.size(); i++){

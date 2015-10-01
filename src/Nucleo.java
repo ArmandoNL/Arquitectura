@@ -38,7 +38,7 @@ public class Nucleo implements Runnable {
 	    for(int i = 0; i < 8; i++){                
 	      cacheDeInstrucciones[i][15] = -1;
 	    }
-	//quantumNucleo = comunicadores[numProcesador].read();
+	quantumNucleo = comunicadores[numProcesador].readQ();
 	
   }
   
@@ -80,12 +80,28 @@ private void buscarEnCache(){
 		hPC+=4;
 		ejecutarInstruccion(vecInstruccion);
                 cambiarCiclo();
+                if(quantumNucleo != 0)
+                {
+                    cambiarCiclo();
+                }
+                else
+                {
+                    seAcaboQuantum();
+                }
                 //if final(){algo}else if(quantum==0){guardarContexto() y algo}else cambiarCiclo() y algo
 	}else{ //si falla entonces primer leido = true; para que vuelva a leer PC viejo.
             primerLeido = true; 
             traerBloque(hPC);
         }
 	
+}
+
+private void seAcaboQuantum()
+{
+    contexto();
+    int pcActual = mainThread.vectPc.poll();
+    this.comunicadores[this.numProcesador].write(pcActual, quantumNucleo);
+    obtenerPC();
 }
  
 private void obtenerPC(){
