@@ -47,7 +47,7 @@ public class Nucleo implements Runnable {
     buscarEnCache();
 }
   
-  
+ 
   
   public void traerBloque(int hpc)
   {
@@ -109,9 +109,9 @@ private void obtenerPC(){
         this.PC = -1 ;
      }else{
         PC = comunicadores[numProcesador].read();
-        hPC =PC;
+        hPC=PC;
         if(this.comunicadores[this.numProcesador].contexto[33]==hPC){
-            int vectContexto[] = new int[34];
+            int[] vectContexto = new int[34];
             vectContexto= this.comunicadores[this.numProcesador].contexto;
             cambiarRegistro(vectContexto);
         }
