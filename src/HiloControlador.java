@@ -25,7 +25,7 @@ public class HiloControlador extends javax.swing.JFrame{
     private int idHilos;
     private int semaforoComunicador;
     private static final int cantHilos = 2;
-    private Queue <Integer> vectPc;
+    public Queue <Integer> vectPc;
     JFileChooser fc;
     public int quantum;
     public int tiempoEspera;

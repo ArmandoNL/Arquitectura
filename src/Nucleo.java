@@ -1,38 +1,26 @@
 import java.util.ArrayList;
 import java.util.concurrent.*;
 
-import javax.swing.*;
-
-
- 
 public class Nucleo implements Runnable {
     
-  private int[] registros;  
-  private int[] memoriaCompartida; // CAMBIAR ESTO!!!
-  private int[] cacheDeDatos;
-  private int[][] cacheDeInstrucciones;
-  private int[] etiquetaBloqueCache;
-  private char[] estadoBloqueCache;
+  private final int[] registros;  
+  private int[] memoriaCompartida; 
+  private final int[][] cacheDeInstrucciones;
   private HiloControlador mainThread;
-  private ArrayList<Integer> arrayInstrucciones;
+  private ArrayList<Integer> arrayInstrucciones; //donde se inicializa??
   private CyclicBarrier barrera;
   private int contadorPrograma;
   private Comunicador comunicador;
   private int cicloReloj;
-  private int cicloAtrasado;
   private boolean done;
-  private JTextArea log;//borrar
-  private Semaphore semaforoBuzon;//borrar 
-  private int relojInicial;
-  private int numProcesador;
-  private boolean directorioSolicitado;
-  private int numDirectorioSolicitado;
+  private final int numProcesador;
   private boolean instruccionCompletada;
-  private boolean cacheSolicitada;
   private int PC;
+  private int hPC;
   private boolean primerLeido;
   private Comunicador[] comunicadores;
   private int quantumNucleo;
+  boolean busOcupado;
   //public Directorio directorio;
   
   //nuevo constructor del procesador
@@ -52,6 +40,13 @@ public class Nucleo implements Runnable {
 	
   }
   
+  public void run(){
+    obtenerPC();
+    buscarEnCache();
+}
+  
+  
+  
   public void traerBloque(int hpc)
   {
       int bloque = hpc/16;
@@ -68,15 +63,11 @@ public class Nucleo implements Runnable {
       cacheDeInstrucciones[16][columCache] = bloque;
   }
   
-public void run(){
-    obtenerPC();
-    buscarEnCache();
-}
 
 private void buscarEnCache(){
         int[] vecInstruccion = new int[4];
         
-	int hPC= PC;
+	hPC= PC;
 	int numBloc = hPC/16;
 	int blocCache= numBloc % 8;
 	int i= hPC-numBloc*16;
@@ -88,6 +79,8 @@ private void buscarEnCache(){
 		}
 		hPC+=4;
 		ejecutarInstruccion(vecInstruccion);
+                cambiarCiclo();
+                //if final(){algo}else if(quantum==0){guardarContexto() y algo}else cambiarCiclo() y algo
 	}else{ //si falla entonces primer leido = true; para que vuelva a leer PC viejo.
             primerLeido = true; 
             traerBloque(hPC);
@@ -112,6 +105,59 @@ private void obtenerQuantum(){
 }
 
 
+boolean pedirBus(){
+    if(this.comunicadores[this.numProcesador].semaforoCache.tryAcquire()){
+        busOcupado = true;
+        return true;
+    }else{
+        return false;
+    }
+}
+
+boolean liberarBus(){
+    this.comunicadores[this.numProcesador].semaforoCache.release();
+    busOcupado = false;
+    return true;
+}
+
+private void falloCache(){
+    if(pedirBus()){
+        traerBloque(hPC);
+        int i=0;
+        while(i<mainThread.latencia){
+            cambiarCiclo();
+            i++;
+        }
+        liberarBus();
+        cambiarCiclo();
+    }else{
+        while(!pedirBus()){
+            cambiarCiclo();
+        }
+    }
+}
+
+private void cambiarCiclo(){
+    try{
+        barrera.await();
+    }catch (InterruptedException | BrokenBarrierException e){}
+    
+    cicloReloj++;
+}
+
+public int[] contexto()
+    {
+        int[] vec = new int[34];
+        for(int i = 0; i<34; i++)
+        {
+            vec[i] = this.registros[i];
+        }
+        vec[33] = this.PC;
+       
+        //AGREGAR PC DE INICIO DE ARCHIVO A LA COLA DE PC.s
+        //mainThread.vectPc.add(PC);
+        return vec; 
+    }
 
 private void ejecutarInstruccion(int[] vector){
       System.out.println("Hilo " + numProcesador + ": leyendo instruccion con CP: " + contadorPrograma);
@@ -242,21 +288,7 @@ private void ejecutarInstruccion(int[] vector){
     	System.out.print("FIN de Hilo");
     }
 
-    
-    public int[] contexto()
-    {
-        int[] vec = new int[34];
-        for(int i = 0; i<34; i++)
-        {
-            vec[i] = this.registros[i];
-        }
-        vec[33] = this.PC;
-        return vec;
-    }
-
-
-
-
+  
 
 
 }
