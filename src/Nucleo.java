@@ -69,26 +69,27 @@ public class Nucleo implements Runnable {
   }
   
 public void run(){
-    
+    obtenerPC();
     buscarEnCache();
 }
 
 private void buscarEnCache(){
         int[] vecInstruccion = new int[4];
-        obtenerPC();
+        
 	int hPC= PC;
 	int numBloc = hPC/16;
 	int blocCache= numBloc % 8;
 	int i= hPC-numBloc*16;
-	if(cacheDeInstrucciones[16][blocCache] != -1){
+	if(cacheDeInstrucciones[16][blocCache] == blocCache){ //bloque está en caché
+                int inst=0;
 		for(int j= i; j<i+4;i++){
-			int inst=0;
 			vecInstruccion[inst] = cacheDeInstrucciones[j][blocCache];
 			inst++;
 		}
 		hPC+=4;
 		ejecutarInstruccion(vecInstruccion);
-	}else{
+	}else{ //si falla entonces primer leido = true; para que vuelva a leer PC viejo.
+            primerLeido = true; 
             traerBloque(hPC);
         }
 	
