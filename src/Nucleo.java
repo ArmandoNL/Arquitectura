@@ -25,20 +25,20 @@ public class Nucleo implements Runnable {
   //nuevo constructor del procesador
   public Nucleo(HiloControlador hc, int id){	  
 	 
-          this.numProcesador = id;
-          mainThread = hc;
-          //terminar = true;
-          barrera = mainThread.barrier;
-          comunicadores = mainThread.comunicadores;
-          registros = new int[33];
-	    for(int i = 0; i < 33; i++){
-	      registros[i] = 0;
-	    }
-          cacheDeInstrucciones = new int[8][16];
-	    for(int i = 0; i < 8; i++){                
-	      cacheDeInstrucciones[i][15] = -1;
-	    }
-	//quantumNucleo = comunicadores[numProcesador].read();
+        this.numProcesador = id;
+        mainThread = hc;
+        //terminar = true;
+        barrera = mainThread.barrier;
+        comunicadores = mainThread.comunicadores;
+        registros = new int[33];
+	for(int i = 0; i < 33; i++){
+            registros[i] = 0;
+	}
+        cacheDeInstrucciones = new int[8][16];
+	for(int i = 0; i < 8; i++){                
+	    cacheDeInstrucciones[i][15] = -1;
+	}
+	quantumNucleo = comunicadores[numProcesador].readQ();
 	
   }
   
@@ -47,7 +47,7 @@ public class Nucleo implements Runnable {
     buscarEnCache();
 }
   
-  
+ 
   
   public void traerBloque(int hpc)
   {
@@ -80,10 +80,6 @@ private void buscarEnCache(){
 		hPC+=4;
 		ejecutarInstruccion(vecInstruccion);
                 cambiarCiclo();
-                //if final(){algo}else if(quantum==0){guardarContexto() y algo}else cambiarCiclo() y algo
-	}else{ //si falla entonces primer leido = true; para que vuelva a leer PC viejo.
-            primerLeido = true; 
-            traerBloque(hPC);
         }
 	
 }
@@ -93,9 +89,9 @@ private void obtenerPC(){
         this.PC = -1 ;
      }else{
         PC = comunicadores[numProcesador].read();
-        hPC =PC;
+        hPC=PC;
         if(this.comunicadores[this.numProcesador].contexto[33]==hPC){
-            int vectContexto[] = new int[34];
+            int[] vectContexto = new int[34];
             vectContexto= this.comunicadores[this.numProcesador].contexto;
             cambiarRegistro(vectContexto);
         }
