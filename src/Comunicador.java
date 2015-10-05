@@ -11,6 +11,10 @@ public class Comunicador {
 
         
        public Comunicador(){
+           contexto = new int[34];
+           for(int i =0; i<34; i++){
+               contexto[i]=0;
+           }
            semaforoCache = new Semaphore(1,true);
            semaforoComunicador = new Semaphore(1);
        }

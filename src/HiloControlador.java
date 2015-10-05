@@ -208,21 +208,26 @@ public class HiloControlador extends javax.swing.JFrame{
             for(int i = 0; i < 2; i++){
     		comunicadores[i] = new Comunicador();
             }
-            nucleos = new Nucleo[2];
-            /*for(int i = 0; i < 2; i++){
-    		nucleos[i] = new Nucleo(this, i);
-            }*/
-            if(vectPc.poll() != null){
+            vectPc.add(0);
+            vectPc.add(64); //llenar vector
+            
+            
+             if(vectPc.size() != 0){
                 comunicadores[0].write(vectPc.poll(), quantum);
                 comunicadores[1].write(vectPc.poll(), quantum);
             }else
             {
                 System.out.println("Se acabo programa");
             }
-    
+            nucleos = new Nucleo[2];
             for(int i = 0; i < 2; i++){
+    		nucleos[i] = new Nucleo(this, i);
+            }
+           
+    
+          for(int i = 0; i < 2; i++){
     		(new Thread(nucleos[i])).start();
-            }    
+            }   
             
            // metodoPrincipal();
     }//GEN-LAST:event_EjecutarActionPerformed

@@ -4,7 +4,6 @@ import java.util.concurrent.*;
 public class Nucleo implements Runnable {
     
   private final int[] registros;  
-  private int[] memoriaCompartida; 
   private final int[][] cacheDeInstrucciones;
   private HiloControlador mainThread;
   private ArrayList<Integer> arrayInstrucciones; //donde se inicializa??
@@ -28,6 +27,7 @@ public class Nucleo implements Runnable {
           this.numProcesador = id;
           mainThread = hc;
           //terminar = true;
+          arrayInstrucciones = mainThread.memTemp;
           barrera = mainThread.barrier;
           comunicadores = mainThread.comunicadores;
           registros = new int[33];
@@ -69,7 +69,10 @@ public class Nucleo implements Runnable {
   public boolean estaenCache(int hpc){
        int bloque = hpc/16;
        int columCache = bloque%8;
-       return cacheDeInstrucciones[16][columCache]==bloque;  
+       if(cacheDeInstrucciones[16][columCache]==bloque){
+           return true;
+       }else
+           return false; 
   }
   
   public void traerBloque()
@@ -87,13 +90,13 @@ public class Nucleo implements Runnable {
   }
   
 
-private void buscarEnCache(){
+private void recuperarDeCache(){
         int[] vecInstruccion = new int[4];
 	int numBloc = hPC/16;
 	int blocCache= numBloc % 8;
 	int i= hPC-(numBloc*16);
 	int inst=0;
-        for(int j= i; j<i+4; i++){
+        for(int j= i; j<i+4; j++){
             vecInstruccion[inst] = cacheDeInstrucciones[j][blocCache];
             inst++;
         }
@@ -203,10 +206,10 @@ private void ejecutarInstruccion(int[] vector){
         instruccion[i]=vector[i];
         }
     
-    for(int i = 0; i < 4; i++){
+   /* for(int i = 0; i < 4; i++){
         instruccion[i] = this.arrayInstrucciones.get(this.contadorPrograma);
         this.contadorPrograma++;
-    }
+    }*/
     System.out.println("Se leyo instruiccion: " +instruccion[0]+" " +instruccion[1]+ " " +instruccion[2]+" " +instruccion[3]);
  
     switch(instruccion[0]){
