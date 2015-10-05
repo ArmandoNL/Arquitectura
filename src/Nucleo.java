@@ -35,7 +35,7 @@ public class Nucleo implements Runnable {
 	    for(int i = 0; i < 33; i++){
 	      registros[i] = 0;
 	    }
-          cacheDeInstrucciones = new int[16][8];
+          cacheDeInstrucciones = new int[17][8];
 	    for(int i = 0; i < 8; i++){                
 	      cacheDeInstrucciones[16][i] = -1;
 	    }
@@ -97,29 +97,23 @@ private void buscarEnCache(){
         int[] vecInstruccion = new int[4];
 	int numBloc = hPC/16;
 	int blocCache= numBloc % 8;
-	int i= hPC-numBloc*16;// DUDA!!!
-	if(estaenCache(hPC)){ //esto aqui sobra
-                int inst=0;
-		for(int j= i; j<i+4;i++){
-			vecInstruccion[inst] = cacheDeInstrucciones[j][blocCache];
-			inst++;
-		}
-		hPC+=4;
-		ejecutarInstruccion(vecInstruccion);
-                cambiarCiclo();
-                if(quantumNucleo != 0)
-                {
-                    cambiarCiclo();
-                }
-                else
-                {
-                    seAcaboQuantum();
-                }
-                //if final(){algo}else if(quantum==0){guardarContexto() y algo}else cambiarCiclo() y algo
-	}/*else{ //si falla entonces primer leido = true; para que vuelva a leer PC viejo.
-            primerLeido = true; 
-            traerBloque(hPC);
-        }*/
+	int i= hPC-(numBloc*16);
+	int inst=0;
+        for(int j= i; j<i+4; i++){
+            vecInstruccion[inst] = cacheDeInstrucciones[j][blocCache];
+            inst++;
+        }
+	hPC+=4;
+	ejecutarInstruccion(vecInstruccion);
+        cambiarCiclo();
+        if(quantumNucleo != 0)
+        {
+            cambiarCiclo();
+        }
+        else
+        {
+            seAcaboQuantum();
+        }
 	
 }
 

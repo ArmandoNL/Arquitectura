@@ -209,9 +209,9 @@ public class HiloControlador extends javax.swing.JFrame{
     		comunicadores[i] = new Comunicador();
             }
             nucleos = new Nucleo[2];
-            for(int i = 0; i < 2; i++){
+            /*for(int i = 0; i < 2; i++){
     		nucleos[i] = new Nucleo(this, i);
-            }
+            }*/
             if(vectPc.poll() != null){
                 comunicadores[0].write(vectPc.poll(), quantum);
                 comunicadores[1].write(vectPc.poll(), quantum);
@@ -242,7 +242,7 @@ public class HiloControlador extends javax.swing.JFrame{
          
         Charset charset = Charset.forName("US-ASCII");
         try(BufferedReader reader = Files.newBufferedReader(file.toPath(), charset)){
-            String lineaArchivo = "";
+            String lineaArchivo = " ";
             int contLineas = 0;//variable para contar el # de lineas del archivo
             while(!"".equals(lineaArchivo = reader.readLine())){
                 contLineas++;//contamos las lineas del archivo para calcular el PC
@@ -266,8 +266,6 @@ public class HiloControlador extends javax.swing.JFrame{
             System.err.println("IOException error");
         }
         
-        LlenarMemoriaPc(file);
-        
         }else{
             System.out.println("File access cancelled by user.");
         }       
@@ -275,36 +273,7 @@ public class HiloControlador extends javax.swing.JFrame{
         imprimirMem();       
     }//GEN-LAST:event_OpenActionPerformed
 
-    public void LlenarMemoriaPc(File archivo) {
-        //Ahora lee el archivo y guarda sus contenidos en el array de hilos
-        numLineas = 0;
-         
-        Charset charset = Charset.forName("US-ASCII");
-        try(BufferedReader reader = Files.newBufferedReader(archivo.toPath(), charset)){
-            String lineaArchivo = null;
-            int contLineas = 0;//variable para contar el # de lineas del archivo
-            while((lineaArchivo = reader.readLine()) != null){
-                contLineas++;//contamos las lineas del archivo para calcular el PC
-                String[] instrucciones = lineaArchivo.split(" ");
-                for(int i=0; i<instrucciones.length;++i){
-                    memTemp.add(Integer.parseInt(instrucciones[i]));
-                }
-            }
-            if(numLineas == 0)
-            {
-                vectPc.add(0);
-                numLineas += contLineas*4;
-            }
-            else
-            {
-                vectPc.add(numLineas);
-                numLineas += contLineas*4;
-            }
-        }
-        catch(IOException exc){
-            System.err.println("IOException error");
-        }
-    }
+   
     
     private void imprimirMem(){
         for(int i =0; i<memTemp.size(); i++){
