@@ -219,7 +219,7 @@ public class HiloControlador extends javax.swing.JFrame{
             {
                 System.out.println("Se acabo programa");
             }
-            //solo se inicia un hilo por nucleo, el hilo controlador es como la interfaz
+    
             for(int i = 0; i < 2; i++){
     		(new Thread(nucleos[i])).start();
             }    
