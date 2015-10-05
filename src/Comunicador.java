@@ -20,12 +20,12 @@ public class Comunicador {
            hiloPC = contador;
            quantum = miQuantum; 
         }
- 
        
        public int read() {
            ocupado = true;
            return hiloPC;
        }
+       
        public int readQ() {
            ocupado = true;
            return quantum;
@@ -40,6 +40,5 @@ public class Comunicador {
        {
            contexto = vec;
        }
-        
-        
+                
 }

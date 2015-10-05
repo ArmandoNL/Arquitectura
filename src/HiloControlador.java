@@ -188,7 +188,7 @@ public class HiloControlador extends javax.swing.JFrame{
                         comunicadores[i].semaforoComunicador.release();
                     }
                     else{
-                    	//si no hay hilos asignables, se le avisa al hilo que termino
+                    	//si no hay archivos asignables, se le avisa al hilo que termino
                         comunicadores[i].write(-1, quantum);
                         comunicadores[i].terminado = true;
                         comunicadores[i].semaforoComunicador.release();
@@ -202,8 +202,8 @@ public class HiloControlador extends javax.swing.JFrame{
             quantum = Integer.parseInt(txtQuantum.getText());
             tiempoEspera = Integer.parseInt(txtLatencia.getText());
             tiempoBus = Integer.parseInt(txtTiempoBus.getText());
-            latencia = 4*((2*tiempoBus)+tiempoEspera);
-            
+            latencia = 4*((2*tiempoBus)+tiempoEspera); // cuanddo se usa??
+                       
             comunicadores = new Comunicador[2];
             for(int i = 0; i < 2; i++){
     		comunicadores[i] = new Comunicador();
@@ -219,10 +219,12 @@ public class HiloControlador extends javax.swing.JFrame{
             {
                 System.out.println("Se acabo programa");
             }
-    
-            for(int i = 0; i < 3; i++){
+            //solo se inicia un hilo por nucleo, el hilo controlador es como la interfaz
+            for(int i = 0; i < 2; i++){
     		(new Thread(nucleos[i])).start();
             }    
+            
+           // metodoPrincipal();
     }//GEN-LAST:event_EjecutarActionPerformed
 
     private void FileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_FileActionPerformed
@@ -236,8 +238,7 @@ public class HiloControlador extends javax.swing.JFrame{
     private void OpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenActionPerformed
         int returnVal = fileChooser.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            File file = fileChooser.getSelectedFile();
-             
+            File file = fileChooser.getSelectedFile();             
          
         Charset charset = Charset.forName("US-ASCII");
         try(BufferedReader reader = Files.newBufferedReader(file.toPath(), charset)){
@@ -264,11 +265,14 @@ public class HiloControlador extends javax.swing.JFrame{
         catch(IOException exc){
             System.err.println("IOException error");
         }
+        
+        LlenarMemoriaPc(file);
+        
         }else{
             System.out.println("File access cancelled by user.");
-        }
+        }       
         
-        imprimirMem();
+        imprimirMem();       
     }//GEN-LAST:event_OpenActionPerformed
 
     public void LlenarMemoriaPc(File archivo) {

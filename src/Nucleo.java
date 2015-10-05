@@ -30,13 +30,14 @@ public class Nucleo implements Runnable {
           //terminar = true;
           barrera = mainThread.barrier;
           comunicadores = mainThread.comunicadores;
+          hPC=0;
           registros = new int[33];
 	    for(int i = 0; i < 33; i++){
 	      registros[i] = 0;
 	    }
-          cacheDeInstrucciones = new int[8][16];
+          cacheDeInstrucciones = new int[16][8];
 	    for(int i = 0; i < 8; i++){                
-	      cacheDeInstrucciones[i][15] = -1;
+	      cacheDeInstrucciones[16][i] = -1;
 	    }
 	quantumNucleo = comunicadores[numProcesador].readQ();
 	
@@ -44,10 +45,33 @@ public class Nucleo implements Runnable {
   
   public void run(){
     obtenerPC();
-    buscarEnCache();
+    while(true){
+        if(estaenCache(hPC)){
+            buscarEnCache();
+        }else{
+            falloCache();
+        }
+        
+        
+    }
 }
   
- 
+  /*
+   public void limpiarcache(){
+        for(int i = 0; i < 8; i++){                
+            cacheDeInstrucciones[16][i] = -1;
+        }
+  }
+  */
+  
+ /*Que pasa cuando ya todos los -1 de cada bloque se cambiaron?? no se podria revisar que si es -1 la proxima vez
+  tiene que existir un limpiar cache que los vuelva a poner en -1 y asi se pueda seguir revisando si el bloque esta
+  */  
+  public boolean estaenCache(int hpc){
+       int bloque = hpc/16;
+       int columCache = bloque%8;
+       return cacheDeInstrucciones[16][columCache]==bloque;  
+  }
   
   public void traerBloque(int hpc)
   {
@@ -61,7 +85,10 @@ public class Nucleo implements Runnable {
           {
             cacheDeInstrucciones[i][columCache] = arrayInstrucciones.get(i);
           }
-      }
+          /*(bloque+0.25, j+4)al hacer esto 4 veces, se traerian las 4 palabras 
+          pero el hpc tendria que entrar de 16 en 16. solo que el valor seria float
+          */
+      }// esta haciendo esto 4 veces en los mismos campos
       cacheDeInstrucciones[16][columCache] = bloque;
   }
   
@@ -70,8 +97,8 @@ private void buscarEnCache(){
         int[] vecInstruccion = new int[4];
 	int numBloc = hPC/16;
 	int blocCache= numBloc % 8;
-	int i= hPC-numBloc*16;
-	if(cacheDeInstrucciones[16][blocCache] == blocCache){ //bloque está en caché
+	int i= hPC-numBloc*16;// DUDA!!!
+	if(estaenCache(hPC)){ //esto aqui sobra
                 int inst=0;
 		for(int j= i; j<i+4;i++){
 			vecInstruccion[inst] = cacheDeInstrucciones[j][blocCache];
@@ -89,10 +116,10 @@ private void buscarEnCache(){
                     seAcaboQuantum();
                 }
                 //if final(){algo}else if(quantum==0){guardarContexto() y algo}else cambiarCiclo() y algo
-	}else{ //si falla entonces primer leido = true; para que vuelva a leer PC viejo.
+	}/*else{ //si falla entonces primer leido = true; para que vuelva a leer PC viejo.
             primerLeido = true; 
             traerBloque(hPC);
-        }
+        }*/
 	
 }
 
