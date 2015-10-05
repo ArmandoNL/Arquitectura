@@ -30,7 +30,6 @@ public class Nucleo implements Runnable {
           //terminar = true;
           barrera = mainThread.barrier;
           comunicadores = mainThread.comunicadores;
-          hPC=0;
           registros = new int[33];
 	    for(int i = 0; i < 33; i++){
 	      registros[i] = 0;
@@ -47,7 +46,7 @@ public class Nucleo implements Runnable {
     obtenerPC();
     while(true){
         if(estaenCache(hPC)){
-            buscarEnCache();
+            recuperarDeCache();
         }else{
             falloCache();
         }
@@ -73,54 +72,34 @@ public class Nucleo implements Runnable {
        return cacheDeInstrucciones[16][columCache]==bloque;  
   }
   
-  public void traerBloque(int hpc)
+  public void traerBloque()
   {
-      int bloque = hpc/16;
-      int j = (bloque*16)+4;
+      int bloque = hPC/16;
+      int j = (bloque*16)+16;
       int columCache = bloque%8;
-      
-      for(int palabra=1;palabra<=4;++palabra)
+      int fila = 0;
+      for(int i=bloque*16;i<j;i++)
       {
-          for(int i=bloque*16;i<j;i++)
-          {
-            cacheDeInstrucciones[i][columCache] = arrayInstrucciones.get(i);
-          }
-          /*(bloque+0.25, j+4)al hacer esto 4 veces, se traerian las 4 palabras 
-          pero el hpc tendria que entrar de 16 en 16. solo que el valor seria float
-          */
-      }// esta haciendo esto 4 veces en los mismos campos
+         cacheDeInstrucciones[fila][columCache] = arrayInstrucciones.get(i);
+         fila++;
+      }
       cacheDeInstrucciones[16][columCache] = bloque;
   }
   
 
-private void buscarEnCache(){
-        int[] vecInstruccion = new int[4];
-	int numBloc = hPC/16;
-	int blocCache= numBloc % 8;
-	int i= hPC-numBloc*16;// DUDA!!!
-	if(estaenCache(hPC)){ //esto aqui sobra
-                int inst=0;
-		for(int j= i; j<i+4;i++){
-			vecInstruccion[inst] = cacheDeInstrucciones[j][blocCache];
-			inst++;
-		}
-		hPC+=4;
-		ejecutarInstruccion(vecInstruccion);
-                cambiarCiclo();
-                if(quantumNucleo != 0)
-                {
-                    cambiarCiclo();
-                }
-                else
-                {
-                    seAcaboQuantum();
-                }
-                //if final(){algo}else if(quantum==0){guardarContexto() y algo}else cambiarCiclo() y algo
-	}/*else{ //si falla entonces primer leido = true; para que vuelva a leer PC viejo.
-            primerLeido = true; 
-            traerBloque(hPC);
-        }*/
-	
+private void recuperarDeCache(){
+    int[] vecInstruccion = new int[4];
+    int numBloc = hPC/16;
+    int blocCache= numBloc % 8;
+    int i= hPC-numBloc*16;
+    int inst=0;
+    for(int j= i; j<i+4;i++){
+        vecInstruccion[inst] = cacheDeInstrucciones[j][blocCache];
+	inst++;
+    }
+    hPC+=4;
+    ejecutarInstruccion(vecInstruccion);
+    cambiarCiclo();
 }
 
 private void seAcaboQuantum()
@@ -171,7 +150,7 @@ boolean liberarBus(){ //libera el bus una vez que no se necesita.
 private void falloCache(){ //en caso 
     primerLeido= false;
     if(pedirBus()){
-        traerBloque(hPC);
+        traerBloque();
         int i=0;
         while(i<mainThread.latencia){
             cambiarCiclo();
