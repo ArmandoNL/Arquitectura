@@ -220,7 +220,7 @@ public class HiloControlador extends javax.swing.JFrame{
                 System.out.println("Se acabo programa");
             }
     
-            for(int i = 0; i < 3; i++){
+            for(int i = 0; i < 2; i++){
     		(new Thread(nucleos[i])).start();
             }    
     }//GEN-LAST:event_EjecutarActionPerformed
