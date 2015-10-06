@@ -25,16 +25,15 @@ public class HiloControlador extends javax.swing.JFrame{
     private int idHilos;
     private int hilos; 
     private int semaforoComunicador;
-    private static final int cantHilos = 2;
-    public static Queue <Integer> vectPc;
+    private static int cantHilos = 2;
+    private static Queue <Integer> vectPc;
     JFileChooser fc;
     public int quantum;
     public int tiempoEspera;
     public int  tiempoBus;
     public int latencia;
     private int numLineas;
-    private Queue<int[]> contextos;
-    int[] vecPC = new int[10];
+    int[] vecPC = new int[20];
         int contArchivos = 0;
 	
     public HiloControlador() {
@@ -220,8 +219,11 @@ public class HiloControlador extends javax.swing.JFrame{
             for(int i = 0; i < hilos; i++){
     		comunicadores[i] = new Comunicador();
             }
-            vectPc.add(0);
-            vectPc.add(64); //llenar vector
+            
+            for(int i = 0; i<contArchivos;++i)//se agregan los PC a la cola
+            {
+                vectPc.add(vecPC[i]);
+            }
             
             for(int i = 0; i< hilos; i++){
              if(vectPc.size() != 0){
@@ -261,7 +263,7 @@ public class HiloControlador extends javax.swing.JFrame{
          
         Charset charset = Charset.forName("US-ASCII");
         try(BufferedReader reader = Files.newBufferedReader(file.toPath(), charset)){
-            contArchivos++;
+            
             String lineaArchivo = " ";
             int contLineas = 0;//variable para contar el # de lineas del archivo
             while(!"".equals(lineaArchivo = reader.readLine())){
@@ -283,6 +285,7 @@ public class HiloControlador extends javax.swing.JFrame{
                 vecPC[contArchivos]= numLineas;
                 numLineas += contLineas*4;
             }
+            contArchivos++;
         }
         catch(IOException exc){
             System.err.println("IOException error");
