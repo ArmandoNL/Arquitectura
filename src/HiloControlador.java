@@ -25,7 +25,7 @@ public class HiloControlador extends javax.swing.JFrame{
     private int idHilos;
     private int semaforoComunicador;
     private static final int cantHilos = 2;
-    public Queue <Integer> vectPc;
+    public static Queue <Integer> vectPc;
     JFileChooser fc;
     public int quantum;
     public int tiempoEspera;
@@ -33,6 +33,8 @@ public class HiloControlador extends javax.swing.JFrame{
     public int latencia;
     private int numLineas;
     private Queue<int[]> contextos;
+    int[] vecPC = new int[10];
+        int contArchivos = 0;
 	
     public HiloControlador() {
         initComponents();
@@ -247,6 +249,7 @@ public class HiloControlador extends javax.swing.JFrame{
          
         Charset charset = Charset.forName("US-ASCII");
         try(BufferedReader reader = Files.newBufferedReader(file.toPath(), charset)){
+            contArchivos++;
             String lineaArchivo = " ";
             int contLineas = 0;//variable para contar el # de lineas del archivo
             while(!"".equals(lineaArchivo = reader.readLine())){
@@ -259,11 +262,13 @@ public class HiloControlador extends javax.swing.JFrame{
             if(numLineas == 0)
             {
                 vectPc.add(0);
+                vecPC[contArchivos]= 0;
                 numLineas += contLineas*4;
             }
             else
             {
                 vectPc.add(numLineas);
+                vecPC[contArchivos]= numLineas;
                 numLineas += contLineas*4;
             }
         }
