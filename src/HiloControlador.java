@@ -20,11 +20,12 @@ public class HiloControlador extends javax.swing.JFrame{
     public ArrayList<Integer> memTemp;
     private int ciclosReloj; 
     private int PC;
-    public final CyclicBarrier barrier;
+    public  CyclicBarrier barrier;
     private Semaphore semaforo;
     private int idHilos;
+    private int hilos; 
     private int semaforoComunicador;
-    private static final int cantHilos = 2;
+    private static int cantHilos;
     public Queue <Integer> vectPc;
     JFileChooser fc;
     public int quantum;
@@ -32,16 +33,18 @@ public class HiloControlador extends javax.swing.JFrame{
     public int  tiempoBus;
     public int latencia;
     private int numLineas;
-    private Queue<int[]> contextos;
+   
 	
     public HiloControlador() {
         initComponents();
+        //hilos = 1;
+        //cantHilos = hilos;
         ciclosReloj = 0;
         memTemp = new ArrayList<Integer>();
         vectPc = new LinkedList<Integer>();
         PC = 0;
         numLineas=0;
-        barrier = new CyclicBarrier(cantHilos, barrierFuncion);
+        //barrier = new CyclicBarrier(cantHilos, barrierFuncion);
         fc = new JFileChooser();
     }
 
@@ -179,8 +182,8 @@ public class HiloControlador extends javax.swing.JFrame{
 
     Runnable barrierFuncion = new Runnable(){
         public void run(){   
-            ciclosReloj++;   //chequear quantum    
-            for(int i = 0; i < 2; i++){
+           ciclosReloj++;   //chequear quantum    
+            for(int i = 0; i < hilos; i++){  //cambiar
             	if(!comunicadores[i].ocupado){
                     int pcActual= vectPc.poll();
                     if(pcActual != -1){
@@ -199,30 +202,44 @@ public class HiloControlador extends javax.swing.JFrame{
     };
      
 	private void EjecutarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EjecutarActionPerformed
+            if(hilos==1){
+                cantHilos = hilos;
+             }else {
+                hilos = 2;
+                cantHilos = 2;
+            }
+            barrier = new CyclicBarrier(cantHilos, barrierFuncion);
             quantum = Integer.parseInt(txtQuantum.getText());
             tiempoEspera = Integer.parseInt(txtLatencia.getText());
             tiempoBus = Integer.parseInt(txtTiempoBus.getText());
             latencia = 4*((2*tiempoBus)+tiempoEspera); // cuanddo se usa??
                        
             comunicadores = new Comunicador[2];
-            for(int i = 0; i < 2; i++){
+            for(int i = 0; i < hilos; i++){
     		comunicadores[i] = new Comunicador();
             }
-            nucleos = new Nucleo[2];
-            /*for(int i = 0; i < 2; i++){
-    		nucleos[i] = new Nucleo(this, i);
-            }*/
-            if(vectPc.poll() != null){
-                comunicadores[0].write(vectPc.poll(), quantum);
-                comunicadores[1].write(vectPc.poll(), quantum);
-            }else
+            vectPc.add(0);
+            vectPc.add(64); //llenar vector
+            
+            for(int i = 0; i< hilos; i++){
+             if(vectPc.size() != 0){
+                comunicadores[i].write(vectPc.poll(), quantum);
+             }
+                  //comunicadores[1].write(vectPc.poll(), quantum);
+            else
             {
                 System.out.println("Se acabo programa");
             }
-    
-            for(int i = 0; i < 2; i++){
+            }
+            nucleos = new Nucleo[2];
+            for(int i = 0; i < hilos; i++){
+    		nucleos[i] = new Nucleo(this, i);
+            }
+           
+        
+          for(int i = 0; i < hilos; i++){
     		(new Thread(nucleos[i])).start();
-            }    
+            }   
             
            // metodoPrincipal();
     }//GEN-LAST:event_EjecutarActionPerformed
@@ -269,7 +286,7 @@ public class HiloControlador extends javax.swing.JFrame{
         }else{
             System.out.println("File access cancelled by user.");
         }       
-        
+        hilos+=1;
         imprimirMem();       
     }//GEN-LAST:event_OpenActionPerformed
 
