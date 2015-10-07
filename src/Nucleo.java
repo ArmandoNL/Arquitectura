@@ -19,6 +19,7 @@ public class Nucleo implements Runnable {
   private Comunicador[] comunicadores;
   private int quantumNucleo;
   boolean busOcupado;
+  boolean finalizar = false;
   //public Directorio directorio;
   
   //nuevo constructor del procesador
@@ -46,8 +47,17 @@ public class Nucleo implements Runnable {
             recuperarDeCache();
         }else{
             falloCache();
+        }
         }        
-    }
+    while(!finalizar){
+        cambiarCiclo();
+        if(comunicadores[0].hiloPC==-1 && comunicadores[1].hiloPC==-1){
+             finalizar=true;
+        }
+    } 
+      
+   System.out.println("EL quantum final es :" + quantumNucleo);
+  
    System.out.println("se terminooo");
 }
    
@@ -66,7 +76,7 @@ public class Nucleo implements Runnable {
   
   public void traerBloque()
   {
-      int bloque = hPC/16;
+      int bloque = this.hPC/16;
       int j = (bloque*16)+16;
       int columCache = bloque%8;
       int fila = 0;
@@ -89,9 +99,9 @@ public class Nucleo implements Runnable {
 
 private void recuperarDeCache(){
         int[] vecInstruccion = new int[4];
-	int numBloc = hPC/16;
+	int numBloc = this.hPC/16;
 	int blocCache= numBloc % 8;
-	int i= hPC-(numBloc*16);
+	int i= this.hPC-(numBloc*16);
 	int inst=0;
         for(int j= i; j<i+4; j++){
             vecInstruccion[inst] = this.cacheDeInstrucciones[j][blocCache];
@@ -99,23 +109,23 @@ private void recuperarDeCache(){
         }
 	
         cambiarCiclo();
-         hPC+=4;
+         this.hPC+=4;
 	ejecutarInstruccion(vecInstruccion);
-        //hPC+=4; //PONER LO DE ASIGNAR OTRO ARCHIVO..LIMPIAR REGISTROS.
+        
         if(this.quantumNucleo > 0)
         {
             cambiarCiclo();
         }
         else
         {
-            seAcaboQuantum();
+             seAcaboQuantum();
             obtenerPC();
+            quantumNucleo = comunicadores[numProcesador].readQ();
             if(comunicadores[0].contexto[33]==this.hPC){
                   cambiarRegistro(0);   
             }else{
                 cambiarRegistro(1);
             }
-            
             this.comunicadores[numProcesador].ocupado=true;
             
         }
@@ -130,16 +140,22 @@ private void seAcaboQuantum()
 }
  
 private void obtenerPC(){
-    if(comunicadores[numProcesador].terminado){
-        this.PC = -1 ;
-     }else{
-        PC = comunicadores[numProcesador].read();
-        hPC=PC;
+     if(mainThread.hilos==1){
+        PC=comunicadores[0].read();
+        this.hPC=PC;
+        comunicadores[1].hiloPC=-1;
+    }else{
+        if(comunicadores[numProcesador].terminado){
+            this.PC = -1 ;
+        }else{
+            PC = comunicadores[numProcesador].read();
+            this.hPC=PC;
        /* if(this.comunicadores[this.numProcesador].contexto[33]==hPC){
             int[] vectContexto = new int[34];
             vectContexto = this.comunicadores[this.numProcesador].contexto;
             cambiarRegistro(vectContexto);
         }*/
+       }
      }
 }
 
@@ -203,13 +219,13 @@ public void contexto()
     }
 
 private void ejecutarInstruccion(int[] vector){
-      //System.out.println("Hilo " + this.numProcesador + ": leyendo instruccion con CP: " + this.hPC);
+      System.out.println("Hilo " + this.numProcesador + ": leyendo instruccion con CP: " + this.hPC);
     int instruccion[] = new int[4];
         for(int i=0;i<4;i++){
         instruccion[i]=vector[i];
         }    
    
-    //System.out.println("Se leyo instruiccion: " +instruccion[0]+" " +instruccion[1]+ " " +instruccion[2]+" " +instruccion[3]);
+    System.out.println("Se leyo instruiccion: " +instruccion[0]+" " +instruccion[1]+ " " +instruccion[2]+" " +instruccion[3]);
  
     switch(instruccion[0]){
       case 8:

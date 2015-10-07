@@ -36,6 +36,7 @@ public class HiloControlador extends javax.swing.JFrame{
     private int numLineas;
     int[] vecPC = new int[20];
     int contArchivos = 0;
+    public int contterminados;
 	
     public HiloControlador() {
         initComponents();
@@ -48,6 +49,7 @@ public class HiloControlador extends javax.swing.JFrame{
         numLineas=0;
         //barrier = new CyclicBarrier(cantHilos, barrierFuncion);
         fc = new JFileChooser();
+        contterminados =1;
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -195,6 +197,7 @@ public class HiloControlador extends javax.swing.JFrame{
                     else{
                     	//si no hay archivos asignables, se le avisa al hilo que termino
                         comunicadores[i].write(-1, quantum);
+                        comunicadores[i].ocupado = true;
                         comunicadores[i].terminado = true;
                         comunicadores[i].semaforoComunicador.release();
                     }
@@ -217,7 +220,7 @@ public class HiloControlador extends javax.swing.JFrame{
             latencia = 4*((2*tiempoBus)+tiempoEspera); // cuanddo se usa??
                        
             comunicadores = new Comunicador[2];
-            for(int i = 0; i < hilos; i++){
+            for(int i = 0; i < 2; i++){
     		comunicadores[i] = new Comunicador();
             }
             
@@ -296,7 +299,8 @@ public class HiloControlador extends javax.swing.JFrame{
             System.out.println("File access cancelled by user.");
         }       
         hilos+=1;
-        imprimirMem();       
+        imprimirMem(); 
+        
     }//GEN-LAST:event_OpenActionPerformed
 
    
