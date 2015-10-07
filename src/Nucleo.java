@@ -89,8 +89,16 @@ public class Nucleo implements Runnable {
       int fila = 0;
       for(int i=bloque*16;i<j;i++) //NO SIEMPRE SE TRAE BLOQUE COMPLETO
       {
-         this.cacheDeInstrucciones[fila][columCache] = arrayInstrucciones.get(i);
-         fila++;
+          if(i<arrayInstrucciones.size())//cuando i sobrepasa el numero de elementos del array no saca nada
+          {
+               this.cacheDeInstrucciones[fila][columCache] = arrayInstrucciones.get(i);
+               fila++;
+          }
+          else
+          {
+              this.cacheDeInstrucciones[fila][columCache] = -1;
+              fila++;
+          }
       }
       this.cacheDeInstrucciones[16][columCache] = bloque;
   }
