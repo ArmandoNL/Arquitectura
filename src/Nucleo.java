@@ -30,8 +30,8 @@ public class Nucleo implements Runnable {
           arrayInstrucciones = mainThread.memTemp;
           barrera = mainThread.barrier;
           comunicadores = mainThread.comunicadores;
-          this.registros = new int[33];
-	    for(int i = 0; i < 33; i++){
+          this.registros = new int[34];
+	    for(int i = 0; i < 34; i++){
 	      this.registros[i] = 0;
 	    }
             this.cacheDeInstrucciones = new int[17][8];
@@ -42,18 +42,20 @@ public class Nucleo implements Runnable {
 	
   }
   
+  @Override
   public void run(){
     obtenerPC();
-    while(true){
+    while(!this.comunicadores[this.numProcesador].terminado){
         if(estaenCache(hPC)){
             recuperarDeCache();
         }else{
             falloCache();
         }
         
-        
     }
+   System.out.println("se terminooo");
 }
+  
   
   /*
    public void limpiarcache(){
@@ -73,19 +75,10 @@ public class Nucleo implements Runnable {
   }
   
   public void imprimir(){
-      if(this.numProcesador == 0 ){
-          for(int i=0; i<16; i++){
-              for(int j=0; j<8; j++){
-                  System.out.println(this.cacheDeInstrucciones[i][j]);
-              }
-          }
-      }else{
-            for(int i=0; i<16; i++){
-              for(int j=0; j<8; j++){
-                  System.out.println(this.cacheDeInstrucciones[i][j]);
-              }
-            }
-      }
+        System.out.println("SOY HILO " + this.numProcesador);
+          for(int i=0; i<34; i++){
+              System.out.println("R" + i + "=" + this.registros[i]); 
+         }
   }
   
   public void traerBloque()
@@ -94,7 +87,7 @@ public class Nucleo implements Runnable {
       int j = (bloque*16)+16;
       int columCache = bloque%8;
       int fila = 0;
-      for(int i=bloque*16;i<j;i++)
+      for(int i=bloque*16;i<j;i++) //NO SIEMPRE SE TRAE BLOQUE COMPLETO
       {
          this.cacheDeInstrucciones[fila][columCache] = arrayInstrucciones.get(i);
          fila++;
@@ -113,16 +106,27 @@ private void recuperarDeCache(){
             vecInstruccion[inst] = this.cacheDeInstrucciones[j][blocCache];
             inst++;
         }
-	hPC+=4;
+	
         cambiarCiclo();
+         hPC+=4;
 	ejecutarInstruccion(vecInstruccion);
-        if(quantumNucleo != 0)
+        //hPC+=4;
+        if(this.quantumNucleo > 0)
         {
             cambiarCiclo();
         }
         else
         {
             seAcaboQuantum();
+            obtenerPC();
+            if(comunicadores[0].contexto[33]==this.hPC){
+                  cambiarRegistro(0);   
+            }else{
+                cambiarRegistro(1);
+            }
+            
+            this.comunicadores[numProcesador].ocupado=true;
+            
         }
 	
 }
@@ -140,18 +144,18 @@ private void obtenerPC(){
      }else{
         PC = comunicadores[numProcesador].read();
         hPC=PC;
-        if(this.comunicadores[this.numProcesador].contexto[33]==hPC){
+       /* if(this.comunicadores[this.numProcesador].contexto[33]==hPC){
             int[] vectContexto = new int[34];
-            vectContexto= this.comunicadores[this.numProcesador].contexto;
+            vectContexto = this.comunicadores[this.numProcesador].contexto;
             cambiarRegistro(vectContexto);
-        }
+        }*/
      }
 }
 
 
-private void cambiarRegistro(int [] vec){
+private void cambiarRegistro(int proc){
      for(int i = 0; i<33; i++){
-         this.registros[i] = vec[i];
+         this.registros[i] = comunicadores[proc].contexto[i];
      }
 
 }
@@ -176,7 +180,7 @@ private void falloCache(){ //en caso
     if(pedirBus()){
         traerBloque();
         int i=0;
-        while(i<mainThread.latencia){
+        while(i<mainThread.latencia){ 
             cambiarCiclo();
             i++;
         }
@@ -199,7 +203,6 @@ private void cambiarCiclo(){
 
 public void contexto()
     {
-        
         for(int i = 0; i<33; i++)
         {
            this.comunicadores[this.numProcesador].contexto[i] = this.registros[i];
@@ -209,7 +212,7 @@ public void contexto()
     }
 
 private void ejecutarInstruccion(int[] vector){
-      System.out.println("Hilo " + numProcesador + ": leyendo instruccion con CP: " + contadorPrograma);
+      //System.out.println("Hilo " + this.numProcesador + ": leyendo instruccion con CP: " + this.hPC);
     int instruccion[] = new int[4];
         for(int i=0;i<4;i++){
         instruccion[i]=vector[i];
@@ -219,7 +222,7 @@ private void ejecutarInstruccion(int[] vector){
         instruccion[i] = this.arrayInstrucciones.get(this.contadorPrograma);
         this.contadorPrograma++;
     }*/
-    System.out.println("Se leyo instruiccion: " +instruccion[0]+" " +instruccion[1]+ " " +instruccion[2]+" " +instruccion[3]);
+    //System.out.println("Se leyo instruiccion: " +instruccion[0]+" " +instruccion[1]+ " " +instruccion[2]+" " +instruccion[3]);
  
     switch(instruccion[0]){
       case 8:
@@ -283,29 +286,29 @@ private void ejecutarInstruccion(int[] vector){
     public void beqz(int regComparacion, int salto){
          
         if(this.registros[regComparacion] == 0){
-            contadorPrograma += salto*4;
+            this.hPC += salto*4;
         }
         quantumNucleo--;
     }
     
     //Si el valor del registro es diferente de 0 hace un salto
     public void bnez(int regComparacion, int salto){//segunda y cuarta parte, tercera vacia
-        //System.out.println("valor "+registros[regComparacion]);
+       // System.out.println("valor "+registros[regComparacion]);
         if(this.registros[regComparacion] != 0){
-            contadorPrograma += salto*4;
+            this.hPC += salto*4;
         }
         quantumNucleo--;
     }
     
     //
     public void jr(int regsalto){//segunda y cuarta parte, tercera vacia
-        contadorPrograma =this.registros[regsalto];       
+        this.hPC =this.registros[regsalto];       
         quantumNucleo--;
     }
     
     //hace una multiplicacion de los valores de 2 registros y los guarda en un registro
     public void dmul(int regDestino, int regF1, int regF2){//segunda y cuarta parte, tercera vacia
-       int valor = this.registros[regF1]-this.registros[regF2];
+       int valor = this.registros[regF1] * this.registros[regF2];
        this.registros[regDestino]= valor;
        quantumNucleo--;
         
@@ -313,23 +316,24 @@ private void ejecutarInstruccion(int[] vector){
     
     //hace una division de los valores de 2 registros y los guarda en un registro
     public void ddiv(int regDestino, int regF1, int regF2){//segunda y cuarta parte, tercera vacia
-       int valor = this.registros[regF1]-this.registros[regF2];
+       int valor = this.registros[regF1]/this.registros[regF2];
        this.registros[regDestino]= valor;
        quantumNucleo--;
     }
     
     //
     public void jal(int salto){//segunda y cuarta parte, tercera vacia
-        this.registros[31]=contadorPrograma;
-        contadorPrograma =contadorPrograma+salto;       
+        this.registros[31]=this.hPC;
+        this.hPC =this.hPC+salto;       
         quantumNucleo--;
     } 
     
    //Si el procesador llego al final del hilo, se desocupa e imprime los resultados
     public void fin(){
-        comunicadores[numProcesador].ocupado = false;
+        this.comunicadores[numProcesador].ocupado = false;
+        mainThread.vectPc.add(-1);
         terminar = true;
-        imprimirEstado();        
+        imprimir();        
     }
     
     //imprime los resultados del hilo

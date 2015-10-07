@@ -16,6 +16,7 @@ import java.util.concurrent.*;
 public class HiloControlador extends javax.swing.JFrame{
     
     public Comunicador[] comunicadores;
+    public Nucleo nucleo;
     public Nucleo[] nucleos;
     public ArrayList<Integer> memTemp;
     private int ciclosReloj; 
@@ -23,10 +24,10 @@ public class HiloControlador extends javax.swing.JFrame{
     public  CyclicBarrier barrier;
     private Semaphore semaforo;
     private int idHilos;
-    private int hilos; 
+    public int hilos; 
     private int semaforoComunicador;
     private static int cantHilos = 2;
-    private static Queue <Integer> vectPc;
+    public  Queue <Integer> vectPc;
     JFileChooser fc;
     public int quantum;
     public int tiempoEspera;
@@ -34,7 +35,7 @@ public class HiloControlador extends javax.swing.JFrame{
     public int latencia;
     private int numLineas;
     int[] vecPC = new int[20];
-        int contArchivos = 0;
+    int contArchivos = 0;
 	
     public HiloControlador() {
         initComponents();
@@ -183,7 +184,7 @@ public class HiloControlador extends javax.swing.JFrame{
 
     Runnable barrierFuncion = new Runnable(){
         public void run(){   
-           ciclosReloj++;   //chequear quantum    
+          // ciclosReloj++;   //chequear quantum    
             for(int i = 0; i < hilos; i++){  //cambiar
             	if(!comunicadores[i].ocupado){
                     int pcActual= vectPc.poll();
