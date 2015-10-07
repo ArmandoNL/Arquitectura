@@ -110,7 +110,7 @@ private void recuperarDeCache(){
         cambiarCiclo();
          hPC+=4;
 	ejecutarInstruccion(vecInstruccion);
-        //hPC+=4;
+        //hPC+=4; //PONER LO DE ASIGNAR OTRO ARCHIVO..LIMPIAR REGISTROS.
         if(this.quantumNucleo > 0)
         {
             cambiarCiclo();
@@ -332,7 +332,7 @@ private void ejecutarInstruccion(int[] vector){
     public void fin(){
         this.comunicadores[numProcesador].ocupado = false;
         mainThread.vectPc.add(-1);
-        terminar = true;
+        //terminar = true;
         imprimir();        
     }
     
