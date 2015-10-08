@@ -70,7 +70,7 @@ public class Nucleo implements Runnable {
   }
   
   public void imprimir(){
-        System.out.println("SOY HILO " + this.comunicadores[this.numProcesador]);
+        System.out.println("SOY HILO " + this.numProcesador);
           for(int i =0; i<33; i++){
                System.out.println("Reg" + i + "=" + comunicadores[this.numProcesador].pedirCampoRegistro(i));             
            }
@@ -84,7 +84,7 @@ public class Nucleo implements Runnable {
       int fila = 0;
       for(int i=bloque*16;i<j;i++) //NO SIEMPRE SE TRAE BLOQUE COMPLETO
       {
-          if(i<pcFinal)//cuando i sobrepasa el numero de elementos del array no saca nada
+          if(i <  arrayInstrucciones.size())// arrayInstrucciones.size() cuando i sobrepasa el numero de elementos del array no saca nada
           {
                this.cacheDeInstrucciones[fila][columCache] = arrayInstrucciones.get(i);
                fila++;
@@ -145,17 +145,18 @@ private void seAcaboQuantum()
 public void obtenerPC(){
      if(mainThread.hilos==1){
         PC=comunicadores[0].read();
-        pcFinal=comunicadores[0].getPcFinal();
+       //this.pcFinal=comunicadores[0].getPcFinal();
         this.hPC=PC;
         comunicadores[1].hiloPC=-1;
+         quantumNucleo = comunicadores[0].readQ();
     }else{
         if(comunicadores[numProcesador].terminado){
             this.PC = -1 ;
         }else{
             PC = comunicadores[numProcesador].read();
-            pcFinal=comunicadores[numProcesador].getPcFinal();
             this.hPC=PC;
             quantumNucleo = comunicadores[numProcesador].readQ();
+             //this.pcFinal=comunicadores[numProcesador].getPcFinal();
        /* if(this.comunicadores[this.numProcesador].contexto[33]==hPC){
             int[] vectContexto = new int[34];
             vectContexto = this.comunicadores[this.numProcesador].contexto;
@@ -232,10 +233,11 @@ public void contexto()
         this.comunicadores[this.numProcesador].contexto[33] = this.hPC;
         limpiarRegistros();
         mainThread.vectPc.add(this.hPC);
+        //mainThread.vectPcFinal.add(this.pcFinal);
     }
 
 private void ejecutarInstruccion(int[] vector){
-     System.out.println("Hilo " + this.numProcesador + ": leyendo instruccion con CP: " + this.hPC);
+    System.out.println("Hilo " + this.numProcesador + ": leyendo instruccion con CP: " + this.hPC);
     int instruccion[] = new int[4];
         for(int i=0;i<4;i++){
         instruccion[i]=vector[i];
@@ -285,21 +287,21 @@ private void ejecutarInstruccion(int[] vector){
      
     int valor = this.comunicadores[this.numProcesador].vectreg[regFuente]+numero;
     this.comunicadores[this.numProcesador].vectreg[regDestino]= valor;
-    quantumNucleo--;
+    this.quantumNucleo--;
   }
   
   //Hace una suma de los valores de 2 registros y los guarda en un registro
   public void dadd(int regDestino, int regF1, int regF2){
     int valor = this.comunicadores[this.numProcesador].vectreg[regF1]+this.comunicadores[this.numProcesador].vectreg[regF2];
    this.comunicadores[this.numProcesador].vectreg[regDestino]= valor;
-    quantumNucleo--;
+    this.quantumNucleo--;
   }
   
   //hace una resta de los valores de 2 registros y los guarda en un registro
   public void dsub(int regDestino, int regF1, int regF2){
       int valor = this.comunicadores[this.numProcesador].vectreg[regF1]-this.comunicadores[this.numProcesador].vectreg[regF2];
       this.comunicadores[this.numProcesador].vectreg[regDestino]= valor;
-      quantumNucleo--;
+      this.quantumNucleo--;
   }
   
   //Si el valor es igual a 0 hace un salto
@@ -308,7 +310,7 @@ private void ejecutarInstruccion(int[] vector){
         if(this.comunicadores[this.numProcesador].vectreg[regComparacion] == 0){
             this.hPC += salto*4;
         }
-        quantumNucleo--;
+        this.quantumNucleo--;
     }
     
     //Si el valor del registro es diferente de 0 hace un salto
@@ -317,20 +319,20 @@ private void ejecutarInstruccion(int[] vector){
         if(this.comunicadores[this.numProcesador].vectreg[regComparacion] != 0){
             this.hPC += salto*4;
         }
-        quantumNucleo--;
+        this.quantumNucleo--;
     }
     
     //
     public void jr(int regsalto){//segunda y cuarta parte, tercera vacia
         this.hPC =this.comunicadores[this.numProcesador].vectreg[regsalto];       
-        quantumNucleo--;
+        this.quantumNucleo--;
     }
     
     //hace una multiplicacion de los valores de 2 registros y los guarda en un registro
     public void dmul(int regDestino, int regF1, int regF2){//segunda y cuarta parte, tercera vacia
        int valor = this.comunicadores[this.numProcesador].vectreg[regF1] * this.comunicadores[this.numProcesador].vectreg[regF2];
        this.comunicadores[this.numProcesador].vectreg[regDestino]= valor;
-       quantumNucleo--;
+       this.quantumNucleo--;
         
     }
     
@@ -338,19 +340,20 @@ private void ejecutarInstruccion(int[] vector){
     public void ddiv(int regDestino, int regF1, int regF2){//segunda y cuarta parte, tercera vacia
        int valor = this.comunicadores[this.numProcesador].vectreg[regF1]/this.comunicadores[this.numProcesador].vectreg[regF2];
        this.comunicadores[this.numProcesador].vectreg[regDestino]= valor;
-       quantumNucleo--;
+      this.quantumNucleo--;
     }
     
     //
     public void jal(int salto){//segunda y cuarta parte, tercera vacia
         this.comunicadores[this.numProcesador].vectreg[31]=this.hPC;
         this.hPC =this.hPC+salto;       
-        quantumNucleo--;
+        this.quantumNucleo--;
     } 
     
    //Si el procesador llego al final del hilo, se desocupa e imprime los resultados
     public void fin(){
         this.comunicadores[numProcesador].ocupado = false;
+        mainThread.vectPc.add(-1);
     }
     
     //imprime los resultados del hilo
