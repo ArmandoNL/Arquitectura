@@ -111,7 +111,10 @@ private void recuperarDeCache(){
         cambiarCiclo();
          this.hPC+=4;
 	ejecutarInstruccion(vecInstruccion);
-        
+        if(this.comunicadores[numProcesador].terminado==true){
+            limpiarRegistros();
+                    
+        }
         if(this.quantumNucleo > 0)
         {
             cambiarCiclo();
@@ -164,6 +167,12 @@ private void cambiarRegistro(int proc){
      for(int i = 0; i<33; i++){
          this.comunicadores[this.numProcesador].vectreg[i] = comunicadores[proc].contexto[i];
      }
+}
+
+private void limpiarRegistros(){
+     for(int i = 0; i<33; i++){
+         this.comunicadores[this.numProcesador].vectreg[i] = 0;
+     }
 
 }
 
@@ -215,6 +224,7 @@ public void contexto()
            this.comunicadores[this.numProcesador].contexto[i] = this.comunicadores[this.numProcesador].vectreg[i];
         }
         this.comunicadores[this.numProcesador].contexto[33] = this.hPC;
+        limpiarRegistros();
         mainThread.vectPc.add(this.hPC);
     }
 
