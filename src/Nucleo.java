@@ -35,7 +35,7 @@ public class Nucleo implements Runnable {
 	    for(int i = 0; i < 8; i++){                
 	    this.cacheDeInstrucciones[16][i] = -1;
 	    }
-	quantumNucleo = comunicadores[numProcesador].readQ();
+	
 	
   }
   
@@ -48,7 +48,8 @@ public class Nucleo implements Runnable {
         }else{
             falloCache();
         }
-        }        
+    }
+       
     while(!finalizar){
         cambiarCiclo();
         if(comunicadores[0].hiloPC==-1 && comunicadores[1].hiloPC==-1){
@@ -68,10 +69,10 @@ public class Nucleo implements Runnable {
   }
   
   public void imprimir(){
-        System.out.println("SOY HILO " + this.numProcesador);
-          for(int i=0; i<34; i++){
-              System.out.println("R" + i + "=" + this.comunicadores[this.numProcesador].vectreg[i]); 
-         }
+        System.out.println("SOY HILO " + this.comunicadores[this.numProcesador]);
+          for(int i =0; i<33; i++){
+               System.out.println("Reg" + i + "=" + comunicadores[this.numProcesador].pedirCampoRegistro(i));             
+           }
   }
   
   public void traerBloque()
@@ -112,8 +113,7 @@ private void recuperarDeCache(){
          this.hPC+=4;
 	ejecutarInstruccion(vecInstruccion);
         if(this.comunicadores[numProcesador].terminado==true){
-            limpiarRegistros();
-                    
+            limpiarRegistros();            
         }
         if(this.quantumNucleo > 0)
         {
@@ -121,9 +121,8 @@ private void recuperarDeCache(){
         }
         else
         {
-             seAcaboQuantum();
+            seAcaboQuantum();
             obtenerPC();
-            quantumNucleo = comunicadores[numProcesador].readQ();
             if(comunicadores[0].contexto[33]==this.hPC){
                   cambiarRegistro(0);   
             }else{
@@ -142,7 +141,7 @@ private void seAcaboQuantum()
     cambiarCiclo();
 }
  
-private void obtenerPC(){
+public void obtenerPC(){
      if(mainThread.hilos==1){
         PC=comunicadores[0].read();
         this.hPC=PC;
@@ -153,6 +152,7 @@ private void obtenerPC(){
         }else{
             PC = comunicadores[numProcesador].read();
             this.hPC=PC;
+            quantumNucleo = comunicadores[numProcesador].readQ();
        /* if(this.comunicadores[this.numProcesador].contexto[33]==hPC){
             int[] vectContexto = new int[34];
             vectContexto = this.comunicadores[this.numProcesador].contexto;
@@ -196,7 +196,7 @@ private void falloCache(){ //en caso
     if(pedirBus()){
         traerBloque();
         int i=0;
-        while(i<mainThread.latencia){ 
+        while(i<2){ //mainThread.latencia
             cambiarCiclo();
             i++;
         }
@@ -213,7 +213,10 @@ private void cambiarCiclo(){
     try{
         barrera.await();
     }catch (InterruptedException | BrokenBarrierException e){}
-    
+    if(this.comunicadores[this.numProcesador].seguir){
+        obtenerPC();
+        this.comunicadores[this.numProcesador].seguir=false;
+      }
     cicloReloj++;
 }
 
@@ -229,7 +232,7 @@ public void contexto()
     }
 
 private void ejecutarInstruccion(int[] vector){
-      System.out.println("Hilo " + this.numProcesador + ": leyendo instruccion con CP: " + this.hPC);
+     System.out.println("Hilo " + this.numProcesador + ": leyendo instruccion con CP: " + this.hPC);
     int instruccion[] = new int[4];
         for(int i=0;i<4;i++){
         instruccion[i]=vector[i];
@@ -267,6 +270,7 @@ private void ejecutarInstruccion(int[] vector){
         break;
       case 63:
           fin();
+          imprimir();
         break;
       default:
         break;
@@ -343,10 +347,11 @@ private void ejecutarInstruccion(int[] vector){
     
    //Si el procesador llego al final del hilo, se desocupa e imprime los resultados
     public void fin(){
+         
         this.comunicadores[numProcesador].ocupado = false;
         mainThread.vectPc.add(-1);
-        comunicadores[numProcesador].terminado=true;        
-        imprimir();        
+       // comunicadores[numProcesador].terminado=true;   
+          
     }
     
     //imprime los resultados del hilo

@@ -9,6 +9,7 @@ public class Comunicador {
        public int quantum;
        public int[] contexto;
        public int[] vectreg;
+       public boolean seguir;
 
         
        public Comunicador(){
@@ -18,10 +19,14 @@ public class Comunicador {
                contexto[i]=0;
                vectreg[i] = 0;
            }
+            for(int i =0; i<33; i++){
+               vectreg[i] = 0;
+           }
           
            semaforoCache = new Semaphore(1,true);
            semaforoComunicador = new Semaphore(1);
            terminado=false;
+           seguir=false;
        }
         
        //para leer instrucciones, de uso exclusivo para el procesador y HP

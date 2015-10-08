@@ -192,7 +192,10 @@ public class HiloControlador extends javax.swing.JFrame{
                     int pcActual= vectPc.poll();
                     if(pcActual != -1){
                         comunicadores[i].write(pcActual,quantum);
+                        comunicadores[i].ocupado = true;
+                        comunicadores[i].seguir = true;
                         comunicadores[i].semaforoComunicador.release();
+                        
                     }
                     else{
                     	//si no hay archivos asignables, se le avisa al hilo que termino
@@ -200,6 +203,7 @@ public class HiloControlador extends javax.swing.JFrame{
                         comunicadores[i].ocupado = true;
                         comunicadores[i].terminado = true;
                         comunicadores[i].semaforoComunicador.release();
+                        
                     }
                 }
             }
