@@ -10,6 +10,7 @@ public class Comunicador {
        public int[] contexto;
        public int[] vectreg;
        public boolean seguir;
+       public int pcFinal;
 
         
        public Comunicador(){
@@ -71,4 +72,14 @@ public class Comunicador {
            vectreg[posicion] = numero;
        }
        
+       public void setPcFinal(int pcf)
+       {
+           pcFinal = pcf;
+       }
+       
+       public int getPcFinal()
+       {
+           return pcFinal;
+       }
+               
 }

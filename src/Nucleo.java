@@ -14,6 +14,7 @@ public class Nucleo implements Runnable {
   private final int numProcesador;
   private boolean instruccionCompletada;
   private int PC;
+  private int pcFinal;
   private int hPC;
   private boolean primerLeido;
   private Comunicador[] comunicadores;
@@ -83,7 +84,7 @@ public class Nucleo implements Runnable {
       int fila = 0;
       for(int i=bloque*16;i<j;i++) //NO SIEMPRE SE TRAE BLOQUE COMPLETO
       {
-          if(i<arrayInstrucciones.size())//cuando i sobrepasa el numero de elementos del array no saca nada
+          if(i<pcFinal)//cuando i sobrepasa el numero de elementos del array no saca nada
           {
                this.cacheDeInstrucciones[fila][columCache] = arrayInstrucciones.get(i);
                fila++;
@@ -144,6 +145,7 @@ private void seAcaboQuantum()
 public void obtenerPC(){
      if(mainThread.hilos==1){
         PC=comunicadores[0].read();
+        pcFinal=comunicadores[0].getPcFinal();
         this.hPC=PC;
         comunicadores[1].hiloPC=-1;
     }else{
@@ -151,6 +153,7 @@ public void obtenerPC(){
             this.PC = -1 ;
         }else{
             PC = comunicadores[numProcesador].read();
+            pcFinal=comunicadores[numProcesador].getPcFinal();
             this.hPC=PC;
             quantumNucleo = comunicadores[numProcesador].readQ();
        /* if(this.comunicadores[this.numProcesador].contexto[33]==hPC){
@@ -347,11 +350,7 @@ private void ejecutarInstruccion(int[] vector){
     
    //Si el procesador llego al final del hilo, se desocupa e imprime los resultados
     public void fin(){
-         
         this.comunicadores[numProcesador].ocupado = false;
-        mainThread.vectPc.add(-1);
-       // comunicadores[numProcesador].terminado=true;   
-          
     }
     
     //imprime los resultados del hilo
