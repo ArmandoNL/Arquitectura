@@ -84,16 +84,16 @@ public class Nucleo implements Runnable {
       int fila = 0;
       for(int i=bloque*16;i<j;i++) //NO SIEMPRE SE TRAE BLOQUE COMPLETO
       {
-          if(i <  arrayInstrucciones.size())// arrayInstrucciones.size() cuando i sobrepasa el numero de elementos del array no saca nada
+          if(i < this.pcFinal)// arrayInstrucciones.size() cuando i sobrepasa el numero de elementos del array no saca nada
           {
                this.cacheDeInstrucciones[fila][columCache] = arrayInstrucciones.get(i);
                fila++;
           }
-          else
+          /*else
           {
               this.cacheDeInstrucciones[fila][columCache] = -1;
               fila++;
-          }
+          }*/
       }
       this.cacheDeInstrucciones[16][columCache] = bloque;
   }
@@ -145,10 +145,10 @@ private void seAcaboQuantum()
 public void obtenerPC(){
      if(mainThread.hilos==1){
         PC=comunicadores[0].read();
-       //this.pcFinal=comunicadores[0].getPcFinal();
+        this.pcFinal=comunicadores[0].getPcFinal();
         this.hPC=PC;
         comunicadores[1].hiloPC=-1;
-         quantumNucleo = comunicadores[0].readQ();
+        quantumNucleo = comunicadores[0].readQ();
     }else{
         if(comunicadores[numProcesador].terminado){
             this.PC = -1 ;
@@ -156,7 +156,7 @@ public void obtenerPC(){
             PC = comunicadores[numProcesador].read();
             this.hPC=PC;
             quantumNucleo = comunicadores[numProcesador].readQ();
-             //this.pcFinal=comunicadores[numProcesador].getPcFinal();
+            this.pcFinal=comunicadores[numProcesador].getPcFinal();
        /* if(this.comunicadores[this.numProcesador].contexto[33]==hPC){
             int[] vectContexto = new int[34];
             vectContexto = this.comunicadores[this.numProcesador].contexto;
@@ -233,7 +233,7 @@ public void contexto()
         this.comunicadores[this.numProcesador].contexto[33] = this.hPC;
         limpiarRegistros();
         mainThread.vectPc.add(this.hPC);
-        //mainThread.vectPcFinal.add(this.pcFinal);
+        mainThread.vectPcFinal.add(this.pcFinal);
     }
 
 private void ejecutarInstruccion(int[] vector){
@@ -353,7 +353,7 @@ private void ejecutarInstruccion(int[] vector){
    //Si el procesador llego al final del hilo, se desocupa e imprime los resultados
     public void fin(){
         this.comunicadores[numProcesador].ocupado = false;
-        mainThread.vectPc.add(-1);
+        //mainThread.vectPc.add(-1);
     }
     
     //imprime los resultados del hilo

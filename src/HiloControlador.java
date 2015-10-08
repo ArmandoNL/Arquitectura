@@ -192,11 +192,12 @@ public class HiloControlador extends javax.swing.JFrame{
           // ciclosReloj++;   //chequear quantum    
             for(int i = 0; i < hilos; i++){  //cambiar
             	if(!comunicadores[i].ocupado){
-                    int pcActual= vectPc.poll();
-                    if(pcActual != -1){
-                        
+                  
+                   // int pcActual= vectPc.poll();
+                    if(vectPc.size()!=0){
+                        int pcActual= vectPc.poll();
                         comunicadores[i].write(pcActual,quantum);
-                        //comunicadores[i].setPcFinal(vectPcFinal.poll());
+                        comunicadores[i].setPcFinal(vectPcFinal.poll());
                         comunicadores[i].ocupado = true;
                         comunicadores[i].seguir = true;
                         comunicadores[i].semaforoComunicador.release();
@@ -242,7 +243,7 @@ public class HiloControlador extends javax.swing.JFrame{
             for(int i = 0; i< hilos; i++){
              if(vectPc.size() != 0){
                 comunicadores[i].write(vectPc.poll(), quantum);
-                //comunicadores[i].setPcFinal(vectPcFinal.poll());
+                comunicadores[i].setPcFinal(vectPcFinal.poll());
              }
                   //comunicadores[1].write(vectPc.poll(), quantum);
             else
