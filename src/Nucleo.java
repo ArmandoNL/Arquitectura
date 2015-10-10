@@ -133,7 +133,6 @@ private void recuperarDeCache(){
                 cambiarRegistro(1);
             }
             this.comunicadores[numProcesador].ocupado=true;
-            
         }
 	
 }
@@ -141,6 +140,7 @@ private void recuperarDeCache(){
 private void seAcaboQuantum()
 {
     contexto();
+    limpiarRegistros();
     this.comunicadores[numProcesador].ocupado=false;
     cambiarCiclo();
 }
@@ -177,7 +177,7 @@ private void cambiarRegistro(int proc){
 }
 
 private void limpiarRegistros(){
-     for(int i = 0; i<33; i++){
+     for(int i = 0; i<34; i++){
          this.comunicadores[this.numProcesador].vectreg[i] = 0;
      }
 
@@ -279,6 +279,7 @@ private void ejecutarInstruccion(int[] vector){
       case 63:
           fin();
           imprimir();
+          limpiarRegistros(); 
         break;
       default:
         break;
@@ -356,7 +357,7 @@ private void ejecutarInstruccion(int[] vector){
    //Si el procesador llego al final del hilo, se desocupa e imprime los resultados
     public void fin(){
         this.comunicadores[numProcesador].ocupado = false;
-        //mainThread.vectPc.add(-1);
+       //mainThread.vectPc.add(-1);
     }
     
     //imprime los resultados del hilo

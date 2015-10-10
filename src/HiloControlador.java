@@ -277,12 +277,14 @@ public class HiloControlador extends javax.swing.JFrame{
             
             String lineaArchivo = " ";
             int contLineas = 0;//variable para contar el # de lineas del archivo
-            while(!"".equals(lineaArchivo = reader.readLine())){
+            lineaArchivo = reader.readLine();
+            while(!"".equals(lineaArchivo) && lineaArchivo != null){
                 contLineas++;//contamos las lineas del archivo para calcular el PC
                 String[] instrucciones = lineaArchivo.split(" ");
                 for(int i=0; i<instrucciones.length;++i){
                     memTemp.add(Integer.parseInt(instrucciones[i]));
                 }
+                lineaArchivo = reader.readLine();
             }
             if(numLineas == 0)
             {
