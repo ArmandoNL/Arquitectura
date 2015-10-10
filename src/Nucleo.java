@@ -51,18 +51,19 @@ public class Nucleo implements Runnable {
         }
     }
        
-    while(!finalizar){
+   seTermino();
+   
+   System.out.println("se terminooo");
+}
+ 
+  private void seTermino(){
+        while(!finalizar){
         cambiarCiclo();
         if(comunicadores[0].hiloPC==-1 && comunicadores[1].hiloPC==-1){
              finalizar=true;
         }
     } 
-      
-   System.out.println("EL quantum final es :" + quantumNucleo);
-  
-   System.out.println("se terminooo");
-}
-   
+  }
   public boolean estaenCache(int hpc){
        int bloque = hpc/16;
        int columCache = bloque%8;
@@ -71,6 +72,8 @@ public class Nucleo implements Runnable {
   
   public void imprimir(){
         System.out.println("SOY HILO " + this.numProcesador);
+         System.out.println("El quantum es :" + this.quantumNucleo);
+          System.out.println("El reloj es :" + cicloReloj);
           for(int i =0; i<33; i++){
                System.out.println("Reg" + i + "=" + comunicadores[this.numProcesador].pedirCampoRegistro(i));             
            }
@@ -200,7 +203,7 @@ private void falloCache(){ //en caso
     if(pedirBus()){
         traerBloque();
         int i=0;
-        while(i<2){ //mainThread.latencia
+        while(i<mainThread.latencia){
             cambiarCiclo();
             i++;
         }
@@ -237,13 +240,13 @@ public void contexto()
     }
 
 private void ejecutarInstruccion(int[] vector){
-    System.out.println("Hilo " + this.numProcesador + ": leyendo instruccion con CP: " + this.hPC);
+    //System.out.println("Hilo " + this.numProcesador + ": leyendo instruccion con CP: " + this.hPC);
     int instruccion[] = new int[4];
         for(int i=0;i<4;i++){
         instruccion[i]=vector[i];
         }    
    
-    System.out.println("Se leyo instruiccion: " +instruccion[0]+" " +instruccion[1]+ " " +instruccion[2]+" " +instruccion[3]);
+   //System.out.println("Se leyo instruiccion: " +instruccion[0]+" " +instruccion[1]+ " " +instruccion[2]+" " +instruccion[3]);
  
     switch(instruccion[0]){
       case 8:
