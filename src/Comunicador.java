@@ -11,12 +11,13 @@ public class Comunicador {
        public int[] vectreg;
        public boolean seguir;
        public int pcFinal;
+       public boolean cambiarCiclo;
 
         
        public Comunicador(){
            contexto = new int[34];
            vectreg = new int[34];
-           for(int i =0; i<34; i++){
+           for(int i =0; i<33; i++){
                contexto[i]=0;
                vectreg[i] = 0;
            }

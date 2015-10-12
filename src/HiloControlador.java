@@ -19,7 +19,7 @@ public class HiloControlador extends javax.swing.JFrame{
     public Nucleo nucleo;
     public Nucleo[] nucleos;
     public ArrayList<Integer> memTemp;
-    private int ciclosReloj; 
+    public int ciclosReloj; 
     private int PC;
     public  CyclicBarrier barrier;
     private Semaphore semaforo;
@@ -51,7 +51,7 @@ public class HiloControlador extends javax.swing.JFrame{
         memTemp = new ArrayList<Integer>();
         vectPc = new LinkedList<Integer>();
         vectPcFinal = new LinkedList<Integer>();
-        PC = 0;
+        //PC = 0;
         numLineas=0;
         //barrier = new CyclicBarrier(cantHilos, barrierFuncion);
         fc = new JFileChooser();
@@ -186,7 +186,9 @@ public class HiloControlador extends javax.swing.JFrame{
 
     Runnable barrierFuncion = new Runnable(){
         public void run(){   
-          // ciclosReloj++;   //chequear quantum    
+            if(comunicadores[0].cambiarCiclo && comunicadores[1].cambiarCiclo){
+                ciclosReloj++;
+            }
             for(int i = 0; i < hilos; i++){  //cambiar
             	if(!comunicadores[i].ocupado){
                   

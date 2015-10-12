@@ -126,10 +126,10 @@ private void recuperarDeCache(){
         else
         {
             seAcaboQuantum();
-            obtenerPC();
+           // obtenerPC();
             if(comunicadores[0].contexto[33]==this.hPC){
                   cambiarRegistro(0);   
-            }else{
+            }else if(comunicadores[1].contexto[33]==this.hPC){
                 cambiarRegistro(1);
             }
             this.comunicadores[numProcesador].ocupado=true;
@@ -143,6 +143,8 @@ private void seAcaboQuantum()
     limpiarRegistros();
     this.comunicadores[numProcesador].ocupado=false;
     cambiarCiclo();
+   
+    
 }
  
 public void obtenerPC(){
@@ -151,6 +153,7 @@ public void obtenerPC(){
         this.pcFinal=comunicadores[0].getPcFinal();
         this.hPC=PC;
         comunicadores[1].hiloPC=-1;
+        comunicadores[1].cambiarCiclo = true;
         quantumNucleo = comunicadores[0].readQ();
     }else{
         if(comunicadores[numProcesador].terminado){
@@ -217,14 +220,24 @@ private void falloCache(){ //en caso
 }
 
 private void cambiarCiclo(){
+    this.comunicadores[this.numProcesador].cambiarCiclo = true; //avisa que esta listo para cambiar ciclo
+    
     try{
         barrera.await();
     }catch (InterruptedException | BrokenBarrierException e){}
+    
     if(this.comunicadores[this.numProcesador].seguir){
-        obtenerPC();
+        pcSiguiente();
         this.comunicadores[this.numProcesador].seguir=false;
       }
-    cicloReloj++;
+    //cicloReloj++;
+}
+
+private void pcSiguiente(){
+    this.PC = comunicadores[numProcesador].read();
+    this.hPC=PC;
+    quantumNucleo = comunicadores[numProcesador].readQ();
+    this.pcFinal=comunicadores[numProcesador].getPcFinal();
 }
 
 public void contexto()
@@ -278,7 +291,7 @@ private void ejecutarInstruccion(int[] vector){
         break;
       case 63:
           fin();
-          //imprimir();
+          imprimirEstado();
           limpiarRegistros(); 
         break;
       default:
@@ -357,7 +370,7 @@ private void ejecutarInstruccion(int[] vector){
    //Si el procesador llego al final del hilo, se desocupa e imprime los resultados
     public void fin(){
         this.comunicadores[numProcesador].ocupado = false;
-        imprimirEstado();
+        //imprimirEstado();
        // mainThread.vectPc.add(-1);
     }
     
@@ -376,6 +389,7 @@ private void ejecutarInstruccion(int[] vector){
             
             numero2+=mainThread.nombreArchivo[j];
         }*/
+          System.out.println("Num Procesador" + this.numProcesador);
           String text="Valor de Registros del archivo: "+ numero + "\n";          
           for(int i =0; i<34; i++){
                text+=" Reg: " + i + " =" + comunicadores[this.numProcesador].pedirCampoRegistro(i)+", ";             
@@ -383,12 +397,14 @@ private void ejecutarInstruccion(int[] vector){
           text+="\n";
           text+="El quantum es :" + this.quantumNucleo;
           text+="\n";
-          text+="El reloj es :" + cicloReloj;
+          text+="El reloj es :" + mainThread.ciclosReloj;
           text+="\n";
           text+="hPC :" + hPC;
-          /*text+="\n";
-          text+="Campo del vector :" +numero2 ;*/
+          text+="\n";
+          text+= "Num Procesador" + this.numProcesador;
+          /*text+="Campo del vector :" +numero2 ;*/
           text+="\n\n";
+         
            mainThread.imprimirPantalla(text);       	
     }
 }
