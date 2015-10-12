@@ -70,14 +70,14 @@ public class Nucleo implements Runnable {
       return this.cacheDeInstrucciones[16][columCache] == bloque; 
   }
   
-  public void imprimir(){
+ /* public void imprimir(){
         System.out.println("SOY HILO " + this.numProcesador);
          System.out.println("El quantum es :" + this.quantumNucleo);
           System.out.println("El reloj es :" + cicloReloj);
           for(int i =0; i<33; i++){
                System.out.println("Reg" + i + "=" + comunicadores[this.numProcesador].pedirCampoRegistro(i));             
            }
-  }
+  }*/
   
   public void traerBloque()
   {
@@ -278,7 +278,7 @@ private void ejecutarInstruccion(int[] vector){
         break;
       case 63:
           fin();
-          imprimir();
+          //imprimir();
           limpiarRegistros(); 
         break;
       default:
@@ -357,15 +357,38 @@ private void ejecutarInstruccion(int[] vector){
    //Si el procesador llego al final del hilo, se desocupa e imprime los resultados
     public void fin(){
         this.comunicadores[numProcesador].ocupado = false;
-       //mainThread.vectPc.add(-1);
+        imprimirEstado();
+       // mainThread.vectPc.add(-1);
     }
     
     //imprime los resultados del hilo
-    public void imprimirEstado(){
-    	System.out.print("FIN de Hilo");
+    public void imprimirEstado(){ 
+        int numero=0;
+        //String numero2="";
+        
+        for(int i=1; i< mainThread.contArchivos*2; i=i+2){
+            if(hPC==mainThread.nombreArchivo[i]){
+                numero=mainThread.nombreArchivo[i-1];
+            }
+           // numero2=mainThread.nombreArchivo[i];
+        } 
+       /* for(int j=0; j< mainThread.nombreArchivo.length; j++){
+            
+            numero2+=mainThread.nombreArchivo[j];
+        }*/
+          String text="Valor de Registros del archivo: "+ numero + "\n";          
+          for(int i =0; i<34; i++){
+               text+=" Reg: " + i + " =" + comunicadores[this.numProcesador].pedirCampoRegistro(i)+", ";             
+           }
+          text+="\n";
+          text+="El quantum es :" + this.quantumNucleo;
+          text+="\n";
+          text+="El reloj es :" + cicloReloj;
+          text+="\n";
+          text+="hPC :" + hPC;
+          /*text+="\n";
+          text+="Campo del vector :" +numero2 ;*/
+          text+="\n\n";
+           mainThread.imprimirPantalla(text);       	
     }
-
-  
-
-
 }

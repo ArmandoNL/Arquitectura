@@ -109,8 +109,8 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane1" pref="309" max="32767" attributes="0"/>
-              <EmptySpace min="-2" pref="115" max="-2" attributes="0"/>
+              <Component id="jScrollPane1" pref="358" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="lbLatencia" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="txtLatencia" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -119,7 +119,7 @@
                   <Component id="lbQuantum" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="txtQuantum" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="117" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="80" max="-2" attributes="0"/>
               <Component id="Ejecutar" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
           </Group>

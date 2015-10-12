@@ -29,6 +29,7 @@ public class HiloControlador extends javax.swing.JFrame{
     private static int cantHilos = 2;
     public  Queue <Integer> vectPc;
     public  Queue <Integer> vectPcFinal;
+   // public  Queue <Integer> nombreArchivo;
     JFileChooser fc;
     public int quantum;
     public int tiempoEspera;
@@ -39,6 +40,8 @@ public class HiloControlador extends javax.swing.JFrame{
     public int[] vecPcFinal = new int[20];
     int contArchivos = 0;
     public int contterminados;
+    public int[] nombreArchivo = new int[15];
+    private int i;
 	
     public HiloControlador() {
         initComponents();
@@ -53,6 +56,7 @@ public class HiloControlador extends javax.swing.JFrame{
         //barrier = new CyclicBarrier(cantHilos, barrierFuncion);
         fc = new JFileChooser();
         contterminados =1;
+        i=0;
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -163,8 +167,8 @@ public class HiloControlador extends javax.swing.JFrame{
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
-                .addGap(115, 115, 115)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 358, Short.MAX_VALUE)
+                .addGap(46, 46, 46)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbLatencia)
                     .addComponent(txtLatencia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -172,7 +176,7 @@ public class HiloControlador extends javax.swing.JFrame{
                     .addComponent(txtTiempoBus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbQuantum)
                     .addComponent(txtQuantum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(117, 117, 117)
+                .addGap(80, 80, 80)
                 .addComponent(Ejecutar)
                 .addGap(31, 31, 31))
         );
@@ -247,8 +251,7 @@ public class HiloControlador extends javax.swing.JFrame{
             nucleos = new Nucleo[2];
             for(int i = 0; i < hilos; i++){
     		nucleos[i] = new Nucleo(this, i);
-            }
-           
+            }           
         
           for(int i = 0; i < hilos; i++){
     		(new Thread(nucleos[i])).start();
@@ -266,12 +269,13 @@ public class HiloControlador extends javax.swing.JFrame{
     }//GEN-LAST:event_ExitActionPerformed
 
     private void OpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenActionPerformed
-     
-        
+             
         int returnVal = fileChooser.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();             
-         
+          nombreArchivo[i]=Integer.parseInt(file.getName().substring(0,1));
+          i++;
+            System.out.println(file.getName().substring(0,1));
         Charset charset = Charset.forName("US-ASCII");
         try(BufferedReader reader = Files.newBufferedReader(file.toPath(), charset)){
             
@@ -280,6 +284,11 @@ public class HiloControlador extends javax.swing.JFrame{
             lineaArchivo = reader.readLine();
             while(!"".equals(lineaArchivo) && lineaArchivo != null){
                 contLineas++;//contamos las lineas del archivo para calcular el PC
+                if("63 0 0 0".equals(lineaArchivo)){                    
+                    int instfinal=contLineas;
+                     nombreArchivo[i]=numLineas+instfinal*4;
+                    i++;
+                }
                 String[] instrucciones = lineaArchivo.split(" ");
                 for(int i=0; i<instrucciones.length;++i){
                     memTemp.add(Integer.parseInt(instrucciones[i]));
@@ -288,13 +297,13 @@ public class HiloControlador extends javax.swing.JFrame{
             }
             if(numLineas == 0)
             {
-                vecPC[contArchivos]= 0;
-                numLineas += contLineas*4;
+                vecPC[contArchivos]= 0;               
+                numLineas += contLineas*4;               
             }
             else
             {
-                vecPC[contArchivos]= numLineas;
-                numLineas += contLineas*4;
+                vecPC[contArchivos]= numLineas;               
+                numLineas += contLineas*4;               
             }
             vecPcFinal[contArchivos] = numLineas;
             contArchivos++;
@@ -309,9 +318,15 @@ public class HiloControlador extends javax.swing.JFrame{
         hilos+=1;
         imprimirMem(); 
         
+        
     }//GEN-LAST:event_OpenActionPerformed
 
-   
+   public void imprimirPantalla(String texto){
+       String t="";
+       t=textarea.getText();
+       t+=texto;
+        textarea.setText(t);
+    }
     
     private void imprimirMem(){
         for(int i =0; i<memTemp.size(); i++){
