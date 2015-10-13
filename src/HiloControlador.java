@@ -276,8 +276,6 @@ public class HiloControlador extends javax.swing.JFrame{
     */
     private void OpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenActionPerformed
         
-
-
 //inicia manejo de archivos     
         int returnVal = fileChooser.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
@@ -332,9 +330,9 @@ public class HiloControlador extends javax.swing.JFrame{
         
     }//GEN-LAST:event_OpenActionPerformed
     /*
-      Efecto: 
-      Requiere:  
-      Modifica:  
+      Efecto: Imprime en la interfaz los registros,el quantum y otros datos
+      Requiere: Un string con los datos a mostrar 
+      Modifica: El texarea de la Interfaz 
     */
    public void imprimirPantalla(String texto){
        String t="";
