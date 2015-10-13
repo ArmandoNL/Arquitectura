@@ -57,21 +57,11 @@ public class Comunicador {
        {
            contextos.add(vec);
        }
-        
        
-       public int[] pedirRegistro()
-       {
-           return vectreg;
-       }
-       
+       //Devuelve el campo del registro solicitado
        public int pedirCampoRegistro(int posicion)
        {
            return vectreg[posicion];
-       }
-              
-       public void guardarCampoRegistro(int posicion,int numero)
-       {
-           vectreg[posicion] = numero;
        }
        
        //se encarga de asignar el PC donde termina el archivo
