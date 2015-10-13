@@ -2,6 +2,7 @@ import java.util.concurrent.*;
  
 public class Comunicador {
      
+    //variables que se van a compartir entre el HiloControlador y los núcleos.
        public int hiloPC;
        public boolean ocupado;
        public boolean terminado;

@@ -15,47 +15,39 @@ import java.util.concurrent.*;
 
 public class HiloControlador extends javax.swing.JFrame{
     
-    public Comunicador[] comunicadores;
-    public Nucleo nucleo;
-    public Nucleo[] nucleos;
-    public ArrayList<Integer> memTemp;
-    public int ciclosReloj; 
-    private int PC;
-    public  CyclicBarrier barrier;
-    private Semaphore semaforo;
-    private int idHilos;
-    public int hilos; 
-    private int semaforoComunicador;
-    private static int cantHilos = 2;
-    public  Queue <Integer> vectPc;
-    public  Queue <Integer> vectPcFinal;
-   // public  Queue <Integer> nombreArchivo;
+    public Comunicador[] comunicadores;//buzones para comunicación entre hilo principal y los hilos
+    public Nucleo nucleo;//instancia de la clase nucleo
+    public Nucleo[] nucleos;//vector para manejar varios nucleos
+    public ArrayList<Integer> memTemp;//memoria temporal donde se almacenan las instrucciones
+    public int ciclosReloj; //contador de ciclos de reloj
+    public  CyclicBarrier barrier;//barrera cíclica para controlar el cambio de ciclo
+    public int hilos; //para controlar el número de hilos con el que vamos a trabajar temporalmente
+    private static int cantHilos;//para controlar el número de hilos con el que vamos a trabajar, valor definitivo
+    public  Queue <Integer> vectPc;//cola para almacenar los PC y facilitar la asignación
+    public  Queue <Integer> vectPcFinal;//cola para almacenar hasta dónde está almacenado cada archivo en la memorio
+    private int[] vecPC = new int[20];//vector temporal para almacenar el valor inicial de los PC
+    public int[] vecPcFinal = new int[20];//vector temporal para almacenar el valor final de los PC
+    public int[] nombreArchivo = new int[15];//almacenar el nombre de los archivos con los que trabajamos.
+    int contArchivos = 0;//número de archivos con que trabajamos
+    private int numLineas;//número de líneas con que trabajamos
+    
+    //variables para el manejo de la interfaz
     JFileChooser fc;
     public int quantum;
     public int tiempoEspera;
     public int  tiempoBus;
     public int latencia;
-    private int numLineas;
-    private int[] vecPC = new int[20];
-    public int[] vecPcFinal = new int[20];
-    int contArchivos = 0;
-    public int contterminados;
-    public int[] nombreArchivo = new int[15];
     private int i;
 	
     public HiloControlador() {
+        //inicializamos las variables declaradas anteriormente
         initComponents();
-        //hilos = 1;
-        //cantHilos = hilos;
         ciclosReloj = 0;
         memTemp = new ArrayList<Integer>();
         vectPc = new LinkedList<Integer>();
         vectPcFinal = new LinkedList<Integer>();
-        //PC = 0;
         numLineas=0;
-        //barrier = new CyclicBarrier(cantHilos, barrierFuncion);
         fc = new JFileChooser();
-        contterminados =1;
         i=0;
     }
 
@@ -183,7 +175,12 @@ public class HiloControlador extends javax.swing.JFrame{
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
+    /*
+      Efecto: verifica el estado del hilo y asigna un pc de la cola 
+      Requiere: que la colo est[r inicializada
+      Modifica: el PC del hilo
+    */
     Runnable barrierFuncion = new Runnable(){
         public void run(){   
             if(comunicadores[0].cambiarCiclo && comunicadores[1].cambiarCiclo){
@@ -191,6 +188,7 @@ public class HiloControlador extends javax.swing.JFrame{
             }
             for(int i = 0; i < hilos; i++){  //cambiar
             	if(!comunicadores[i].ocupado){
+                  
                     if(vectPc.size()!=0){
                         int pcActual= vectPc.poll();
                         comunicadores[i].write(pcActual,quantum);
@@ -212,7 +210,11 @@ public class HiloControlador extends javax.swing.JFrame{
             }
         }
     };
-     
+        /*
+          Efecto: asigna la primera vez los PC, inicializa los nucleos y crea los hilos a ejecutar.
+          Requiere: que se presione el botón Ejecutar en la interfaz
+          Modifica: variables como: cola de PC, núcleos y buzones 
+        */
 	private void EjecutarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EjecutarActionPerformed
             if(hilos==1){
                 cantHilos = hilos;
@@ -267,9 +269,13 @@ public class HiloControlador extends javax.swing.JFrame{
     private void ExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExitActionPerformed
         System.exit(0); 
     }//GEN-LAST:event_ExitActionPerformed
-
+    /*
+      Efecto: lee los archivos y agrega los PC al vector de PCs temporal 
+      Requiere: la entrada de un archivo
+      Modifica: el vector de PC temporal y la memoria temporal de instrucciones: memTemp
+    */
     private void OpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenActionPerformed
-             
+        //inicia manejo de archivos     
         int returnVal = fileChooser.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();             
@@ -282,7 +288,7 @@ public class HiloControlador extends javax.swing.JFrame{
             String lineaArchivo = " ";
             int contLineas = 0;//variable para contar el # de lineas del archivo
             lineaArchivo = reader.readLine();
-            while(!"".equals(lineaArchivo) && lineaArchivo != null){
+            while(!"".equals(lineaArchivo) && lineaArchivo != null){//se lee cada una de las líneas del achivo
                 contLineas++;//contamos las lineas del archivo para calcular el PC
                 if("63 0 0 0".equals(lineaArchivo)){                    
                     int instfinal=contLineas;
@@ -295,7 +301,9 @@ public class HiloControlador extends javax.swing.JFrame{
                 }
                 lineaArchivo = reader.readLine();
             }
-            if(numLineas == 0)
+            //finaliza manejo de archivos
+            
+            if(numLineas == 0)//se almacenan los PC
             {
                 vecPC[contArchivos]= 0;               
                 numLineas += contLineas*4;               
@@ -320,14 +328,23 @@ public class HiloControlador extends javax.swing.JFrame{
         
         
     }//GEN-LAST:event_OpenActionPerformed
-
+    /*
+      Efecto: 
+      Requiere:  
+      Modifica:  
+    */
    public void imprimirPantalla(String texto){
        String t="";
        t=textarea.getText();
        t+=texto;
         textarea.setText(t);
     }
-    
+   
+    /*
+      Efecto: 
+      Requiere:  
+      Modifica:  
+    */   
     private void imprimirMem(){
         for(int i =0; i<memTemp.size(); i++){
             int value = memTemp.get(i);
@@ -339,9 +356,11 @@ public class HiloControlador extends javax.swing.JFrame{
         
     }
     
-    /**
-     * @param args the command line arguments
-     */
+    /*
+      Efecto: 
+      Requiere:  
+      Modifica:  
+    */
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
