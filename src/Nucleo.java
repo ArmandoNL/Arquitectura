@@ -155,11 +155,9 @@ public void obtenerPC(){
 
 
 private void cambiarRegistro(int proc){
+    int[] vecTemp = this.comunicadores[proc].pedirContexto();
       for(int i =0; i<33;i++){
-          this.comunicadores[proc].vectreg[i] = this.comunicadores[proc].contexto[i];
-      }
-      for(int i=0; i<comunicadores[proc].contexto.length; i++){  //luego de cambiar el valor del contexto a los registros, se limpia el mismo.
-          this.comunicadores[proc].contexto[i]=0;
+          this.comunicadores[proc].vectreg[i] = vecTemp[i];
       }
 }
 
@@ -223,9 +221,9 @@ private void pcSiguiente(){
     this.quantumNucleo = comunicadores[numProcesador].readQ();
     this.pcFinal=comunicadores[numProcesador].getPcFinal();
     
-    if(comunicadores[0].contexto[33]==this.hPC){
+    if(comunicadores[0].contextos.get(0)[33] ==this.hPC){
                   cambiarRegistro(0);   
-    }else if(comunicadores[1].contexto[33]==this.hPC){
+    }else if(comunicadores[1].contextos.get(0)[33]==this.hPC){
                 cambiarRegistro(1);
     }
     this.comunicadores[numProcesador].ocupado=true;
@@ -233,11 +231,13 @@ private void pcSiguiente(){
 
 public void contexto()
     {
+        int[] vec = new int[34];
         for(int i = 0; i<33; i++)// guarda en cada posicion del contexto el valor del registro.
         {
-           this.comunicadores[this.numProcesador].contexto[i] = this.comunicadores[this.numProcesador].vectreg[i];
+           vec[i] = this.comunicadores[this.numProcesador].vectreg[i];
         }
-        this.comunicadores[this.numProcesador].contexto[33] = this.hPC; //en la posicion 33 del contexto guarda el PC
+        vec[33] = this.hPC; //en la posicion 33 del contexto guarda el PC
+        this.comunicadores[this.numProcesador].guardarContexto(vec);
         //limpiarRegistros();
         mainThread.vectPc.add(this.hPC);
         mainThread.vectPcFinal.add(this.pcFinal);
