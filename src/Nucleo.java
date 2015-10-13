@@ -224,14 +224,14 @@ private void pcSiguiente(){
     if(comunicadores[0].contextos.size()>0)
     {
         if(comunicadores[0].contextos.get(0)[33] ==this.hPC){
-                  cambiarRegistro(0);   
-    }else if(comunicadores[0].contextos.size()>0)
+                  cambiarRegistro(0); 
+        }
+    }
+    if(comunicadores[1].contextos.size()>0)
     {
-            if(comunicadores[1].contextos.get(0)[33]==this.hPC){
-                cambiarRegistro(1);
-        
-    }
-    }
+        if(comunicadores[1].contextos.get(0)[33]==this.hPC){
+            cambiarRegistro(1);
+        }
     }
     
     this.comunicadores[numProcesador].ocupado=true;
