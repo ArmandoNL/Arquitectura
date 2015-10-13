@@ -221,11 +221,19 @@ private void pcSiguiente(){
     this.quantumNucleo = comunicadores[numProcesador].readQ();
     this.pcFinal=comunicadores[numProcesador].getPcFinal();
     
-    if(comunicadores[0].contextos.get(0)[33] ==this.hPC){
+    if(comunicadores[0].contextos.size()>0)
+    {
+        if(comunicadores[0].contextos.get(0)[33] ==this.hPC){
                   cambiarRegistro(0);   
-    }else if(comunicadores[1].contextos.get(0)[33]==this.hPC){
+    }else if(comunicadores[0].contextos.size()>0)
+    {
+            if(comunicadores[1].contextos.get(0)[33]==this.hPC){
                 cambiarRegistro(1);
+        
     }
+    }
+    }
+    
     this.comunicadores[numProcesador].ocupado=true;
 }
 
