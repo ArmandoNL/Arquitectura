@@ -76,15 +76,6 @@ public class Nucleo implements Runnable {
       return this.cacheDeInstrucciones[16][columCache] == bloque; 
   }
   
- /* public void imprimir(){
-        System.out.println("SOY HILO " + this.numProcesador);
-         System.out.println("El quantum es :" + this.quantumNucleo);
-          System.out.println("El reloj es :" + cicloReloj);
-          for(int i =0; i<33; i++){
-               System.out.println("Reg" + i + "=" + comunicadores[this.numProcesador].pedirCampoRegistro(i));             
-           }
-  }*/
-  
   public void traerBloque()
   {
       int bloque = this.hPC/16;
@@ -116,22 +107,10 @@ private void recuperarDeCache(){
         this.hPC+=4;
 	ejecutarInstruccion(vecInstruccion);
         cambiarCiclo();
-        
-        
-        /*if(this.quantumNucleo > 0)
-        {
-            cambiarCiclo();
-        }*/
+
         if(this.quantumNucleo == 0)
         {
             seAcaboQuantum();
-           // obtenerPC();
-          /*  if(comunicadores[0].contexto[33]==this.hPC){
-                  cambiarRegistro(0);   
-            }else if(comunicadores[1].contexto[33]==this.hPC){
-                cambiarRegistro(1);
-            }
-            this.comunicadores[numProcesador].ocupado=true;*/
         }
 	
 }
@@ -163,7 +142,7 @@ public void obtenerPC(){
 private void cambiarRegistro(int proc){
     int[] vecTemp = this.comunicadores[proc].pedirContexto();
       for(int i =0; i<33;i++){
-          this.comunicadores[proc].vectreg[i] = vecTemp[i];
+          this.comunicadores[this.numProcesador].vectreg[i] = vecTemp[i];
       }
 }
 
@@ -193,11 +172,11 @@ private void falloCache(){ //en caso
     
     if(pedirBus()){
         traerBloque();
-       // int i=0;
-       /* while(i<1){ //mainThread.latencia
+        int i=0;
+       while(i<mainThread.latencia){ 
             cambiarCiclo();
             i++;
-        }*/
+        }
         liberarBus();
         cambiarCiclo();
     }else{
@@ -420,8 +399,6 @@ private void ejecutarInstruccion(int[] vector){
     */
     public void fin(){
         this.comunicadores[numProcesador].ocupado = false;
-        //imprimirEstado();
-       // mainThread.vectPc.add(-1);
     }
     
      /*
@@ -455,7 +432,7 @@ private void ejecutarInstruccion(int[] vector){
           text+="\n";
           text+="hPC :" + hPC;
           text+="\n";
-          text+= "Num Procesador" + this.numProcesador;
+          //text+= "Num Procesador" + this.numProcesador;
           /*text+="Campo del vector :" +numero2 ;*/
           text+="\n\n";
          
