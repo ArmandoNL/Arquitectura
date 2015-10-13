@@ -20,7 +20,6 @@ public class Comunicador {
        public Comunicador(){
            vectreg = new int[34];
            contextos = new ArrayList<int[]>();
-          
            semaforoCache = new Semaphore(1,true);
            semaforoComunicador = new Semaphore(1);
            terminado=false;
@@ -28,22 +27,24 @@ public class Comunicador {
        }
         
        //para leer instrucciones, de uso exclusivo para el procesador y HP
-       public void write(int contador, int miQuantum) {
+       public void write(int contador, int miQuantum) { //asigna el valor del PC y el quantum
            hiloPC = contador;
            quantum = miQuantum; 
         }
        
+       //se encarga de asignar el valor del PC
        public int read() {
            ocupado = true;
            return hiloPC;
        }
        
+       //se encarga de asignar el valor del quantum
        public int readQ() {
            ocupado = true;
            return quantum;
        }
        
-      //No se usan estos metodos porque se accesa directamente a los vectores 
+      //retorna un vector con un los valores del contexto y los borra de la cola de contextos.
        public int[] pedirContexto()
        {
            int[] vec = contextos.get(0);
@@ -51,11 +52,13 @@ public class Comunicador {
            return vec;
        }
        
+       //guarda en la cola de contextos, los registros.
        public void guardarContexto(int[] vec)
        {
            contextos.add(vec);
        }
         
+       
        public int[] pedirRegistro()
        {
            return vectreg;
@@ -71,11 +74,13 @@ public class Comunicador {
            vectreg[posicion] = numero;
        }
        
+       //se encarga de asignar el PC donde termina el archivo
        public void setPcFinal(int pcf)
        {
            pcFinal = pcf;
        }
        
+       //retorna el valor del PC donde se termina el archivo
        public int getPcFinal()
        {
            return pcFinal;

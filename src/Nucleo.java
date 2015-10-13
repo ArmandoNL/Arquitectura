@@ -4,58 +4,51 @@ import java.util.concurrent.*;
 public class Nucleo implements Runnable {
     
  // private final int[] registros;  
-  private final int[][] cacheDeInstrucciones;
-  private HiloControlador mainThread;
-  private ArrayList<Integer> arrayInstrucciones; //donde se inicializa??
-  private CyclicBarrier barrera;
-  private int contadorPrograma;
-  private int cicloReloj;
-  private boolean terminar;
-  private final int numProcesador;
-  private boolean instruccionCompletada;
-  private int PC;
-  private int pcFinal;
-  private int hPC;
-  private boolean primerLeido;
-  private Comunicador[] comunicadores;
-  private int quantumNucleo;
-  boolean busOcupado;
-  boolean finalizar = false;
-  //public Directorio directorio;
+  private final int[][] cacheDeInstrucciones; //donde se guarda la informacion de la cache.
+  private final HiloControlador mainThread; //instancia del hilo controlador
+  private final ArrayList<Integer> arrayInstrucciones; //contiene las instrucciones de memoria
+  private final CyclicBarrier barrera; //se encarga de la sincronizacion de los procesadores
+  private final int numProcesador; //id del procesade utilizado
+  private int PC; //PC inicial de cada procesador
+  private int pcFinal; //direccion donde termina el cada archivo
+  private int hPC; //PC local de cada procesador
+  private final Comunicador[] comunicadores; // instancia de comunicadores donde se guarda la informacion compartida
+  private int quantumNucleo; //valor del quatum local
+  boolean busOcupado; //funciona para mantener control del bus de cache
+  boolean finalizar = false; //variable que funciona para terminar ka ejecucion del procesador.
+  
   
   //nuevo constructor del procesador
-  public Nucleo(HiloControlador hc, int id){	  
+  public Nucleo(HiloControlador hc, int id){	 //se inicializa con el hilo principal y el id del procesador
 	 
-          this.numProcesador = id;
-          mainThread = hc;
-          //terminar = true;
-          arrayInstrucciones = mainThread.memTemp;
-          barrera = mainThread.barrier;
+          this.numProcesador = id; //id del procesador
+          mainThread = hc; // instacia del hilo controlador
+          arrayInstrucciones = mainThread.memTemp;  //instancia de la memoria de instrucciones 
+          barrera = mainThread.barrier;  
           comunicadores = mainThread.comunicadores;          
-            this.cacheDeInstrucciones = new int[17][8];
-	    for(int i = 0; i < 8; i++){                
-	    this.cacheDeInstrucciones[16][i] = -1;
-	    }
-	
-	
+          this.cacheDeInstrucciones = new int[17][8];  //se inicializa el cache de instrucciones con -1 en el id de bloque
+	  for(int i = 0; i < 8; i++){                
+            this.cacheDeInstrucciones[16][i] = -1;
+	  }	
   }
   
+  
+  /*  Se encarga de ejecutar los procesadores*/
   @Override
   public void run(){
     obtenerPC();
     while(!this.comunicadores[this.numProcesador].terminado){
         if(estaenCache(hPC)){
-            recuperarDeCache();
+            ejecutarDeCache();
         }else{
             falloCache();
         }
-    }
-       
+    }     
    seTermino();
-   
-   System.out.println("se terminooo");
+   System.out.println("Se termino");
 }
  
+  //se encarga de verificar que ambos procesadores hayan termiando, si no se mantiene esperando en la barrera.
   private void seTermino(){
         while(!finalizar){
         cambiarCiclo();
@@ -76,6 +69,12 @@ public class Nucleo implements Runnable {
       return this.cacheDeInstrucciones[16][columCache] == bloque; 
   }
   
+  
+   /*
+      Efecto: Recupera el bloque de memoria
+      Requiere: el PC de la instruccion que se busca
+      Modifica: La cache de instrucciones con el bloque deseado
+    */
   public void traerBloque()
   {
       int bloque = this.hPC/16;
@@ -93,8 +92,11 @@ public class Nucleo implements Runnable {
       this.cacheDeInstrucciones[16][columCache] = bloque;
   }
   
-
-private void recuperarDeCache(){
+/*    Efecto: Ejecuta la instruccion segun el PC 
+      Requiere: que el bloque de instrucciones se encuentre en la cache de instrucciones
+      Modifica: los registros de las instrucciones
+    */
+private void  ejecutarDeCache(){
         int[] vecInstruccion = new int[4];
 	int numBloc = this.hPC/16;
 	int blocCache= numBloc % 8;
@@ -105,40 +107,51 @@ private void recuperarDeCache(){
             inst++;
         }
         this.hPC+=4;
-	ejecutarInstruccion(vecInstruccion);
+	ejecutarInstruccion(vecInstruccion); //se encarga de ejecutar cada instrucciones en el cache
         cambiarCiclo();
 
-        if(this.quantumNucleo == 0)
-        {
+        if(this.quantumNucleo == 0) //si el quantum se gasta se guarda el contexto
+        { 
             seAcaboQuantum();
         }
 	
 }
 
-private void seAcaboQuantum() //cuando el quatum es igual a 0
+/*    Efecto: guarda el contexto de los registros  y el PC si se acaba el quantum
+      Requiere: que se haya acabado el quantum
+      Modifica: el contexto y los registros
+    */
+private void seAcaboQuantum() 
 {
     contexto();  //guarda el contexto de los registros y el pc en un vector temporal
     limpiarRegistros();
     this.comunicadores[numProcesador].ocupado=false;
-    cambiarCiclo();
+    cambiarCiclo();  //una vez que se guarda el contexto, se asigna un nuevo PC.
    
     
 }
  
+   /* Efecto: Obtiene el PC inicial de cada procesador
+      Modifica: el valor del primer PC
+    */
 public void obtenerPC(){
      if(mainThread.hilos==1){
         PC=comunicadores[0].read();
         this.pcFinal=comunicadores[0].getPcFinal();
+        quantumNucleo = comunicadores[0].readQ();
         this.hPC=PC;
         comunicadores[1].hiloPC=-1;
         comunicadores[1].cambiarCiclo = true;
-        quantumNucleo = comunicadores[0].readQ();
     }else{      
         pcSiguiente();
        }
     }
 
 
+/*  Efecto: transfiere los valores de los registros que estan guardados en un contexto
+    Requiere: el numero del procesador donde se encuentra el contexto
+    Modifica: los registros del procesador
+    */
 private void cambiarRegistro(int proc){
     int[] vecTemp = this.comunicadores[proc].pedirContexto();
       for(int i =0; i<33;i++){
@@ -146,14 +159,22 @@ private void cambiarRegistro(int proc){
       }
 }
 
+/*  Efecto: limpias los registros del procesador que lo pide.
+    Requiere: saber el numero del procesador que lo pide.
+    Modifica: los valores de los registros.
+    */
 private void limpiarRegistros(){
      for(int i = 0; i<34; i++){
          this.comunicadores[this.numProcesador].vectreg[i] = 0;
      }
-
 }
 
-boolean pedirBus(){ //devuelve verdadero si se pudo obtener el bus, falso si está ocupado.
+
+/*  Efecto: se encarga de obtener el bus devolviendo true, si no devuelve falso.
+    Requiere: que un procesador pida el bus.
+    Modifica: el valor del bus.
+    */
+boolean pedirBus(){ 
     if(this.comunicadores[this.numProcesador].semaforoCache.tryAcquire()){
         busOcupado = true;
         return true;
@@ -162,18 +183,25 @@ boolean pedirBus(){ //devuelve verdadero si se pudo obtener el bus, falso si est
     }
 }
 
+/*  Efecto: se encarga de soltar el semaforo del bus.
+    Requiere: que un procesador pida soltar el bus.
+    Modifica: el valor del bus.
+    */
 boolean liberarBus(){ //libera el bus una vez que no se necesita.
     this.comunicadores[this.numProcesador].semaforoCache.release();
     busOcupado = false;
     return true;
 }
 
-private void falloCache(){ //en caso 
-    
+/*  Efecto: si bloque no se encuentra en cache, solicita el bus para recuperar el bloque de memoria.
+    Requiere: que el bloque solicitado no se encuentre en cache.
+    Modifica: el cache de instrucciones
+    */
+private void falloCache(){ 
     if(pedirBus()){
         traerBloque();
         int i=0;
-       while(i<mainThread.latencia){ 
+       while(i<mainThread.latencia){ //se encarga de cambiar de ciclo segun el valor de m y b ingresado por el usuario.
             cambiarCiclo();
             i++;
         }
@@ -186,6 +214,10 @@ private void falloCache(){ //en caso
     }
 }
 
+/*  Efecto: se encarga sincronizar los procesadores a la hora de pedir cambio de ciclo de reloj.
+    Requiere: cambiar de ciclo de reloj.
+    Modifica: el valor del ciclo del reloj.
+    */
 private void cambiarCiclo(){
     this.comunicadores[this.numProcesador].cambiarCiclo = true; //avisa que esta listo para cambiar ciclo
     
@@ -193,13 +225,17 @@ private void cambiarCiclo(){
         barrera.await();
     }catch (InterruptedException | BrokenBarrierException e){}
     
-    if(this.comunicadores[this.numProcesador].seguir){
+    if(this.comunicadores[this.numProcesador].seguir){ //si hay mas PCs para entregar se pide el pc.
         pcSiguiente();
         this.comunicadores[this.numProcesador].seguir=false;
     }
-    //cicloReloj++;
 }
 
+
+/*  Efecto: se encarga de obtener el PC siguiente y si este tiene un contexto lo solicita.
+    Requiere: que no se hayan acabado los PCs
+    Modifica: el PC local y el los registros segun el contexto, si tienen.
+    */
 private void pcSiguiente(){
     this.PC = comunicadores[numProcesador].read();
     this.hPC=PC;
@@ -218,10 +254,13 @@ private void pcSiguiente(){
             cambiarRegistro(1);
         }
     }
-    
     this.comunicadores[numProcesador].ocupado=true;
 }
 
+/*  Efecto: guarda el contexto de los registros cuando se ha acabado el PC y agrega el PC a la cola de PCs
+    Requiere: que se haya acabado el quantum
+    Modifica: el contexto y la cola de PCs
+    */
 public void contexto()
     {
         int[] vec = new int[34];

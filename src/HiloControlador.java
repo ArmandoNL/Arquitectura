@@ -286,9 +286,9 @@ public class HiloControlador extends javax.swing.JFrame{
         Charset charset = Charset.forName("US-ASCII");
         try(BufferedReader reader = Files.newBufferedReader(file.toPath(), charset)){
             
-            String lineaArchivo = " ";
+            //String lineaArchivo = "";
             int contLineas = 0;//variable para contar el # de lineas del archivo
-            lineaArchivo = reader.readLine();
+            String lineaArchivo = reader.readLine();
             while(!"".equals(lineaArchivo) && lineaArchivo != null){//se lee cada una de las líneas del achivo
                 contLineas++;//contamos las lineas del archivo para calcular el PC
                 if("63 0 0 0".equals(lineaArchivo)){                    
