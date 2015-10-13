@@ -275,7 +275,10 @@ public class HiloControlador extends javax.swing.JFrame{
       Modifica: el vector de PC temporal y la memoria temporal de instrucciones: memTemp
     */
     private void OpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenActionPerformed
-        //inicia manejo de archivos     
+        
+
+
+//inicia manejo de archivos     
         int returnVal = fileChooser.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();             

@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.Queue;
 import java.util.concurrent.*;
  
 public class Comunicador {
@@ -8,21 +10,16 @@ public class Comunicador {
        public boolean terminado;
        public Semaphore semaforoCache, semaforoComunicador;
        public int quantum;
-       public int[] contexto;
        public int[] vectreg;
        public boolean seguir;
        public int pcFinal;
        public boolean cambiarCiclo;
+       public ArrayList<int[]> contextos;
 
         
        public Comunicador(){
-           contexto = new int[34];
            vectreg = new int[34];
-           for(int i =0; i<33; i++){
-               contexto[i]=0;
-               vectreg[i] = 0;
-           }
-            
+           contextos = new ArrayList<int[]>();
           
            semaforoCache = new Semaphore(1,true);
            semaforoComunicador = new Semaphore(1);
@@ -49,12 +46,14 @@ public class Comunicador {
       //No se usan estos metodos porque se accesa directamente a los vectores 
        public int[] pedirContexto()
        {
-           return contexto;
+           int[] vec = contextos.get(0);
+           contextos.remove(0);
+           return vec;
        }
        
        public void guardarContexto(int[] vec)
        {
-           contexto = vec;
+           contextos.add(vec);
        }
         
        public int[] pedirRegistro()
