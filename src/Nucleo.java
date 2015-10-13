@@ -64,6 +64,12 @@ public class Nucleo implements Runnable {
         }
     } 
   }
+  
+  /*
+      Efecto: Revisa si el bloque que se necesita esta en cache
+      Requiere: Un int 
+      Modifica: Un boleano que indica si esta o no el bloque
+    */
   public boolean estaenCache(int hpc){
        int bloque = hpc/16;
        int columCache = bloque%8;
@@ -224,12 +230,13 @@ private void pcSiguiente(){
     if(comunicadores[0].contextos.size()>0){
     
         if(comunicadores[0].contextos.get(0)[33] ==this.hPC){
-            cambiarRegistro(0);   
+                  cambiarRegistro(0); 
         }
     }
-    if(comunicadores[1].contextos.size()>0){
+    if(comunicadores[1].contextos.size()>0)
+    {
         if(comunicadores[1].contextos.get(0)[33]==this.hPC){
-            cambiarRegistro(1);   
+            cambiarRegistro(1);
         }
     }
     
@@ -250,6 +257,11 @@ public void contexto()
         mainThread.vectPcFinal.add(this.pcFinal);
     }
 
+ /*
+      Efecto: Lee las instrucciones parseadas y 
+      Requiere: Un vectos de ints que sera la instruccion a procesar 
+      Modifica: Nada 
+    */
 private void ejecutarInstruccion(int[] vector){
     //System.out.println("Hilo " + this.numProcesador + ": leyendo instruccion con CP: " + this.hPC);
     int instruccion[] = new int[4];
@@ -297,7 +309,11 @@ private void ejecutarInstruccion(int[] vector){
     }    
 }
 
- //hace una suma del valor del registro con un numero y lo guarda en un registro
+ /*
+      Efecto: Realiza una suma y la guarda en el registro de destino
+      Requiere: Dos int que se sumaran y un int de destino 
+      Modifica: el quantum y el registro de destino  
+    */
   public void daddi(int regDestino, int regFuente, int numero){
      
     int valor = this.comunicadores[this.numProcesador].vectreg[regFuente]+numero;
@@ -305,21 +321,33 @@ private void ejecutarInstruccion(int[] vector){
     this.quantumNucleo--;
   }
   
-  //Hace una suma de los valores de 2 registros y los guarda en un registro
+  /*
+      Efecto: Realiza una suma y la guarda en el registro de destino
+      Requiere: Dos int que se sumaran y un int de destino 
+      Modifica: el quantum y el registro de destino  
+    */
   public void dadd(int regDestino, int regF1, int regF2){
     int valor = this.comunicadores[this.numProcesador].vectreg[regF1]+this.comunicadores[this.numProcesador].vectreg[regF2];
    this.comunicadores[this.numProcesador].vectreg[regDestino]= valor;
     this.quantumNucleo--;
   }
   
-  //hace una resta de los valores de 2 registros y los guarda en un registro
+  /*
+      Efecto: Realiza una resta y la guarda en el registro de destino
+      Requiere: Dos int que se restaran y un int de destino 
+      Modifica: el quantum y el registro de destino  
+    */
   public void dsub(int regDestino, int regF1, int regF2){
       int valor = this.comunicadores[this.numProcesador].vectreg[regF1]-this.comunicadores[this.numProcesador].vectreg[regF2];
       this.comunicadores[this.numProcesador].vectreg[regDestino]= valor;
       this.quantumNucleo--;
   }
   
-  //Si el valor es igual a 0 hace un salto
+   /*
+      Efecto: Realiza un salto si el valor en el registro es igual a cero
+      Requiere: Dos int
+      Modifica: El quantum y el hPC 
+    */
     public void beqz(int regComparacion, int salto){
          
         if(this.comunicadores[this.numProcesador].vectreg[regComparacion] == 0){
@@ -328,7 +356,11 @@ private void ejecutarInstruccion(int[] vector){
         this.quantumNucleo--;
     }
     
-    //Si el valor del registro es diferente de 0 hace un salto
+     /*
+      Efecto: Realiza un salto si el valor del registro es diferente de cero
+      Requiere: Dos int 
+      Modifica: El quantum y el hPC 
+    */
     public void bnez(int regComparacion, int salto){//segunda y cuarta parte, tercera vacia
        // System.out.println("valor "+registros[regComparacion]);
         if(this.comunicadores[this.numProcesador].vectreg[regComparacion] != 0){
@@ -337,40 +369,64 @@ private void ejecutarInstruccion(int[] vector){
         this.quantumNucleo--;
     }
     
-    //
+     /*
+      Efecto: Realiza un salto
+      Requiere: Un int
+      Modifica: El hPC y el quantum 
+    */
     public void jr(int regsalto){//segunda y cuarta parte, tercera vacia
         this.hPC =this.comunicadores[this.numProcesador].vectreg[regsalto];       
         this.quantumNucleo--;
     }
     
-    //hace una multiplicacion de los valores de 2 registros y los guarda en un registro
+    /*
+      Efecto: Realiza una multiplicacion y la guarda en el registro de destino
+      Requiere: Dos int que se multiplicaran y un int de destino 
+      Modifica: el quantum y el registro de destino  
+    */
     public void dmul(int regDestino, int regF1, int regF2){//segunda y cuarta parte, tercera vacia
        int valor = this.comunicadores[this.numProcesador].vectreg[regF1] * this.comunicadores[this.numProcesador].vectreg[regF2];
        this.comunicadores[this.numProcesador].vectreg[regDestino]= valor;
        this.quantumNucleo--;
         
     }
-    
-    //hace una division de los valores de 2 registros y los guarda en un registro
+        
+     /*
+      Efecto: Realiza una division y la guarda en el registro de destino
+      Requiere: Dos int que se dividiran y un int de destino 
+      Modifica: el quantum y el registro de destino  
+    */
     public void ddiv(int regDestino, int regF1, int regF2){//segunda y cuarta parte, tercera vacia
        int valor = this.comunicadores[this.numProcesador].vectreg[regF1]/this.comunicadores[this.numProcesador].vectreg[regF2];
        this.comunicadores[this.numProcesador].vectreg[regDestino]= valor;
       this.quantumNucleo--;
     }
     
-    //
-    public void jal(int salto){//segunda y cuarta parte, tercera vacia
+     /*
+      Efecto: Adelanta el hPC segun el int que le entra
+      Requiere: Un int  
+      Modifica: El quantum, el regustro 31 y el hpc  
+    */
+    public void jal(int salto){
         this.comunicadores[this.numProcesador].vectreg[31]=this.hPC;
         this.hPC =this.hPC+salto;       
         this.quantumNucleo--;
     } 
     
-   //Si el procesador llego al final del hilo, se desocupa e imprime los resultados
+     /*
+      Efecto: Instruccion que coloca la variable ocupado en falso 
+      Requiere: Nada 
+      Modifica: La variable ocupado de la clase comunicador
+    */
     public void fin(){
         this.comunicadores[numProcesador].ocupado = false;
     }
     
-    //imprime los resultados del hilo
+     /*
+      Efecto: Envia los resultados que se necesitan imprimir cuando termina cada hilo
+      Requiere: Nada 
+      Modifica: Nada 
+    */
     public void imprimirEstado(){ 
         int numero=0;
         //String numero2="";
