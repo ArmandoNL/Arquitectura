@@ -191,15 +191,13 @@ public class HiloControlador extends javax.swing.JFrame{
             }
             for(int i = 0; i < hilos; i++){  //cambiar
             	if(!comunicadores[i].ocupado){
-                  
-                   // int pcActual= vectPc.poll();
                     if(vectPc.size()!=0){
                         int pcActual= vectPc.poll();
                         comunicadores[i].write(pcActual,quantum);
                         comunicadores[i].setPcFinal(vectPcFinal.poll());
                         comunicadores[i].ocupado = true;
                         comunicadores[i].seguir = true;
-                        comunicadores[i].semaforoComunicador.release();
+                        //comunicadores[i].semaforoComunicador.release();
                         
                     }
                     else{
@@ -207,7 +205,7 @@ public class HiloControlador extends javax.swing.JFrame{
                         comunicadores[i].write(-1, quantum);
                         comunicadores[i].ocupado = true;
                         comunicadores[i].terminado = true;
-                        comunicadores[i].semaforoComunicador.release();
+                        //comunicadores[i].semaforoComunicador.release();
                         
                     }
                 }
@@ -335,6 +333,10 @@ public class HiloControlador extends javax.swing.JFrame{
             int value = memTemp.get(i);
 	    System.out.println("Element: " + value);
         }
+        for(int i = 0; i<vecPC.length; i++){
+            System.out.println(vecPC[i]);
+        }
+        
     }
     
     /**

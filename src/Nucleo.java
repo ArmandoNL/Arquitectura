@@ -92,11 +92,6 @@ public class Nucleo implements Runnable {
                this.cacheDeInstrucciones[fila][columCache] = arrayInstrucciones.get(i);
                fila++;
           }
-          /*else
-          {
-              this.cacheDeInstrucciones[fila][columCache] = -1;
-              fila++;
-          }*/
       }
       this.cacheDeInstrucciones[16][columCache] = bloque;
   }
@@ -112,34 +107,32 @@ private void recuperarDeCache(){
             vecInstruccion[inst] = this.cacheDeInstrucciones[j][blocCache];
             inst++;
         }
-	
-        cambiarCiclo();
-         this.hPC+=4;
+        this.hPC+=4;
 	ejecutarInstruccion(vecInstruccion);
-        if(this.comunicadores[numProcesador].terminado==true){
-            limpiarRegistros();            
-        }
-        if(this.quantumNucleo > 0)
+        cambiarCiclo();
+        
+        
+        /*if(this.quantumNucleo > 0)
         {
             cambiarCiclo();
-        }
-        else
+        }*/
+        if(this.quantumNucleo == 0)
         {
             seAcaboQuantum();
            // obtenerPC();
-            if(comunicadores[0].contexto[33]==this.hPC){
+          /*  if(comunicadores[0].contexto[33]==this.hPC){
                   cambiarRegistro(0);   
             }else if(comunicadores[1].contexto[33]==this.hPC){
                 cambiarRegistro(1);
             }
-            this.comunicadores[numProcesador].ocupado=true;
+            this.comunicadores[numProcesador].ocupado=true;*/
         }
 	
 }
 
-private void seAcaboQuantum()
+private void seAcaboQuantum() //cuando el quatum es igual a 0
 {
-    contexto();
+    contexto();  //guarda el contexto de los registros y el pc en un vector temporal
     limpiarRegistros();
     this.comunicadores[numProcesador].ocupado=false;
     cambiarCiclo();
@@ -155,28 +148,19 @@ public void obtenerPC(){
         comunicadores[1].hiloPC=-1;
         comunicadores[1].cambiarCiclo = true;
         quantumNucleo = comunicadores[0].readQ();
-    }else{
-        if(comunicadores[numProcesador].terminado){
-            this.PC = -1 ;
-        }else{
-            PC = comunicadores[numProcesador].read();
-            this.hPC=PC;
-            quantumNucleo = comunicadores[numProcesador].readQ();
-            this.pcFinal=comunicadores[numProcesador].getPcFinal();
-       /* if(this.comunicadores[this.numProcesador].contexto[33]==hPC){
-            int[] vectContexto = new int[34];
-            vectContexto = this.comunicadores[this.numProcesador].contexto;
-            cambiarRegistro(vectContexto);
-        }*/
+    }else{      
+        pcSiguiente();
        }
-     }
-}
+    }
 
 
 private void cambiarRegistro(int proc){
-     for(int i = 0; i<33; i++){
-         this.comunicadores[this.numProcesador].vectreg[i] = comunicadores[proc].contexto[i];
-     }
+      for(int i =0; i<33;i++){
+          this.comunicadores[proc].vectreg[i] = this.comunicadores[proc].contexto[i];
+      }
+      for(int i=0; i<comunicadores[proc].contexto.length; i++){  //luego de cambiar el valor del contexto a los registros, se limpia el mismo.
+          this.comunicadores[proc].contexto[i]=0;
+      }
 }
 
 private void limpiarRegistros(){
@@ -202,14 +186,14 @@ boolean liberarBus(){ //libera el bus una vez que no se necesita.
 }
 
 private void falloCache(){ //en caso 
-    primerLeido= false;
+    
     if(pedirBus()){
         traerBloque();
-        int i=0;
-        while(i<mainThread.latencia){
+       // int i=0;
+       /* while(i<1){ //mainThread.latencia
             cambiarCiclo();
             i++;
-        }
+        }*/
         liberarBus();
         cambiarCiclo();
     }else{
@@ -229,25 +213,32 @@ private void cambiarCiclo(){
     if(this.comunicadores[this.numProcesador].seguir){
         pcSiguiente();
         this.comunicadores[this.numProcesador].seguir=false;
-      }
+    }
     //cicloReloj++;
 }
 
 private void pcSiguiente(){
     this.PC = comunicadores[numProcesador].read();
     this.hPC=PC;
-    quantumNucleo = comunicadores[numProcesador].readQ();
+    this.quantumNucleo = comunicadores[numProcesador].readQ();
     this.pcFinal=comunicadores[numProcesador].getPcFinal();
+    
+    if(comunicadores[0].contexto[33]==this.hPC){
+                  cambiarRegistro(0);   
+    }else if(comunicadores[1].contexto[33]==this.hPC){
+                cambiarRegistro(1);
+    }
+    this.comunicadores[numProcesador].ocupado=true;
 }
 
 public void contexto()
     {
-        for(int i = 0; i<33; i++)
+        for(int i = 0; i<33; i++)// guarda en cada posicion del contexto el valor del registro.
         {
            this.comunicadores[this.numProcesador].contexto[i] = this.comunicadores[this.numProcesador].vectreg[i];
         }
-        this.comunicadores[this.numProcesador].contexto[33] = this.hPC;
-        limpiarRegistros();
+        this.comunicadores[this.numProcesador].contexto[33] = this.hPC; //en la posicion 33 del contexto guarda el PC
+        //limpiarRegistros();
         mainThread.vectPc.add(this.hPC);
         mainThread.vectPcFinal.add(this.pcFinal);
     }

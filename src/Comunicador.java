@@ -21,9 +21,7 @@ public class Comunicador {
                contexto[i]=0;
                vectreg[i] = 0;
            }
-            for(int i =0; i<33; i++){
-               vectreg[i] = 0;
-           }
+            
           
            semaforoCache = new Semaphore(1,true);
            semaforoComunicador = new Semaphore(1);
