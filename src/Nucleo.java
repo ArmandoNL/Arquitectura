@@ -156,13 +156,13 @@ public void obtenerPC(){
 
 private void cambiarRegistro(int proc){
     int[] vecTemp = comunicadores[proc].pedirContexto();
-      for(int i =0; i<33;i++){
-          comunicadores[proc].vectreg[i] = vecTemp[i];
+      for(int i =0; i<33; i++){
+          comunicadores[this.numProcesador].vectreg[i] = vecTemp[i];
       }
 }
 
 private void limpiarRegistros(){
-     for(int i = 0; i<34; i++){
+     for(int i = 0; i<33; i++){
          this.comunicadores[this.numProcesador].vectreg[i] = 0;
      }
 
@@ -187,11 +187,11 @@ private void falloCache(){ //en caso
     
     if(pedirBus()){
         traerBloque();
-       // int i=0;
-       /* while(i<1){ //mainThread.latencia
+        int i=0;
+        while(i<mainThread.latencia){ //mainThread.latencia
             cambiarCiclo();
             i++;
-        }*/
+        }
         liberarBus();
         cambiarCiclo();
     }else{
@@ -245,7 +245,7 @@ public void contexto()
         }
         vec[33] = this.hPC; //en la posicion 33 del contexto guarda el PC
         this.comunicadores[this.numProcesador].guardarContexto(vec);
-        //limpiarRegistros();
+        limpiarRegistros();
         mainThread.vectPc.add(this.hPC);
         mainThread.vectPcFinal.add(this.pcFinal);
     }
@@ -368,8 +368,6 @@ private void ejecutarInstruccion(int[] vector){
    //Si el procesador llego al final del hilo, se desocupa e imprime los resultados
     public void fin(){
         this.comunicadores[numProcesador].ocupado = false;
-        //imprimirEstado();
-       // mainThread.vectPc.add(-1);
     }
     
     //imprime los resultados del hilo

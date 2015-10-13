@@ -189,8 +189,9 @@ public class HiloControlador extends javax.swing.JFrame{
             for(int i = 0; i < hilos; i++){  //cambiar
             	if(!comunicadores[i].ocupado){
                   
-                    if(vectPc.size()!=0){
+                    if(!vectPc.isEmpty()){
                         int pcActual= vectPc.poll();
+                       
                         comunicadores[i].write(pcActual,quantum);
                         comunicadores[i].setPcFinal(vectPcFinal.poll());
                         comunicadores[i].ocupado = true;
