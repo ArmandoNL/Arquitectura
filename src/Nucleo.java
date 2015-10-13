@@ -155,9 +155,9 @@ public void obtenerPC(){
 
 
 private void cambiarRegistro(int proc){
-    int[] vecTemp = this.comunicadores[proc].pedirContexto();
+    int[] vecTemp = comunicadores[proc].pedirContexto();
       for(int i =0; i<33;i++){
-          this.comunicadores[proc].vectreg[i] = vecTemp[i];
+          comunicadores[proc].vectreg[i] = vecTemp[i];
       }
 }
 
@@ -221,17 +221,16 @@ private void pcSiguiente(){
     this.quantumNucleo = comunicadores[numProcesador].readQ();
     this.pcFinal=comunicadores[numProcesador].getPcFinal();
     
-    if(comunicadores[0].contextos.size()>0)
-    {
+    if(comunicadores[0].contextos.size()>0){
+    
         if(comunicadores[0].contextos.get(0)[33] ==this.hPC){
-                  cambiarRegistro(0);   
-    }else if(comunicadores[0].contextos.size()>0)
-    {
-            if(comunicadores[1].contextos.get(0)[33]==this.hPC){
-                cambiarRegistro(1);
-        
+            cambiarRegistro(0);   
+        }
     }
-    }
+    if(comunicadores[1].contextos.size()>0){
+        if(comunicadores[1].contextos.get(0)[33]==this.hPC){
+            cambiarRegistro(1);   
+        }
     }
     
     this.comunicadores[numProcesador].ocupado=true;
