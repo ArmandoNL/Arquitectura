@@ -325,7 +325,6 @@ public class HiloControlador extends javax.swing.JFrame{
             System.out.println("File access cancelled by user.");
         }       
         hilos+=1;
-        imprimirMem(); 
         
         
     }//GEN-LAST:event_OpenActionPerformed
@@ -340,33 +339,12 @@ public class HiloControlador extends javax.swing.JFrame{
        t+=texto;
         textarea.setText(t);
     }
-   
-    /*
-      Efecto: 
-      Requiere:  
-      Modifica:  
-    */   
-    private void imprimirMem(){
-        for(int i =0; i<memTemp.size(); i++){
-            int value = memTemp.get(i);
-	    System.out.println("Element: " + value);
-        }
-        for(int i = 0; i<vecPC.length; i++){
-            System.out.println(vecPC[i]);
-        }
-        
-    }
-    
-    /*
-      Efecto: 
-      Requiere:  
-      Modifica:  
-    */
+  
+    //se encarga de la ejecución del programa
     public static void main(String args[]) {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new HiloControlador().setVisible(true);
-                
             }
         });
     }
