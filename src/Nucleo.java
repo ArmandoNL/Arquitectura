@@ -270,8 +270,9 @@ public void contexto()
         }
         vec[33] = this.hPC; //en la posicion 33 del contexto guarda el PC
         this.comunicadores[this.numProcesador].guardarContexto(vec);
-        //limpiarRegistros();
+        System.out.println("Valor de PC " + this.hPC);
         mainThread.vectPc.add(this.hPC);
+        System.out.println("METO A COLA:" + mainThread.vectPc.peek());
         mainThread.vectPcFinal.add(this.pcFinal);
     }
 
@@ -459,7 +460,7 @@ private void ejecutarInstruccion(int[] vector){
             
             numero2+=mainThread.nombreArchivo[j];
         }*/
-          System.out.println("Num Procesador" + this.numProcesador);
+          //System.out.println("Num Procesador" + this.numProcesador);
           String text="Valor de Registros del archivo: "+ numero + "\n";          
           for(int i =0; i<34; i++){
                text+=" Reg: " + i + " =" + comunicadores[this.numProcesador].pedirCampoRegistro(i)+", ";             
