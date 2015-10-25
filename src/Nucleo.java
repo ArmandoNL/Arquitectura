@@ -470,9 +470,9 @@ private void ejecutarInstruccion(int[] vector){
           text+="\n";
           text+="El reloj es :" + mainThread.ciclosReloj;
           text+="\n";
-          text+="hPC :" + hPC;
+          text+="Contador Interno de programa Actual(hPC) :" + hPC;
           text+="\n";
-          //text+= "Num Procesador" + this.numProcesador;
+          text+= "Numero de Procesador que corrio el archivo : " + this.numProcesador;
           /*text+="Campo del vector :" +numero2 ;*/
           text+="\n\n";
          

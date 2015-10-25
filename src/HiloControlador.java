@@ -64,6 +64,8 @@ public class HiloControlador extends javax.swing.JFrame{
         txtQuantum = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         textarea = new javax.swing.JTextArea();
+        jLabel1 = new javax.swing.JLabel();
+        CicloReloj_TF = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
         File = new javax.swing.JMenu();
         Open = new javax.swing.JMenuItem();
@@ -77,8 +79,7 @@ public class HiloControlador extends javax.swing.JFrame{
         setForeground(new java.awt.Color(49, 95, 95));
 
         Ejecutar.setBackground(new java.awt.Color(0, 102, 153));
-        Ejecutar.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        Ejecutar.setForeground(new java.awt.Color(255, 255, 255));
+        Ejecutar.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         Ejecutar.setText("Ejecutar");
         Ejecutar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -98,6 +99,10 @@ public class HiloControlador extends javax.swing.JFrame{
         textarea.setColumns(20);
         textarea.setRows(5);
         jScrollPane1.setViewportView(textarea);
+
+        jLabel1.setText("Ciclo actual del Reloj :");
+
+        CicloReloj_TF.setEditable(false);
 
         jMenuBar1.setBackground(new java.awt.Color(204, 204, 204));
 
@@ -150,17 +155,27 @@ public class HiloControlador extends javax.swing.JFrame{
                         .addComponent(lbQuantum)
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Ejecutar, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Ejecutar)
                             .addComponent(txtQuantum, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(22, 22, 22)))
+                        .addGap(19, 19, 19)))
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(232, 232, 232)
+                .addComponent(jLabel1)
+                .addGap(32, 32, 32)
+                .addComponent(CicloReloj_TF, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 358, Short.MAX_VALUE)
-                .addGap(46, 46, 46)
+                .addGap(36, 36, 36)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(CicloReloj_TF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(21, 21, 21)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbLatencia)
                     .addComponent(txtLatencia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -168,9 +183,9 @@ public class HiloControlador extends javax.swing.JFrame{
                     .addComponent(txtTiempoBus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbQuantum)
                     .addComponent(txtQuantum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(80, 80, 80)
+                .addGap(48, 48, 48)
                 .addComponent(Ejecutar)
-                .addGap(31, 31, 31))
+                .addGap(27, 27, 27))
         );
 
         pack();
@@ -185,6 +200,9 @@ public class HiloControlador extends javax.swing.JFrame{
         public void run(){   
             if(comunicadores[0].cambiarCiclo && comunicadores[1].cambiarCiclo){
                 ciclosReloj++;
+                String ciclo=""+ciclosReloj;
+                //ciclo=CicloReloj_TF.getText();
+                CicloReloj_TF.setText(ciclo);
             }
             for(int i = 0; i < hilos; i++){  //cambiar
             	if(!comunicadores[i].ocupado){
@@ -353,11 +371,13 @@ public class HiloControlador extends javax.swing.JFrame{
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField CicloReloj_TF;
     private javax.swing.JButton Ejecutar;
     private javax.swing.JMenuItem Exit;
     private javax.swing.JMenu File;
     private javax.swing.JMenuItem Open;
     private javax.swing.JFileChooser fileChooser;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lbLatencia;
