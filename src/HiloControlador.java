@@ -38,7 +38,8 @@ public class HiloControlador extends javax.swing.JFrame{
     public int tiempoEspera;
     public int  tiempoBus;
     public int latencia;
-    private int i;
+    private int i=0;
+    private int j=0;
 	
     public HiloControlador() {
         //inicializamos las variables declaradas anteriormente
@@ -49,7 +50,7 @@ public class HiloControlador extends javax.swing.JFrame{
         vectPcFinal = new LinkedList<Integer>();
         numLineas=0;
         fc = new JFileChooser();
-        i=0;
+        //i=0;
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -147,7 +148,7 @@ public class HiloControlador extends javax.swing.JFrame{
 
         lbProc1.setText("Archivo en Proc 0");
 
-        lbProc2.setText("Archivo en Proc 2");
+        lbProc2.setText("Archivo en Proc 1");
 
         jMenuBar1.setBackground(new java.awt.Color(204, 204, 204));
 
@@ -274,7 +275,7 @@ public class HiloControlador extends javax.swing.JFrame{
               
                
                 ciclosReloj++;
-                String ciclo=""+ciclosReloj;
+                String ciclo=""+(ciclosReloj-1);
                 CicloReloj_TF.setText(ciclo);
                 if(rdbModoLento.isSelected()){
                   try{
@@ -290,7 +291,7 @@ public class HiloControlador extends javax.swing.JFrame{
             
             for(int i = 0; i < hilos; i++){  //cambiar
             	if(!comunicadores[i].ocupado){
-                  System.out.println("VALOR COLA ates de if: " + vectPc.peek());
+                  System.out.println("VALOR COLA : " + vectPc.peek());
                     if(!vectPc.isEmpty()){
                         System.out.println("VALOR COLA: " + vectPc.peek());
                          
@@ -385,8 +386,8 @@ public class HiloControlador extends javax.swing.JFrame{
         int returnVal = fileChooser.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();             
-          nombreArchivo[i]=Integer.parseInt(file.getName().substring(0,1));
-          i++;
+            nombreArchivo[i]=Integer.parseInt(file.getName().substring(0,1));
+            i++;
             System.out.println(file.getName().substring(0,1));
         Charset charset = Charset.forName("US-ASCII");
         try(BufferedReader reader = Files.newBufferedReader(file.toPath(), charset)){

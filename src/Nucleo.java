@@ -222,13 +222,11 @@ private void falloCache(){
     */
 private void cambiarCiclo(){
     this.comunicadores[this.numProcesador].cambiarCiclo = true; //avisa que esta listo para cambiar ciclo
-       
-    if(mainThread.rdbModoLento.isSelected()){
-        miEstado();
-    }
-    try{
-        
+   
+    try{     
         barrera.await();
+            this.miEstado();
+        
     }catch (InterruptedException | BrokenBarrierException e){}
     if(this.comunicadores[this.numProcesador].seguir){ //si hay mas PCs para entregar se pide el pc.
         pcSiguiente();
@@ -486,8 +484,10 @@ private void ejecutarInstruccion(int[] vector){
     
     public void miEstado(){ 
         int num=0;
-        for(int i=1; i< mainThread.contArchivos*2; i=i+2){
-            if(this.hPC==mainThread.nombreArchivo[i]){
+        for(int i=1; i<= mainThread.contArchivos*2; i=i+2){
+            
+            if(this.hPC<=mainThread.nombreArchivo[i]){ //se ocupa otra condicion porque 0 siempre va a ser menor que todos los demas.
+                //tiene que ser algo como >=PC donde empieza && <pc donde termina.
                 num=mainThread.nombreArchivo[i-1];
             }
         }

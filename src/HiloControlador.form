@@ -308,7 +308,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="lbProc2">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Archivo en Proc 2"/>
+        <Property name="text" type="java.lang.String" value="Archivo en Proc 1"/>
       </Properties>
     </Component>
   </SubComponents>
