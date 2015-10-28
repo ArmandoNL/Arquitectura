@@ -239,9 +239,10 @@ public class HiloControlador extends javax.swing.JFrame{
     Runnable barrierFuncion = new Runnable(){
         public void run(){   
             if(comunicadores[0].cambiarCiclo && comunicadores[1].cambiarCiclo){
+              
+               
                 ciclosReloj++;
                 String ciclo=""+ciclosReloj;
-                //ciclo=CicloReloj_TF.getText();
                 CicloReloj_TF.setText(ciclo);
                 if(rdbModoLento.isSelected()){
                   try{
@@ -250,9 +251,9 @@ public class HiloControlador extends javax.swing.JFrame{
                         }while(!continuar);
                   }catch(InterruptedException e){
                   }
-                  continuar = false;
-                      
+                  continuar = false;    
                 }
+                
             }
             
             for(int i = 0; i < hilos; i++){  //cambiar
@@ -419,6 +420,16 @@ public class HiloControlador extends javax.swing.JFrame{
        t+=texto;
         textarea.setText(t);
     }
+   
+    public void imprimirEstado(String texto){
+       textarea.removeAll();
+       String t="";
+       t=textarea.getText();
+       t+=texto;
+        textarea.setText(t);
+    }
+    
+ 
   
     //se encarga de la ejecución del programa
     public static void main(String args[]) {

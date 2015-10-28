@@ -222,15 +222,14 @@ private void falloCache(){
     */
 private void cambiarCiclo(){
     this.comunicadores[this.numProcesador].cambiarCiclo = true; //avisa que esta listo para cambiar ciclo
-    
+       
+    if(mainThread.rdbModoLento.isSelected()){
+        miEstado();
+    }
     try{
+        
         barrera.await();
     }catch (InterruptedException | BrokenBarrierException e){}
-    
-    if(mainThread.rdbModoLento.isSelected()){
-        //aqu[i hay que suspender el hilo e imprimir en pantalla
-    }
-    
     if(this.comunicadores[this.numProcesador].seguir){ //si hay mas PCs para entregar se pide el pc.
         pcSiguiente();
         this.comunicadores[this.numProcesador].seguir=false;
@@ -476,12 +475,25 @@ private void ejecutarInstruccion(int[] vector){
           text+="\n";
           text+="El reloj es :" + mainThread.ciclosReloj;
           text+="\n";
-          text+="Contador Interno de programa Actual(hPC) :" + hPC;
-          text+="\n";
+          //text+="Contador Interno de programa Actual(hPC) :" + hPC;
+          //text+="\n";
           text+= "Numero de Procesador que corrio el archivo : " + this.numProcesador;
           /*text+="Campo del vector :" +numero2 ;*/
           text+="\n\n";
          
            mainThread.imprimirPantalla(text);       	
     }
+    
+    public void miEstado(){ 
+        int num=0;
+        for(int i=1; i< mainThread.contArchivos*2; i=i+2){
+            if(this.hPC==mainThread.nombreArchivo[i]){
+                num=mainThread.nombreArchivo[i-1];
+            }
+        }
+        String text="Archivo: "+ num + "corriendo en procesador: "+ this.numProcesador + "\n"; 
+        mainThread.imprimirEstado(text); 
+     }
+    
+    
 }
