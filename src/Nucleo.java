@@ -491,8 +491,12 @@ private void ejecutarInstruccion(int[] vector){
                 num=mainThread.nombreArchivo[i-1];
             }
         }
-        String text="Archivo: "+ num + "corriendo en procesador: "+ this.numProcesador + "\n"; 
-        mainThread.imprimirEstado(text); 
+        String text=""+ num; 
+        if(this.numProcesador==0){
+           mainThread.imprimirEstado0(text);
+        }else if(this.numProcesador==1){
+            mainThread.imprimirEstado1(text);
+        }
      }
     
     

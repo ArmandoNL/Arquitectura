@@ -70,6 +70,10 @@ public class HiloControlador extends javax.swing.JFrame{
         rdbModoLento = new javax.swing.JRadioButton();
         btnContinuar = new javax.swing.JButton();
         btnParar = new javax.swing.JButton();
+        txtProc0 = new javax.swing.JTextField();
+        txtProc1 = new javax.swing.JTextField();
+        lbProc1 = new javax.swing.JLabel();
+        lbProc2 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         File = new javax.swing.JMenu();
         Open = new javax.swing.JMenuItem();
@@ -132,6 +136,19 @@ public class HiloControlador extends javax.swing.JFrame{
             }
         });
 
+        txtProc0.setEditable(false);
+
+        txtProc1.setEditable(false);
+        txtProc1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtProc1ActionPerformed(evt);
+            }
+        });
+
+        lbProc1.setText("Archivo en Proc 0");
+
+        lbProc2.setText("Archivo en Proc 2");
+
         jMenuBar1.setBackground(new java.awt.Color(204, 204, 204));
 
         File.setBackground(new java.awt.Color(204, 204, 255));
@@ -193,23 +210,38 @@ public class HiloControlador extends javax.swing.JFrame{
                                 .addGap(30, 30, 30)))
                         .addComponent(Ejecutar, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(232, 232, 232)
-                .addComponent(jLabel1)
-                .addGap(32, 32, 32)
-                .addComponent(CicloReloj_TF, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(rdbModoLento)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lbProc1, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lbProc2, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(txtProc1, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(63, 63, 63)
+                        .addComponent(jLabel1)
+                        .addGap(45, 45, 45)
+                        .addComponent(CicloReloj_TF, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(54, 54, 54)
+                        .addComponent(rdbModoLento))
+                    .addComponent(txtProc0, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(43, 43, 43))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(35, 35, 35)
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbProc1)
+                    .addComponent(txtProc0, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(4, 4, 4)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(CicloReloj_TF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rdbModoLento))
+                    .addComponent(rdbModoLento)
+                    .addComponent(lbProc2)
+                    .addComponent(txtProc1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(19, 19, 19)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
@@ -409,6 +441,10 @@ public class HiloControlador extends javax.swing.JFrame{
     private void btnPararActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPararActionPerformed
          System.exit(0); 
     }//GEN-LAST:event_btnPararActionPerformed
+
+    private void txtProc1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtProc1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtProc1ActionPerformed
     /*
       Efecto: Imprime en la interfaz los registros,el quantum y otros datos
       Requiere: Un string con los datos a mostrar 
@@ -421,14 +457,14 @@ public class HiloControlador extends javax.swing.JFrame{
         textarea.setText(t);
     }
    
-    public void imprimirEstado(String texto){
-       textarea.removeAll();
-       String t="";
-       t=textarea.getText();
-       t+=texto;
-        textarea.setText(t);
+    public void imprimirEstado0(String texto){
+       String t=""+texto;
+       txtProc0.setText(t);
     }
-    
+     public void imprimirEstado1(String texto){
+       String t=""+texto;
+       txtProc1.setText(t);
+    }
  
   
     //se encarga de la ejecución del programa
@@ -453,11 +489,15 @@ public class HiloControlador extends javax.swing.JFrame{
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lbLatencia;
+    private javax.swing.JLabel lbProc1;
+    private javax.swing.JLabel lbProc2;
     private javax.swing.JLabel lbQuantum;
     private javax.swing.JLabel lbTiempobus;
     public javax.swing.JRadioButton rdbModoLento;
     private javax.swing.JTextArea textarea;
     private javax.swing.JTextField txtLatencia;
+    private javax.swing.JTextField txtProc0;
+    private javax.swing.JTextField txtProc1;
     private javax.swing.JTextField txtQuantum;
     private javax.swing.JTextField txtTiempoBus;
     // End of variables declaration//GEN-END:variables
