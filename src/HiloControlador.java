@@ -30,6 +30,7 @@ public class HiloControlador extends javax.swing.JFrame{
     public int[] nombreArchivo = new int[15];//almacenar el nombre de los archivos con los que trabajamos.
     int contArchivos = 0;//número de archivos con que trabajamos
     private int numLineas;//número de líneas con que trabajamos
+    public boolean continuar = false;
     
     //variables para el manejo de la interfaz
     JFileChooser fc;
@@ -68,6 +69,7 @@ public class HiloControlador extends javax.swing.JFrame{
         CicloReloj_TF = new javax.swing.JTextField();
         rdbModoLento = new javax.swing.JRadioButton();
         btnContinuar = new javax.swing.JButton();
+        btnParar = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         File = new javax.swing.JMenu();
         Open = new javax.swing.JMenuItem();
@@ -82,6 +84,7 @@ public class HiloControlador extends javax.swing.JFrame{
 
         Ejecutar.setBackground(new java.awt.Color(0, 102, 153));
         Ejecutar.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        Ejecutar.setForeground(new java.awt.Color(255, 255, 255));
         Ejecutar.setText("Ejecutar");
         Ejecutar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -111,10 +114,21 @@ public class HiloControlador extends javax.swing.JFrame{
 
         btnContinuar.setBackground(new java.awt.Color(0, 102, 153));
         btnContinuar.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btnContinuar.setForeground(new java.awt.Color(255, 255, 255));
         btnContinuar.setText("Continuar");
         btnContinuar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnContinuarActionPerformed(evt);
+            }
+        });
+
+        btnParar.setBackground(new java.awt.Color(102, 0, 0));
+        btnParar.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btnParar.setForeground(new java.awt.Color(255, 255, 255));
+        btnParar.setText("Terminar");
+        btnParar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPararActionPerformed(evt);
             }
         });
 
@@ -156,14 +170,10 @@ public class HiloControlador extends javax.swing.JFrame{
                 .addGap(21, 21, 21)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(19, 19, 19)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(Ejecutar)
-                                .addGap(33, 33, 33)
-                                .addComponent(btnContinuar))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(19, 19, 19)
                                 .addComponent(lbLatencia)
                                 .addGap(18, 18, 18)
                                 .addComponent(txtLatencia, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -171,11 +181,17 @@ public class HiloControlador extends javax.swing.JFrame{
                                 .addComponent(lbTiempobus)
                                 .addGap(18, 18, 18)
                                 .addComponent(txtTiempoBus, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 110, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
                                 .addComponent(lbQuantum)
                                 .addGap(18, 18, 18)
-                                .addComponent(txtQuantum, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(22, 22, 22)))
+                                .addComponent(txtQuantum, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(9, 9, 9))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnParar, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnContinuar)
+                                .addGap(30, 30, 30)))
+                        .addComponent(Ejecutar, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addGap(232, 232, 232)
@@ -184,21 +200,17 @@ public class HiloControlador extends javax.swing.JFrame{
                 .addComponent(CicloReloj_TF, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(rdbModoLento)
-                .addGap(32, 32, 32))
+                .addGap(43, 43, 43))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(36, 36, 36)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(CicloReloj_TF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(23, 23, 23)
-                        .addComponent(rdbModoLento)))
-                .addGap(21, 21, 21)
+                .addGap(35, 35, 35)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(CicloReloj_TF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rdbModoLento))
+                .addGap(19, 19, 19)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -208,11 +220,12 @@ public class HiloControlador extends javax.swing.JFrame{
                     .addComponent(txtTiempoBus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbQuantum)
                     .addComponent(txtQuantum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(46, 46, 46)
+                .addGap(52, 52, 52)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Ejecutar)
+                    .addComponent(btnParar)
                     .addComponent(btnContinuar))
-                .addGap(29, 29, 29))
+                .addGap(23, 23, 23))
         );
 
         pack();
@@ -230,7 +243,18 @@ public class HiloControlador extends javax.swing.JFrame{
                 String ciclo=""+ciclosReloj;
                 //ciclo=CicloReloj_TF.getText();
                 CicloReloj_TF.setText(ciclo);
+                if(rdbModoLento.isSelected()){
+                  try{
+                      do{
+                          Thread.sleep(100);
+                        }while(!continuar);
+                  }catch(InterruptedException e){
+                  }
+                  continuar = false;
+                      
+                }
             }
+            
             for(int i = 0; i < hilos; i++){  //cambiar
             	if(!comunicadores[i].ocupado){
                   System.out.println("VALOR COLA ates de if: " + vectPc.peek());
@@ -378,8 +402,12 @@ public class HiloControlador extends javax.swing.JFrame{
     }//GEN-LAST:event_OpenActionPerformed
 
     private void btnContinuarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContinuarActionPerformed
-        // aqui hay que llamar a resume para cada hilo
+       continuar = true;
     }//GEN-LAST:event_btnContinuarActionPerformed
+
+    private void btnPararActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPararActionPerformed
+         System.exit(0); 
+    }//GEN-LAST:event_btnPararActionPerformed
     /*
       Efecto: Imprime en la interfaz los registros,el quantum y otros datos
       Requiere: Un string con los datos a mostrar 
@@ -408,6 +436,7 @@ public class HiloControlador extends javax.swing.JFrame{
     private javax.swing.JMenu File;
     private javax.swing.JMenuItem Open;
     private javax.swing.JButton btnContinuar;
+    private javax.swing.JButton btnParar;
     private javax.swing.JFileChooser fileChooser;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenuBar jMenuBar1;

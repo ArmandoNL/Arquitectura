@@ -3,7 +3,8 @@ import java.util.concurrent.*;
 
 public class Nucleo implements Runnable {
     
- // private final int[] registros;  
+ // private final int[] registros; 
+  public Thread t;
   private final int[][] cacheDeInstrucciones; //donde se guarda la informacion de la cache.
   private final HiloControlador mainThread; //instancia del hilo controlador
   private final ArrayList<Integer> arrayInstrucciones; //contiene las instrucciones de memoria
@@ -46,6 +47,7 @@ public class Nucleo implements Runnable {
     }     
    seTermino();
    System.out.println("Se termino");
+   
 }
  
   //se encarga de verificar que ambos procesadores hayan termiando, si no se mantiene esperando en la barrera.
