@@ -66,6 +66,8 @@ public class HiloControlador extends javax.swing.JFrame{
         textarea = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
         CicloReloj_TF = new javax.swing.JTextField();
+        rdbModoLento = new javax.swing.JRadioButton();
+        btnContinuar = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         File = new javax.swing.JMenu();
         Open = new javax.swing.JMenuItem();
@@ -103,6 +105,18 @@ public class HiloControlador extends javax.swing.JFrame{
         jLabel1.setText("Ciclo actual del Reloj :");
 
         CicloReloj_TF.setEditable(false);
+
+        rdbModoLento.setText("Activar Modo Lento");
+        rdbModoLento.setToolTipText("");
+
+        btnContinuar.setBackground(new java.awt.Color(0, 102, 153));
+        btnContinuar.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btnContinuar.setText("Continuar");
+        btnContinuar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnContinuarActionPerformed(evt);
+            }
+        });
 
         jMenuBar1.setBackground(new java.awt.Color(204, 204, 204));
 
@@ -143,36 +157,47 @@ public class HiloControlador extends javax.swing.JFrame{
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addComponent(lbLatencia)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtLatencia, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(94, 94, 94)
-                        .addComponent(lbTiempobus)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtTiempoBus, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 110, Short.MAX_VALUE)
-                        .addComponent(lbQuantum)
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Ejecutar)
-                            .addComponent(txtQuantum, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(19, 19, 19)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(Ejecutar)
+                                .addGap(33, 33, 33)
+                                .addComponent(btnContinuar))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(19, 19, 19)
+                                .addComponent(lbLatencia)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtLatencia, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(94, 94, 94)
+                                .addComponent(lbTiempobus)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtTiempoBus, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 110, Short.MAX_VALUE)
+                                .addComponent(lbQuantum)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtQuantum, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(22, 22, 22)))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addGap(232, 232, 232)
                 .addComponent(jLabel1)
                 .addGap(32, 32, 32)
                 .addComponent(CicloReloj_TF, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(rdbModoLento)
+                .addGap(32, 32, 32))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(36, 36, 36)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(CicloReloj_TF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(36, 36, 36)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(CicloReloj_TF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(23, 23, 23)
+                        .addComponent(rdbModoLento)))
                 .addGap(21, 21, 21)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
@@ -183,9 +208,11 @@ public class HiloControlador extends javax.swing.JFrame{
                     .addComponent(txtTiempoBus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbQuantum)
                     .addComponent(txtQuantum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(48, 48, 48)
-                .addComponent(Ejecutar)
-                .addGap(27, 27, 27))
+                .addGap(46, 46, 46)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Ejecutar)
+                    .addComponent(btnContinuar))
+                .addGap(29, 29, 29))
         );
 
         pack();
@@ -349,6 +376,10 @@ public class HiloControlador extends javax.swing.JFrame{
         
         
     }//GEN-LAST:event_OpenActionPerformed
+
+    private void btnContinuarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContinuarActionPerformed
+        // aqui hay que llamar a resume para cada hilo
+    }//GEN-LAST:event_btnContinuarActionPerformed
     /*
       Efecto: Imprime en la interfaz los registros,el quantum y otros datos
       Requiere: Un string con los datos a mostrar 
@@ -376,6 +407,7 @@ public class HiloControlador extends javax.swing.JFrame{
     private javax.swing.JMenuItem Exit;
     private javax.swing.JMenu File;
     private javax.swing.JMenuItem Open;
+    private javax.swing.JButton btnContinuar;
     private javax.swing.JFileChooser fileChooser;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenuBar jMenuBar1;
@@ -383,6 +415,7 @@ public class HiloControlador extends javax.swing.JFrame{
     private javax.swing.JLabel lbLatencia;
     private javax.swing.JLabel lbQuantum;
     private javax.swing.JLabel lbTiempobus;
+    public javax.swing.JRadioButton rdbModoLento;
     private javax.swing.JTextArea textarea;
     private javax.swing.JTextField txtLatencia;
     private javax.swing.JTextField txtQuantum;

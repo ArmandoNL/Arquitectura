@@ -225,6 +225,10 @@ private void cambiarCiclo(){
         barrera.await();
     }catch (InterruptedException | BrokenBarrierException e){}
     
+    if(mainThread.rdbModoLento.isSelected()){
+        //aqu[i hay que suspender el hilo e imprimir en pantalla
+    }
+    
     if(this.comunicadores[this.numProcesador].seguir){ //si hay mas PCs para entregar se pide el pc.
         pcSiguiente();
         this.comunicadores[this.numProcesador].seguir=false;
