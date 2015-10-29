@@ -453,11 +453,11 @@ private void ejecutarInstruccion(int[] vector){
         int numero=0;
         //String numero2="";
         
-        for(int i=1; i< mainThread.contArchivos*2; i=i+2){
+        for(int i=1; i< mainThread.contArchivos*3; i=i+3){
             if(hPC==mainThread.nombreArchivo[i]){
                 numero=mainThread.nombreArchivo[i-1];
             }
-           // numero2=mainThread.nombreArchivo[i];
+            //numero2=mainThread.nombreArchivo[i];
         } 
        /* for(int j=0; j< mainThread.nombreArchivo.length; j++){
             
@@ -476,7 +476,7 @@ private void ejecutarInstruccion(int[] vector){
           //text+="Contador Interno de programa Actual(hPC) :" + hPC;
           //text+="\n";
           text+= "Numero de Procesador que corrio el archivo : " + this.numProcesador;
-          /*text+="Campo del vector :" +numero2 ;*/
+        //  text+="Campo del vector :" +numero2 ;
           text+="\n\n";
          
            mainThread.imprimirPantalla(text);       	
@@ -484,11 +484,14 @@ private void ejecutarInstruccion(int[] vector){
     
     public void miEstado(){ 
         int num=0;
-        for(int i=1; i<= mainThread.contArchivos*2; i=i+2){
+        for(int i=1; i<= mainThread.contArchivos*3; i=i+3){
             
-            if(this.hPC<=mainThread.nombreArchivo[i]){ //se ocupa otra condicion porque 0 siempre va a ser menor que todos los demas.
-                //tiene que ser algo como >=PC donde empieza && <pc donde termina.
+            if(this.hPC<mainThread.nombreArchivo[i] && this.hPC>=mainThread.nombreArchivo[i+1]){ //se ocupa otra condicion porque 0 siempre va a ser menor que todos los demas.
+                //tiene que ser algo c omo >=PC donde empieza && <pc donde termina.
                 num=mainThread.nombreArchivo[i-1];
+               // System.out.println("Mayor o igual a  " + mainThread.nombreArchivo[i+1]);
+              //  System.out.println("Menor a " + mainThread.nombreArchivo[i]);
+                System.out.println("num: " + num);
             }
         }
         String text=""+ num; 

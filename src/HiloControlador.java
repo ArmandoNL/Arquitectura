@@ -27,7 +27,7 @@ public class HiloControlador extends javax.swing.JFrame{
     public  Queue <Integer> vectPcFinal;//cola para almacenar hasta dónde está almacenado cada archivo en la memorio
     private int[] vecPC = new int[20];//vector temporal para almacenar el valor inicial de los PC
     public int[] vecPcFinal = new int[20];//vector temporal para almacenar el valor final de los PC
-    public int[] nombreArchivo = new int[15];//almacenar el nombre de los archivos con los que trabajamos.
+    public int[] nombreArchivo = new int[20];//almacenar el nombre de los archivos con los que trabajamos.
     int contArchivos = 0;//número de archivos con que trabajamos
     private int numLineas;//número de líneas con que trabajamos
     public boolean continuar = false;
@@ -254,10 +254,11 @@ public class HiloControlador extends javax.swing.JFrame{
                     .addComponent(lbQuantum)
                     .addComponent(txtQuantum, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(52, 52, 52)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(Ejecutar)
-                    .addComponent(btnParar)
-                    .addComponent(btnContinuar))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnParar)
+                        .addComponent(btnContinuar)))
                 .addGap(23, 23, 23))
         );
 
@@ -412,13 +413,17 @@ public class HiloControlador extends javax.swing.JFrame{
             
             if(numLineas == 0)//se almacenan los PC
             {
-                vecPC[contArchivos]= 0;               
-                numLineas += contLineas*4;               
+                vecPC[contArchivos]= 0;
+                nombreArchivo[i]= 0;
+                numLineas += contLineas*4; 
+                i++;
             }
             else
             {
-                vecPC[contArchivos]= numLineas;               
-                numLineas += contLineas*4;               
+                vecPC[contArchivos]= numLineas; 
+                nombreArchivo[i]= numLineas;
+                numLineas += contLineas*4; 
+                i++;
             }
             vecPcFinal[contArchivos] = numLineas;
             contArchivos++;
