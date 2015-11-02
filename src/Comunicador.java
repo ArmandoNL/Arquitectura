@@ -8,7 +8,7 @@ public class Comunicador {
        public int hiloPC;
        public boolean ocupado;
        public boolean terminado;
-       public Semaphore semaforoCache, semaforoComunicador;
+       public Semaphore busCacheInst, busCacheDatos;
        public int quantum;
        public int[] vectreg;
        public boolean seguir;
@@ -20,8 +20,9 @@ public class Comunicador {
        public Comunicador(){
            vectreg = new int[34];
            contextos = new ArrayList<int[]>();
-           semaforoCache = new Semaphore(1,true);
-           semaforoComunicador = new Semaphore(1);
+           busCacheInst = new Semaphore(1,true);
+           busCacheDatos = new Semaphore(1,true);
+           //semaforoComunicador = new Semaphore(1);
            terminado=false;
            seguir=false;
        }

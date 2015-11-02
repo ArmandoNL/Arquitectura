@@ -177,7 +177,7 @@ private void limpiarRegistros(){
     Modifica: el valor del bus.
     */
 boolean pedirBus(){ 
-    if(this.comunicadores[this.numProcesador].semaforoCache.tryAcquire()){
+    if(this.comunicadores[this.numProcesador].busCacheInst.tryAcquire()){
         busOcupado = true;
         return true;
     }else{
@@ -190,7 +190,7 @@ boolean pedirBus(){
     Modifica: el valor del bus.
     */
 boolean liberarBus(){ //libera el bus una vez que no se necesita.
-    this.comunicadores[this.numProcesador].semaforoCache.release();
+    this.comunicadores[this.numProcesador].busCacheInst.release();
     busOcupado = false;
     return true;
 }
