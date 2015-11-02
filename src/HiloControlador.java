@@ -19,6 +19,7 @@ public class HiloControlador extends javax.swing.JFrame{
     public Nucleo nucleo;//instancia de la clase nucleo
     public Nucleo[] nucleos;//vector para manejar varios nucleos
     public ArrayList<Integer> memTemp;//memoria temporal donde se almacenan las instrucciones
+    public int[] memDatos;
     public int ciclosReloj; //contador de ciclos de reloj
     public  CyclicBarrier barrier;//barrera cíclica para controlar el cambio de ciclo
     public int hilos; //para controlar el número de hilos con el que vamos a trabajar temporalmente
@@ -46,6 +47,7 @@ public class HiloControlador extends javax.swing.JFrame{
         initComponents();
         ciclosReloj = 0;
         memTemp = new ArrayList<Integer>();
+        memDatos = new int[88];
         vectPc = new LinkedList<Integer>();
         vectPcFinal = new LinkedList<Integer>();
         numLineas=0;
@@ -365,7 +367,10 @@ public class HiloControlador extends javax.swing.JFrame{
           for(int i = 0; i < hilos; i++){
     		(new Thread(nucleos[i])).start();
             }   
-            
+          
+        for(int i = 0; i < 88; i++){
+            memDatos[i] = 1; 
+        }   
            // metodoPrincipal();
     }//GEN-LAST:event_EjecutarActionPerformed
 

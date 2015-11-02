@@ -6,8 +6,11 @@ public class Nucleo implements Runnable {
  // private final int[] registros; 
   public Thread t;
   private final int[][] cacheDeInstrucciones; //donde se guarda la informacion de la cache.
+  private final int[][] cacheDeDatos;//cache de datos
   private final HiloControlador mainThread; //instancia del hilo controlador
-  private final ArrayList<Integer> arrayInstrucciones; //contiene las instrucciones de memoria
+  private final ArrayList<Integer> memInstrucciones; //memoria de instrucciones
+  private final int[] memDatos; //memoria de datos
+  private final char[] estadoCacheDatos; //memoria de datos
   private final CyclicBarrier barrera; //se encarga de la sincronizacion de los procesadores
   private final int numProcesador; //id del procesade utilizado
   private int PC; //PC inicial de cada procesador
@@ -24,13 +27,23 @@ public class Nucleo implements Runnable {
 	 
           this.numProcesador = id; //id del procesador
           mainThread = hc; // instacia del hilo controlador
-          arrayInstrucciones = mainThread.memTemp;  //instancia de la memoria de instrucciones 
+          memInstrucciones = mainThread.memTemp;  //instancia de la memoria de instrucciones 
+          memDatos = mainThread.memDatos;
           barrera = mainThread.barrier;  
           comunicadores = mainThread.comunicadores;          
           this.cacheDeInstrucciones = new int[17][8];  //se inicializa el cache de instrucciones con -1 en el id de bloque
 	  for(int i = 0; i < 8; i++){                
             this.cacheDeInstrucciones[16][i] = -1;
 	  }	
+          this.cacheDeDatos = new int[5][8];
+          for(int i = 0; i < 8; i++){                
+            this.cacheDeDatos[4][i] = -1;
+	  }
+          estadoCacheDatos = new char[8];
+          for(int i=0;i<7;i++){
+              this.estadoCacheDatos[i] = 'I';
+          }
+          
   }
   
   
@@ -85,9 +98,9 @@ public class Nucleo implements Runnable {
       int fila = 0;
       for(int i=bloque*16;i<j;i++) //NO SIEMPRE SE TRAE BLOQUE COMPLETO
       {
-          if(i < this.pcFinal)// arrayInstrucciones.size() cuando i sobrepasa el numero de elementos del array no saca nada
+          if(i < this.pcFinal)// memInstrucciones.size() cuando i sobrepasa el numero de elementos del array no saca nada
           {
-               this.cacheDeInstrucciones[fila][columCache] = arrayInstrucciones.get(i);
+               this.cacheDeInstrucciones[fila][columCache] = memInstrucciones.get(i);
                fila++;
           }
       }
