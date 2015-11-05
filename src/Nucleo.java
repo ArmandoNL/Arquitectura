@@ -334,6 +334,18 @@ private void ejecutarInstruccion(int[] vector){
       case 2:             
           jr(instruccion[1]);
         break;
+       case 35:             
+          lw(instruccion[3],instruccion[1],instruccion[2]);
+        break;
+      case 43:             
+          sw(instruccion[3],instruccion[1],instruccion[2]);
+        break;
+      case 50:             
+          ll(instruccion[2],instruccion[3]);
+        break;
+      case 51:             
+          sc(instruccion[2],instruccion[3]);
+        break;
       case 63:
           fin();
           imprimirEstado();
@@ -515,5 +527,20 @@ private void ejecutarInstruccion(int[] vector){
         }
      }
     
+    public void lw(int inst1, int reddestino,int inst3){
+        
     
+    }
+    
+    public void sw(int dirmem, int inst2, int inst3){        
+    
+    }
+    
+    public void ll(int inst2,int inst3){        
+    
+    }
+    
+    public void sc(int inst2,int inst3){        
+    
+    }
 }
