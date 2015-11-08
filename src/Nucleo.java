@@ -245,9 +245,8 @@ private void cambiarCiclo(){
     this.comunicadores[this.numProcesador].cambiarCiclo = true; //avisa que esta listo para cambiar ciclo
    
     try{     
+        this.miEstado();
         barrera.await();
-            this.miEstado();
-        
     }catch (InterruptedException | BrokenBarrierException e){}
     if(this.comunicadores[this.numProcesador].seguir){ //si hay mas PCs para entregar se pide el pc.
         pcSiguiente();
@@ -524,7 +523,7 @@ private void ejecutarInstruccion(int[] vector){
                 num=mainThread.nombreArchivo[i-1];
                // System.out.println("Mayor o igual a  " + mainThread.nombreArchivo[i+1]);
               //  System.out.println("Menor a " + mainThread.nombreArchivo[i]);
-                System.out.println("num: " + num);
+                
             }
         }
         String text=""+ num; 

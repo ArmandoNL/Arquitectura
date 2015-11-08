@@ -278,8 +278,6 @@ public class HiloControlador extends javax.swing.JFrame{
     Runnable barrierFuncion = new Runnable(){
         public void run(){   
             if(comunicadores[0].cambiarCiclo && comunicadores[1].cambiarCiclo){
-              
-               
                 ciclosReloj++;
                 String ciclo=""+(ciclosReloj-1);
                 CicloReloj_TF.setText(ciclo);
@@ -300,7 +298,6 @@ public class HiloControlador extends javax.swing.JFrame{
                   System.out.println("VALOR COLA : " + vectPc.peek());
                     if(!vectPc.isEmpty()){
                         System.out.println("VALOR COLA: " + vectPc.peek());
-                         
                         int pcActual= vectPc.poll();
                         System.out.println("Valor cola despues: " + vectPc.peek());
                         comunicadores[i].write(pcActual,quantum);
