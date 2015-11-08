@@ -547,7 +547,8 @@ private void ejecutarInstruccion(int[] vector){
         if(!pedirMiCache()){
             instCompletada = false;
         }
-        else{
+        else
+        {
             int posMem = ((dirMem+regSum)%640)/4;
             char estado = estadoCacheDatos[posCache];
             int palabra = ((this.comunicadores[this.numProcesador].vectreg[regSum] + dirMem)%16)/4;
@@ -572,8 +573,8 @@ private void ejecutarInstruccion(int[] vector){
                     case('I'):
                         if(pedirBusDatos()){
                             while(!pedirOtraCache()){}//mientras no este deiponible la otra cache, esperamos.
-                            if(mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache] == numBloque){
-                                char estadoOtraCache = mainThread.nucleos[this.otraCache].estadoCacheDatos[posCache];
+                            if(mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache] == numBloque){//el bloque está en la otra caché
+                                char estadoOtraCache = mainThread.nucleos[this.otraCache].estadoCacheDatos[posCache]; //estado de otra caché
                                 int i = 0;
                                 switch(estadoOtraCache){
                                     case('M'):
@@ -592,7 +593,7 @@ private void ejecutarInstruccion(int[] vector){
                                         liberarBusDatos();
                                         liberarMiCache();
                                         break;
-                                    case('I'):
+                                    case('I'): //esta en mi caché y en la otra invalido
                                         liberarOtraCache();
                                         for(int j=0;j<4;j++){
                                            this.cacheDeDatos[j][posCache] =  memDatos[posMem+j];
@@ -623,7 +624,7 @@ private void ejecutarInstruccion(int[] vector){
                                         break;
                                 }
                             }
-                            else{
+                            else{ //si está en mi caché pero NO en la otra.
                                 liberarOtraCache();
                                 for(int j=0;j<4;j++){
                                     this.cacheDeDatos[j][posCache] =  memDatos[posMem+j];
@@ -641,7 +642,8 @@ private void ejecutarInstruccion(int[] vector){
                     default: break;
                 }
             }
-            else{//cuando no esta el valor en mi cache
+            else
+            {//cuando no está el valor en mi cache
                 if(pedirBusDatos()){
                             while(!pedirOtraCache()){}//mientras no este deiponible la otra cache, esperamos.
                             if(mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache] == numBloque){//si esta en la otra cache
@@ -678,7 +680,7 @@ private void ejecutarInstruccion(int[] vector){
                                         liberarBusDatos();
                                         liberarMiCache();
                                         break;
-                                    case('I'):
+                                    case('I'): //no en mi caché y en la otra invalido
                                         liberarOtraCache();
                                         if(this.estadoCacheDatos[posCache]=='M'){
                                             posMem = ((this.cacheDeDatos[4][posCache]*16)%640)/4;
@@ -732,29 +734,31 @@ private void ejecutarInstruccion(int[] vector){
                                         break;
                                 }
                             }
-                            else{//cuando no esta en ninguna
+                            else
+                            {//cuando No está en NINGUNA caché
                                 liberarOtraCache();
-                                if(this.estadoCacheDatos[posCache]=='M'){
-                                            posMem = ((this.cacheDeDatos[4][posCache]*16)%640)/4;
-                                            for(int j=0;j<4;j++){
-                                                memDatos[posMem+j] = this.cacheDeDatos[j][posCache];
-                                            }
-                                            //tenemos que contar 2 veces la latencia 
-                                            /*while(i<mainThread.latencia){
-                                                cambiarCiclo();
-                                                i++;
-                                            }*/
+                                if(this.estadoCacheDatos[posCache]=='M'){ //si se encuentra ocupado con M el bloque que voy a sobreescribir  en caché
+                                    posMem = ((this.cacheDeDatos[4][posCache]*16)%640)/4; //donde se va a guardar en memoria el bloque a sobreescribir.
+                                    for(int j=0;j<4;j++){
+                                        memDatos[posMem+j] = this.cacheDeDatos[j][posCache]; //guardamos en memoria el bloque 
+                                    }
+                                    //tenemos que contar 2 veces la latencia 
+                                    /*while(i<mainThread.latencia){
+                                    cambiarCiclo();
+                                    i++;
+                                    }*/
                                 }
                                 for(int j=0;j<4;j++){
-                                    this.cacheDeDatos[j][posCache] =  memDatos[posMem+j];
+                                    this.cacheDeDatos[j][posCache] =  memDatos[posMem+j]; //ponemos en el bloque los datos de memoria que necesitamos
                                 }    
-                                this.cacheDeDatos[palabra][posCache] = dato;
+                                this.cacheDeDatos[palabra][posCache] = dato; 
                                 this.estadoCacheDatos[posCache] = 'M';
                                 liberarBusDatos();
                                 liberarMiCache();
                             }
                         }
-                        else{
+                        else
+                        {
                             instCompletada = false;
                         }
             }
