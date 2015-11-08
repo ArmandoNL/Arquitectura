@@ -132,12 +132,17 @@ private void  ejecutarDeCache(){
         this.hPC+=4;
 	ejecutarInstruccion(vecInstruccion); //se encarga de ejecutar cada instrucciones en el cache
         cambiarCiclo();
-
+        
+        while(!instCompletada){ //si la instruccion no se ha completado tiene que volver a ejecutarla hasta que se complete.
+            instCompletada=true;
+            ejecutarInstruccion(vecInstruccion); //se encarga de ejecutar cada instrucciones en el cache
+            cambiarCiclo();
+        }
+        
         if(this.quantumNucleo == 0) //si el quantum se gasta se guarda el contexto
         { 
             seAcaboQuantum();
-        }
-	
+        }       
 }
 
 /*    Efecto: guarda el contexto de los registros  y el PC si se acaba el quantum
@@ -645,123 +650,123 @@ private void ejecutarInstruccion(int[] vector){
             else
             {//cuando no está el valor en mi cache
                 if(pedirBusDatos()){
-                            while(!pedirOtraCache()){}//mientras no este deiponible la otra cache, esperamos.
-                            if(mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache] == numBloque){//si esta en la otra cache
-                                char estadoOtraCache = mainThread.nucleos[this.otraCache].estadoCacheDatos[posCache];
-                                int i = 0;
-                                switch(estadoOtraCache){
-                                    case('M'):
-                                        for(int j=0;j<4;j++){
-                                           memDatos[posMem+j] = mainThread.nucleos[this.otraCache].cacheDeDatos[j][posCache];
-                                        }
-                                        if(this.estadoCacheDatos[posCache]=='M'){
-                                            posMem = ((this.cacheDeDatos[4][posCache]*16)%640)/4;
-                                            for(int j=0;j<4;j++){
-                                                memDatos[posMem+j] = this.cacheDeDatos[j][posCache];
-                                            }
-                                            //tenemos que contar 2 veces la latencia 
-                                            /*while(i<mainThread.latencia){
-                                                cambiarCiclo();
-                                                i++;
-                                            }*/
-                                        }
-                                        for(int j=0;j<4;j++){
-                                           this.cacheDeDatos[j][posCache] = mainThread.nucleos[this.otraCache].cacheDeDatos[j][posCache];
-                                        }
-                                           
-                                        mainThread.nucleos[this.otraCache].estadoCacheDatos[posCache] = 'I';
-                                        this.cacheDeDatos[palabra][posCache] = dato;
-                                        this.estadoCacheDatos[posCache] = 'M';
-                                        while(i<mainThread.latencia){
-                                            cambiarCiclo();
-                                            i++;
-                                        }
-                                        liberarOtraCache();
-                                        liberarBusDatos();
-                                        liberarMiCache();
-                                        break;
-                                    case('I'): //no en mi caché y en la otra invalido
-                                        liberarOtraCache();
-                                        if(this.estadoCacheDatos[posCache]=='M'){
-                                            posMem = ((this.cacheDeDatos[4][posCache]*16)%640)/4;
-                                            for(int j=0;j<4;j++){
-                                                memDatos[posMem+j] = this.cacheDeDatos[j][posCache];
-                                            }
-                                            //tenemos que contar 2 veces la latencia 
-                                            /*while(i<mainThread.latencia){
-                                                cambiarCiclo();
-                                                i++;
-                                            }*/
-                                        }
-                                        for(int j=0;j<4;j++){
-                                           this.cacheDeDatos[j][posCache] =  memDatos[posMem+j];
-                                           
-                                        }
-                                        this.cacheDeDatos[palabra][posCache] = dato;
-                                        this.estadoCacheDatos[posCache] = 'M';
-                                        while(i<mainThread.latencia){
-                                            cambiarCiclo();
-                                            i++;
-                                        }
-                                        liberarBusDatos();
-                                        liberarMiCache();
-                                        break;
-                                    case('C'):
-                                        if(this.estadoCacheDatos[posCache]=='M'){
-                                            posMem = ((this.cacheDeDatos[4][posCache]*16)%640)/4;
-                                            for(int j=0;j<4;j++){
-                                                memDatos[posMem+j] = this.cacheDeDatos[j][posCache];
-                                            }
-                                            //tenemos que contar 2 veces la latencia 
-                                            /*while(i<mainThread.latencia){
-                                                cambiarCiclo();
-                                                i++;
-                                            }*/
-                                        }
-                                        for(int j=0;j<4;j++){
-                                           this.cacheDeDatos[j][posCache] =  memDatos[posMem+j];
-                                        }
-                                        this.cacheDeDatos[palabra][posCache] = dato;
-                                        this.estadoCacheDatos[posCache] = 'M';
-                                        mainThread.nucleos[this.otraCache].estadoCacheDatos[posCache] = 'I';
-                                        while(i<mainThread.latencia){
-                                            cambiarCiclo();
-                                            i++;
-                                        }
-                                        liberarOtraCache();
-                                        liberarBusDatos();
-                                        liberarMiCache();
-                                        break;
+                    while(!pedirOtraCache()){}//mientras no este deiponible la otra cache, esperamos.
+                    if(mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache] == numBloque){//si esta en la otra cache
+                        char estadoOtraCache = mainThread.nucleos[this.otraCache].estadoCacheDatos[posCache];
+                        int i = 0;
+                        switch(estadoOtraCache){
+                            case('M'):
+                                for(int j=0;j<4;j++){
+                                    memDatos[posMem+j] = mainThread.nucleos[this.otraCache].cacheDeDatos[j][posCache];
                                 }
-                            }
-                            else
-                            {//cuando No está en NINGUNA caché
-                                liberarOtraCache();
-                                if(this.estadoCacheDatos[posCache]=='M'){ //si se encuentra ocupado con M el bloque que voy a sobreescribir  en caché
-                                    posMem = ((this.cacheDeDatos[4][posCache]*16)%640)/4; //donde se va a guardar en memoria el bloque a sobreescribir.
+                                if(this.estadoCacheDatos[posCache]=='M'){
+                                    posMem = ((this.cacheDeDatos[4][posCache]*16)%640)/4;
                                     for(int j=0;j<4;j++){
-                                        memDatos[posMem+j] = this.cacheDeDatos[j][posCache]; //guardamos en memoria el bloque 
+                                        memDatos[posMem+j] = this.cacheDeDatos[j][posCache];
                                     }
+                                            //tenemos que contar 2 veces la latencia 
+                                            /*while(i<mainThread.latencia){
+                                                cambiarCiclo();
+                                                i++;
+                                            }*/
+                                }
+                                for(int j=0;j<4;j++){
+                                    this.cacheDeDatos[j][posCache] = mainThread.nucleos[this.otraCache].cacheDeDatos[j][posCache];
+                                }
+                                mainThread.nucleos[this.otraCache].estadoCacheDatos[posCache] = 'I';
+                                this.cacheDeDatos[palabra][posCache] = dato;
+                                this.estadoCacheDatos[posCache] = 'M';
+                                while(i<mainThread.latencia){
+                                    cambiarCiclo();
+                                    i++;
+                                }
+                                liberarOtraCache();
+                                liberarBusDatos();
+                                liberarMiCache();
+                                break;
+                            case('I'): //no en mi caché y en la otra invalido
+                                liberarOtraCache();
+                                if(this.estadoCacheDatos[posCache]=='M'){
+                                    posMem = ((this.cacheDeDatos[4][posCache]*16)%640)/4;
+                                    for(int j=0;j<4;j++){
+                                        memDatos[posMem+j] = this.cacheDeDatos[j][posCache];
+                                    }
+                                            //tenemos que contar 2 veces la latencia 
+                                            /*while(i<mainThread.latencia){
+                                                cambiarCiclo();
+                                                i++;
+                                            }*/
+                                }
+                                for(int j=0;j<4;j++){
+                                    this.cacheDeDatos[j][posCache] =  memDatos[posMem+j];   
+                                }
+                                this.cacheDeDatos[palabra][posCache] = dato;
+                                this.estadoCacheDatos[posCache] = 'M';
+                                while(i<mainThread.latencia){
+                                    cambiarCiclo();
+                                    i++;
+                                }
+                                liberarBusDatos();
+                                liberarMiCache();
+                                break;
+                            case('C'):
+                                if(this.estadoCacheDatos[posCache]=='M'){
+                                    posMem = ((this.cacheDeDatos[4][posCache]*16)%640)/4;
+                                    for(int j=0;j<4;j++){
+                                        memDatos[posMem+j] = this.cacheDeDatos[j][posCache];
+                                    }
+                                            //tenemos que contar 2 veces la latencia 
+                                            /*while(i<mainThread.latencia){
+                                                cambiarCiclo();
+                                                i++;
+                                            }*/
+                                }
+                                for(int j=0;j<4;j++){
+                                    this.cacheDeDatos[j][posCache] =  memDatos[posMem+j];
+                                }
+                                this.cacheDeDatos[palabra][posCache] = dato;
+                                this.estadoCacheDatos[posCache] = 'M';
+                                mainThread.nucleos[this.otraCache].estadoCacheDatos[posCache] = 'I';
+                                while(i<mainThread.latencia){
+                                    cambiarCiclo();
+                                    i++;
+                                }
+                                liberarOtraCache();
+                                liberarBusDatos();
+                                liberarMiCache();
+                                break;
+                        }
+                    }
+                    else
+                    {//cuando No está en NINGUNA caché
+                        liberarOtraCache();
+                        if(this.estadoCacheDatos[posCache]=='M'){ //si se encuentra ocupado con M el bloque que voy a sobreescribir  en caché
+                            posMem = ((this.cacheDeDatos[4][posCache]*16)%640)/4; //donde se va a guardar en memoria el bloque a sobreescribir.
+                            for(int j=0;j<4;j++){
+                                memDatos[posMem+j] = this.cacheDeDatos[j][posCache]; //guardamos en memoria el bloque 
+                            }
                                     //tenemos que contar 2 veces la latencia 
                                     /*while(i<mainThread.latencia){
                                     cambiarCiclo();
                                     i++;
                                     }*/
-                                }
-                                for(int j=0;j<4;j++){
-                                    this.cacheDeDatos[j][posCache] =  memDatos[posMem+j]; //ponemos en el bloque los datos de memoria que necesitamos
-                                }    
-                                this.cacheDeDatos[palabra][posCache] = dato; 
-                                this.estadoCacheDatos[posCache] = 'M';
-                                liberarBusDatos();
-                                liberarMiCache();
-                            }
                         }
-                        else
-                        {
-                            instCompletada = false;
-                        }
+                        for(int j=0;j<4;j++){
+                            this.cacheDeDatos[j][posCache] =  memDatos[posMem+j]; //ponemos en el bloque los datos de memoria que necesitamos
+                        }    
+                        this.cacheDeDatos[palabra][posCache] = dato; 
+                        this.estadoCacheDatos[posCache] = 'M';
+                        liberarBusDatos();
+                        liberarMiCache();
+                    }
+                }
+                else
+                {
+                    instCompletada = false;
+                }
             }
+            
+            this.quantumNucleo--;
         }
         
     }
