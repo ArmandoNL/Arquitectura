@@ -20,6 +20,8 @@ public class Nucleo implements Runnable {
   private int quantumNucleo; //valor del quatum local
   boolean busOcupado; //funciona para mantener control del bus de cache
   boolean finalizar = false; //variable que funciona para terminar ka ejecucion del procesador.
+  public int otraCache;
+  private boolean instCompletada = true; 
   
   
   //nuevo constructor del procesador
@@ -42,6 +44,12 @@ public class Nucleo implements Runnable {
           estadoCacheDatos = new char[8];
           for(int i=0;i<7;i++){
               this.estadoCacheDatos[i] = 'I';
+          }
+          if(this.numProcesador==0){
+              this.otraCache = 1;
+          }
+          else{
+              this.otraCache = 0;
           }
           
   }
@@ -532,8 +540,56 @@ private void ejecutarInstruccion(int[] vector){
     
     }
     
-    public void sw(int regSum, int regDestino,int dirMem){        
+    public void sw(int regSum, int regDato,int dirMem){        
+        int numBloque = (this.comunicadores[this.numProcesador].vectreg[regSum] + dirMem)/16;
+        int posCache = numBloque%8;
+        int dato = this.comunicadores[this.numProcesador].vectreg[regDato];
+        
+        if(!pedirMiCache()){
+            instCompletada = false;
+        }
+        else{
+            if(this.cacheDeDatos[4][posCache] == numBloque){
+                
+            }
+        }
+        
+    }
     
+    public boolean pedirMiCache(){
+        boolean resp = false;
+        if(this.comunicadores[this.numProcesador].semaforoCache.tryAcquire()){
+            resp = true;
+        }        
+        return resp;
+    }
+    
+    public void liberarMiCache(){
+        this.comunicadores[this.numProcesador].semaforoCache.release();
+    }
+    
+    public boolean pedirOtraCache(){
+        boolean resp = false;
+        if(this.comunicadores[this.otraCache].semaforoCache.tryAcquire()){
+            resp = true;
+        }        
+        return resp;
+    }
+    
+    public void liberarOtraCache(){
+        this.comunicadores[this.otraCache].semaforoCache.release();
+    }
+    
+    public boolean pedirBusDatos(){
+        boolean resp = false;
+        if(this.comunicadores[this.numProcesador].busCacheDatos.tryAcquire()){
+            resp = true;
+        }        
+        return resp;
+    }
+    
+    public void liberarBusDatos(){
+        this.comunicadores[this.numProcesador].busCacheDatos.release();
     }
     
     public void ll(int inst2,int inst3){        
