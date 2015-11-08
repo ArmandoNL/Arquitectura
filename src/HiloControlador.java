@@ -32,6 +32,7 @@ public class HiloControlador extends javax.swing.JFrame{
     int contArchivos = 0;//número de archivos con que trabajamos
     private int numLineas;//número de líneas con que trabajamos
     public boolean continuar = false;
+    public int[] invalidar;
     
     //variables para el manejo de la interfaz
     JFileChooser fc;
@@ -53,6 +54,8 @@ public class HiloControlador extends javax.swing.JFrame{
         numLineas=0;
         fc = new JFileChooser();
         //i=0;
+        invalidar = new int[2];
+        invalidar[0] = -1;
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
