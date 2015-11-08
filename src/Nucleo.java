@@ -527,12 +527,12 @@ private void ejecutarInstruccion(int[] vector){
         }
      }
     
-    public void lw(int inst1, int reddestino,int inst3){
+    public void lw(int regSum, int regLectura,int dirMem){
         
     
     }
     
-    public void sw(int dirmem, int inst2, int inst3){        
+    public void sw(int regSum, int regDestino,int dirMem){        
     
     }
     
