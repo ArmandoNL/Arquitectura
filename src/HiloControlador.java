@@ -278,6 +278,9 @@ public class HiloControlador extends javax.swing.JFrame{
     Runnable barrierFuncion = new Runnable(){
         public void run(){   
             if(comunicadores[0].cambiarCiclo && comunicadores[1].cambiarCiclo){
+                if(invalidar[0]!=-1){
+                    nucleos[invalidar[0]].estadoCacheDatos[invalidar[1]]='I';
+                }
                 ciclosReloj++;
                 String ciclo=""+(ciclosReloj-1);
                 CicloReloj_TF.setText(ciclo);

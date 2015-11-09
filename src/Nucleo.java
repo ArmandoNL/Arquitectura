@@ -10,7 +10,7 @@ public class Nucleo implements Runnable {
   private final HiloControlador mainThread; //instancia del hilo controlador
   private final ArrayList<Integer> memInstrucciones; //memoria de instrucciones
   private final int[] memDatos; //memoria de datos
-  private final char[] estadoCacheDatos; //memoria de datos
+  public final char[] estadoCacheDatos; //memoria de datos
   private final CyclicBarrier barrera; //se encarga de la sincronizacion de los procesadores
   private final int numProcesador; //id del procesade utilizado
   private int PC; //PC inicial de cada procesador
