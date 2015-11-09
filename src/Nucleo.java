@@ -560,7 +560,17 @@ private void ejecutarInstruccion(int[] vector){
              
                 char estado = estadoCacheDatos[posCache];             
 
-                 switch(estado){                     
+                 switch(estado){
+                     case('C'): 
+                        dato=cacheDeDatos[palabra][posCache];            
+                        comunicadores[this.numProcesador].vectreg[regLectura]=dato;
+                        this.quantumNucleo--;
+                         break;
+                     case('M'):
+                        dato=cacheDeDatos[palabra][posCache];            
+                        comunicadores[this.numProcesador].vectreg[regLectura]=dato;
+                        this.quantumNucleo--; 
+                         break;
                      case('I'):                         
                              if(pedirBusDatos()){
                                  while(!pedirOtraCache()){} 
@@ -581,12 +591,15 @@ private void ejecutarInstruccion(int[] vector){
                                         cambiarCiclo();
                                         i++;
                                     }
+                                    mainThread.nucleos[this.otraCache].estadoCacheDatos[posCache]='C';
                                     liberarOtraCache();
                                     liberarBusDatos();
+                                    estadoCacheDatos[posCache]='C';
                                     dato=cacheDeDatos[palabra][posCache];            
                                     comunicadores[this.numProcesador].vectreg[regLectura]=dato;
                                     this.quantumNucleo--;
-                                    mainThread.nucleos[this.otraCache].estadoCacheDatos[posCache]='C';
+                                    
+                                    
                              }else{
                                  instCompletada=false;
                              }                        
@@ -622,18 +635,23 @@ private void ejecutarInstruccion(int[] vector){
                             while(i<mainThread.latencia){
                                 cambiarCiclo();
                                 i++;
-                            }
+                            }                            
                             liberarOtraCache();
                             liberarBusDatos();
-                            dato=cacheDeDatos[palabra][posCache];            
-                            comunicadores[this.numProcesador].vectreg[regLectura]=dato;
-                            this.quantumNucleo--;
                             estadoCacheDatos[posCache]='C';
+                            dato=cacheDeDatos[palabra][posCache];            
+                            comunicadores[this.numProcesador].vectreg[regLectura]=dato;                            
+                            this.quantumNucleo--;  
+                            
                          }else{// Si no esta del todo
                             int posMem3 = ((dirMem+regSum)%640)/4;
                             for(int z=0; z<4; z++){
                                 cacheDeDatos[z][posCache]=memDatos[posMem3+z];                                      
                             }
+                            estadoCacheDatos[posCache]='C';
+                            dato=cacheDeDatos[palabra][posCache];            
+                            comunicadores[this.numProcesador].vectreg[regLectura]=dato;
+                            
                          }
                     }else{
                         instCompletada=false;
