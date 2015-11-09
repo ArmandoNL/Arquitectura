@@ -540,7 +540,107 @@ private void ejecutarInstruccion(int[] vector){
      }
     
     public void lw(int regSum, int regLectura,int dirMem){
+        int dato = 0;
+         int i=0;
+         boolean esta;
+         int numBloque = (memDatos[dirMem]+regSum)/16;
+         int posCache = numBloque%8;
         
+         if(!pedirMiCache()){//Mato el hilo
+             instCompletada=false;         
+         }else{             
+                 if(cacheDeDatos[4][posCache]==numBloque){
+                     esta=true;
+                 }else{//fallo
+                     esta=false;
+                 }
+             int palabra = ((memDatos[dirMem]+regSum)%16)/4;
+            
+             if(esta){
+             
+                char estado = estadoCacheDatos[posCache];             
+
+                 switch(estado){                     
+                     case('I'):                         
+                             if(pedirBusDatos()){
+                                 while(!pedirOtraCache()){} 
+                                 int posMem = ((dirMem+regSum)%640)/4;
+                                     if(mainThread.nucleos[this.otraCache].estadoCacheDatos[posCache]=='M'){
+
+                                         for(int x=0; x<4; x++){
+                                             cacheDeDatos[x][posCache]=mainThread.nucleos[this.otraCache].cacheDeDatos[x][posCache];
+                                             memDatos[posMem+x]=mainThread.nucleos[this.otraCache].cacheDeDatos[x][posCache];                                   
+                                         }
+                                     }else{
+                                       for(int x=0; x<4; x++){
+                                         cacheDeDatos[x][posCache]=memDatos[posMem+x];                                      
+                                       }
+                                     }
+                                     
+                                    while(i<mainThread.latencia){
+                                        cambiarCiclo();
+                                        i++;
+                                    }
+                                    liberarOtraCache();
+                                    liberarBusDatos();
+                                    dato=cacheDeDatos[palabra][posCache];            
+                                    comunicadores[this.numProcesador].vectreg[regLectura]=dato;
+                                    this.quantumNucleo--;
+                                    mainThread.nucleos[this.otraCache].estadoCacheDatos[posCache]='C';
+                             }else{
+                                 instCompletada=false;
+                             }                        
+                          break;                     
+                     default:
+                         break;
+                }
+             }else{
+                   if(pedirBusDatos()){
+                         while(!pedirOtraCache()){} 
+                         if(mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache]==numBloque){//Si esta 
+                         
+                           int posMem = ((dirMem+regSum)%640)/4;
+                           if(mainThread.nucleos[this.otraCache].estadoCacheDatos[posCache]=='M'){
+
+                                for(int x=0; x<4; x++){
+                                    
+                                    if(estadoCacheDatos[posCache]!='M'){
+                                        cacheDeDatos[x][posCache]=mainThread.nucleos[this.otraCache].cacheDeDatos[x][posCache];
+                                    }else{
+                                        int posMem2 = ((this.cacheDeDatos[4][posCache]*16)%640)/4;
+                                        for(int y=0; y<4; y++){
+                                            memDatos[posMem2+y]=cacheDeDatos[y][posCache];
+                                        }
+                                    }
+                                    memDatos[posMem+x]=mainThread.nucleos[this.otraCache].cacheDeDatos[x][posCache];                                   
+                                }
+                            }else{
+                                for(int x=0; x<4; x++){
+                                    cacheDeDatos[x][posCache]=memDatos[posMem+x];                                      
+                                }
+                            }
+                            while(i<mainThread.latencia){
+                                cambiarCiclo();
+                                i++;
+                            }
+                            liberarOtraCache();
+                            liberarBusDatos();
+                            dato=cacheDeDatos[palabra][posCache];            
+                            comunicadores[this.numProcesador].vectreg[regLectura]=dato;
+                            this.quantumNucleo--;
+                            estadoCacheDatos[posCache]='C';
+                         }else{// Si no esta del todo
+                            int posMem3 = ((dirMem+regSum)%640)/4;
+                            for(int z=0; z<4; z++){
+                                cacheDeDatos[z][posCache]=memDatos[posMem3+z];                                      
+                            }
+                         }
+                    }else{
+                        instCompletada=false;
+                    } 
+             } 
+         }
+         liberarMiCache();
     
     }
     
