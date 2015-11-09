@@ -22,6 +22,7 @@ public class Nucleo implements Runnable {
   boolean finalizar = false; //variable que funciona para terminar ka ejecucion del procesador.
   public int otraCache;
   private boolean instCompletada = true; 
+  public boolean soyLoadLink;
   
   
   //nuevo constructor del procesador
@@ -296,7 +297,9 @@ public void contexto()
         {
            vec[i] = this.comunicadores[this.numProcesador].vectreg[i];
         }
+        
         vec[33] = this.hPC; //en la posicion 33 del contexto guarda el PC
+        
         this.comunicadores[this.numProcesador].guardarContexto(vec);
         System.out.println("Valor de PC " + this.hPC);
         mainThread.vectPc.add(this.hPC);
@@ -783,7 +786,18 @@ private void ejecutarInstruccion(int[] vector){
             }
             else
             {//cuando no está el valor en mi cache
-                if(pedirBusDatos()){
+                if(this.estadoCacheDatos[posCache]=='M'){ //como el bloque no està hay que fijarse si en ESE bloque hay uno en M para bajarlo a memoria primero.
+                    posMem = ((this.cacheDeDatos[4][posCache]*16)%640)/4;
+                    for(int j=0;j<4;j++){
+                        memDatos[posMem+j] = this.cacheDeDatos[j][posCache];
+                    }
+                    int i=0;
+                    while(i<mainThread.latencia){ 
+                        cambiarCiclo();
+                        i++;
+                    }
+                }  
+                if(pedirBusDatos()){ //para ir a buscar en la otra caché
                     while(!pedirOtraCache()){}//mientras no este deiponible la otra cache, esperamos.
                     if(mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache] == numBloque){//si esta en la otra cache
                         char estadoOtraCache = mainThread.nucleos[this.otraCache].estadoCacheDatos[posCache];
@@ -793,17 +807,17 @@ private void ejecutarInstruccion(int[] vector){
                                 for(int j=0;j<4;j++){
                                     memDatos[posMem+j] = mainThread.nucleos[this.otraCache].cacheDeDatos[j][posCache];
                                 }
-                                if(this.estadoCacheDatos[posCache]=='M'){
+                                /*if(this.estadoCacheDatos[posCache]=='M'){
                                     posMem = ((this.cacheDeDatos[4][posCache]*16)%640)/4;
                                     for(int j=0;j<4;j++){
                                         memDatos[posMem+j] = this.cacheDeDatos[j][posCache];
                                     }
-                                            //tenemos que contar 2 veces la latencia 
-                                            /*while(i<mainThread.latencia){
-                                                cambiarCiclo();
-                                                i++;
-                                            }*/
-                                }
+                                
+                                    while(i<mainThread.latencia){ 
+                                        cambiarCiclo();
+                                        i++;
+                                    }
+                                }*/
                                 for(int j=0;j<4;j++){
                                     this.cacheDeDatos[j][posCache] = mainThread.nucleos[this.otraCache].cacheDeDatos[j][posCache];
                                 }
@@ -820,17 +834,12 @@ private void ejecutarInstruccion(int[] vector){
                                 break;
                             case('I'): //no en mi caché y en la otra invalido
                                 liberarOtraCache();
-                                if(this.estadoCacheDatos[posCache]=='M'){
+                                /*if(this.estadoCacheDatos[posCache]=='M'){
                                     posMem = ((this.cacheDeDatos[4][posCache]*16)%640)/4;
                                     for(int j=0;j<4;j++){
                                         memDatos[posMem+j] = this.cacheDeDatos[j][posCache];
                                     }
-                                            //tenemos que contar 2 veces la latencia 
-                                            /*while(i<mainThread.latencia){
-                                                cambiarCiclo();
-                                                i++;
-                                            }*/
-                                }
+                                }*/
                                 for(int j=0;j<4;j++){
                                     this.cacheDeDatos[j][posCache] =  memDatos[posMem+j];   
                                 }
@@ -844,17 +853,17 @@ private void ejecutarInstruccion(int[] vector){
                                 liberarMiCache();
                                 break;
                             case('C'):
-                                if(this.estadoCacheDatos[posCache]=='M'){
+                                /*if(this.estadoCacheDatos[posCache]=='M'){
                                     posMem = ((this.cacheDeDatos[4][posCache]*16)%640)/4;
                                     for(int j=0;j<4;j++){
                                         memDatos[posMem+j] = this.cacheDeDatos[j][posCache];
                                     }
-                                            //tenemos que contar 2 veces la latencia 
-                                            /*while(i<mainThread.latencia){
+                                           tenemos que contar 2 veces la latencia 
+                                            while(i<mainThread.latencia){
                                                 cambiarCiclo();
                                                 i++;
-                                            }*/
-                                }
+                                            }
+                                }*/
                                 for(int j=0;j<4;j++){
                                     this.cacheDeDatos[j][posCache] =  memDatos[posMem+j];
                                 }
@@ -879,11 +888,11 @@ private void ejecutarInstruccion(int[] vector){
                             for(int j=0;j<4;j++){
                                 memDatos[posMem+j] = this.cacheDeDatos[j][posCache]; //guardamos en memoria el bloque 
                             }
-                                    //tenemos que contar 2 veces la latencia 
-                                    /*while(i<mainThread.latencia){
-                                    cambiarCiclo();
-                                    i++;
-                                    }*/
+                            int i=0;      
+                            while(i<mainThread.latencia){
+                                cambiarCiclo();
+                                i++;
+                            }
                         }
                         for(int j=0;j<4;j++){
                             this.cacheDeDatos[j][posCache] =  memDatos[posMem+j]; //ponemos en el bloque los datos de memoria que necesitamos
@@ -904,6 +913,8 @@ private void ejecutarInstruccion(int[] vector){
         }
         
     }
+    
+    
     
     private void invalidar(int bloque){
         mainThread.invalidar[0] = this.otraCache;
@@ -947,10 +958,20 @@ private void ejecutarInstruccion(int[] vector){
     }
     
     public void ll(int inst2,int inst3){        
-    
+        this.comunicadores[this.numProcesador].vectreg[33]=inst3;  //se guarda la direccion del candado
+        soyLoadLink=true;
+        lw(0, inst2, inst3);
+        
     }
     
     public void sc(int inst2,int inst3){        
-    
+        if(this.comunicadores[this.numProcesador].vectreg[33]==inst3){ //si mi dir de candado es la misma que está en RL
+            this.comunicadores[this.numProcesador].vectreg[1]=1;
+            mainThread.llActivo[0]=0;
+            sw(0, inst2, inst3);  
+            //si LL está activo hay que decirle al papá que invalide 
+        }else{
+            this.comunicadores[this.numProcesador].vectreg[1]=0; //no es atomica
+        }
     }
 }

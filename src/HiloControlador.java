@@ -33,6 +33,7 @@ public class HiloControlador extends javax.swing.JFrame{
     private int numLineas;//número de líneas con que trabajamos
     public boolean continuar = false;
     public int[] invalidar;
+    public int[]  llActivo;
     
     //variables para el manejo de la interfaz
     JFileChooser fc;
@@ -56,6 +57,10 @@ public class HiloControlador extends javax.swing.JFrame{
         //i=0;
         invalidar = new int[2];
         invalidar[0] = -1;
+        llActivo= new int[3];
+        llActivo[0]=0;
+        
+        
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -279,6 +284,10 @@ public class HiloControlador extends javax.swing.JFrame{
         public void run(){   
             if(comunicadores[0].cambiarCiclo && comunicadores[1].cambiarCiclo){
                 if(invalidar[0]!=-1){
+                    if(llActivo[0]==1 && invalidar[0]==llActivo[1] && invalidar[1]==llActivo[2]){ //si el LL está activo y está en la misma caché y el mismo bloque donde se está mandando a invalidar.
+                        //guardo en RL un -1
+                        //comunicadores[].vectreg[33]=-1;
+                    }
                     nucleos[invalidar[0]].estadoCacheDatos[invalidar[1]]='I';
                 }
                 ciclosReloj++;
