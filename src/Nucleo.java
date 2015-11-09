@@ -948,7 +948,7 @@ private void ejecutarInstruccion(int[] vector){
             this.comunicadores[this.numProcesador].vectreg[1]=1;
             mainThread.llActivo[0]=0;
             sw(0, inst2, inst3);  
-            //si LL está activo hay que decirle al papá que invalide 
+            //si LL está activo hay que decirle al papá que invalide y ponga -| en ese RL
         }else{
             this.comunicadores[this.numProcesador].vectreg[1]=0; //no es atomica
         }
