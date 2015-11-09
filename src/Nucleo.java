@@ -567,10 +567,22 @@ private void ejecutarInstruccion(int[] vector){
                      case('C'): 
                         dato=cacheDeDatos[palabra][posCache];            
                         comunicadores[this.numProcesador].vectreg[regLectura]=dato;
+                        this.quantumNucleo--;
+                        if(soyLoadLink){
+                            mainThread.llActivo[0]= 1 ;
+                            mainThread.llActivo[1]= this.numProcesador ;
+                            mainThread.llActivo[2]= posCache ;
+                        }
                          break;
                      case('M'):
                         dato=cacheDeDatos[palabra][posCache];            
                         comunicadores[this.numProcesador].vectreg[regLectura]=dato;
+                        this.quantumNucleo--;
+                         if(soyLoadLink){
+                            mainThread.llActivo[0]= 1 ;
+                            mainThread.llActivo[1]= this.numProcesador ;
+                            mainThread.llActivo[2]= posCache ;
+                        } 
                          break;
                      case('I'):                         
                              if(pedirBusDatos()){
@@ -598,7 +610,12 @@ private void ejecutarInstruccion(int[] vector){
                                     estadoCacheDatos[posCache]='C';
                                     dato=cacheDeDatos[palabra][posCache];            
                                     comunicadores[this.numProcesador].vectreg[regLectura]=dato;
-                                     
+                                     this.quantumNucleo--;
+                                    if(soyLoadLink){
+                                         mainThread.llActivo[0]= 1 ;
+                                         mainThread.llActivo[1]= this.numProcesador ;
+                                         mainThread.llActivo[2]= posCache ;
+                                    }
                              }else{
                                  instCompletada=false;
                              }                        
@@ -606,8 +623,7 @@ private void ejecutarInstruccion(int[] vector){
                      default:
                          break;                        
                     
-                }
-                 this.quantumNucleo--;
+                }                 
              }else{
                    if(pedirBusDatos()){
                          while(!pedirOtraCache()){} 
@@ -652,6 +668,11 @@ private void ejecutarInstruccion(int[] vector){
                          dato=cacheDeDatos[palabra][posCache];            
                          comunicadores[this.numProcesador].vectreg[regLectura]=dato;
                          this.quantumNucleo--;
+                         if(soyLoadLink){
+                            mainThread.llActivo[0]= 1 ;
+                           mainThread.llActivo[1]= this.numProcesador ;
+                            mainThread.llActivo[2]= posCache ;
+                        } 
                     }else{
                         instCompletada=false;
                     } 
