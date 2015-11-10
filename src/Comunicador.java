@@ -19,6 +19,7 @@ public class Comunicador {
         
        public Comunicador(){
            vectreg = new int[34];
+           vectreg[0]=0;
            contextos = new ArrayList<int[]>();
            busCacheInst = new Semaphore(1,true);
            busCacheDatos = new Semaphore(1,true);
