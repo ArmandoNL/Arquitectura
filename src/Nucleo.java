@@ -586,9 +586,11 @@ private void ejecutarInstruccion(int[] vector){
                          break;
                      case('I'):   //esta invalido en MI cache                      
                              if(pedirBusDatos()){
-                                 while(!pedirOtraCache()){} 
-                                 //int posMem = ((dirMem+regSum)%640)/4
-                                  int posMem = ((this.cacheDeDatos[4][posCache]*16)%640)/4;
+                                 while(!pedirOtraCache()){
+                                     cambiarCiclo(); //se encicla si no
+                                 } 
+                                 int posMem = ((dirMem+regSum)%640)/4;
+                                 // int posMem = ((this.cacheDeDatos[4][posCache]*16)%640)/4;
                                      if(mainThread.nucleos[this.otraCache].estadoCacheDatos[posCache]=='M'){
                                          
                                          for(int x=0; x<4; x++){
@@ -627,16 +629,19 @@ private void ejecutarInstruccion(int[] vector){
                 }                 
              }else{ //no esta en mi cache
                    if(pedirBusDatos()){
-                         while(!pedirOtraCache()){} 
+                         while(!pedirOtraCache()){
+                            cambiarCiclo();
+                         } 
                          if(mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache]==numBloque){//Si esta en la otra cache
                          
                            int posMem = ((dirMem+regSum)%640)/4;            
                            //int posMem = ((this.cacheDeDatos[4][posCache]*16)%640)/4; 
                            if(mainThread.nucleos[this.otraCache].estadoCacheDatos[posCache]=='M'){
                                if(this.estadoCacheDatos[posCache]=='M'){ //bloque en mi cache esta en M. Lo bajo primero.
-                                   int posMem2 = ((this.cacheDeDatos[4][posCache]*16)%640)/4;
+                                   int posMem2=((dirMem+regSum)%640)/4;
+                                   //int posMem2 = ((this.cacheDeDatos[4][posCache]*16)%640)/4;
                                    for(int y=0; y<4; y++){
-                                        memDatos[posMem2+y]=this.cacheDeDatos[y][posCache];
+                                        memDatos[posMem2+y]=this.cacheDeDatos[y][posCache]; //bajo bloque de memoria en mi cache.
                                    }
                                }
                                //si no esta en M el mio. Bajo bloque a memoria y lo copio en mi cache.
@@ -722,7 +727,9 @@ private void ejecutarInstruccion(int[] vector){
                         break;
                     case('I'):
                         if(pedirBusDatos()){
-                            while(!pedirOtraCache()){}//mientras no este deiponible la otra cache, esperamos.
+                            while(!pedirOtraCache()){
+                                cambiarCiclo();
+                            }//mientras no este deiponible la otra cache, esperamos.
                             if(mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache] == numBloque){//si el bloque está en la otra caché
                                 char estadoOtraCache = mainThread.nucleos[this.otraCache].estadoCacheDatos[posCache]; //estado de otra caché
                                 int i = 0;
@@ -810,7 +817,9 @@ private void ejecutarInstruccion(int[] vector){
                     }
                 }  
                 if(pedirBusDatos()){ //para ir a buscar en la otra caché
-                    while(!pedirOtraCache()){}//mientras no este deiponible la otra cache, esperamos.
+                    while(!pedirOtraCache()){
+                        cambiarCiclo();
+                    }//mientras no este deiponible la otra cache, esperamos.
                     if(mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache] == numBloque){//si esta en la otra cache
                         char estadoOtraCache = mainThread.nucleos[this.otraCache].estadoCacheDatos[posCache];
                         int i = 0;

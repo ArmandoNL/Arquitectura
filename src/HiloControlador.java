@@ -28,7 +28,7 @@ public class HiloControlador extends javax.swing.JFrame{
     public  Queue <Integer> vectPcFinal;//cola para almacenar hasta dónde está almacenado cada archivo en la memorio
     private int[] vecPC = new int[20];//vector temporal para almacenar el valor inicial de los PC
     public int[] vecPcFinal = new int[20];//vector temporal para almacenar el valor final de los PC
-    public int[] nombreArchivo = new int[20];//almacenar el nombre de los archivos con los que trabajamos.
+    public int[] nombreArchivo = new int[25];//almacenar el nombre de los archivos con los que trabajamos.
     int contArchivos = 0;//número de archivos con que trabajamos
     private int numLineas;//número de líneas con que trabajamos
     public boolean continuar = false;
@@ -286,9 +286,10 @@ public class HiloControlador extends javax.swing.JFrame{
                 if(invalidar[0]!=-1){
                     if(llActivo[0]==1 && invalidar[0]==llActivo[1] && invalidar[1]==llActivo[2]){ //si el LL está activo y está en la misma caché y el mismo bloque donde se está mandando a invalidar.
                         //guardo en RL un -1
-                        //comunicadores[llActivo[1]].vectreg[32]=-1;
+                        comunicadores[llActivo[1]].vectreg[32]=-1;
                     }
                     nucleos[invalidar[0]].estadoCacheDatos[invalidar[1]]='I';
+                    invalidar[0]=-1;
                 }
                 ciclosReloj++;
                 String ciclo=""+(ciclosReloj-1);
