@@ -49,7 +49,7 @@ public class HiloControlador extends javax.swing.JFrame{
         initComponents();
         ciclosReloj = 0;
         memTemp = new ArrayList<Integer>();
-        memDatos = new int[88];
+        memDatos = new int[89];
         vectPc = new LinkedList<Integer>();
         vectPcFinal = new LinkedList<Integer>();
         numLineas=0;
@@ -286,7 +286,7 @@ public class HiloControlador extends javax.swing.JFrame{
                 if(invalidar[0]!=-1){
                     if(llActivo[0]==1 && invalidar[0]==llActivo[1] && invalidar[1]==llActivo[2]){ //si el LL está activo y está en la misma caché y el mismo bloque donde se está mandando a invalidar.
                         //guardo en RL un -1
-                        comunicadores[llActivo[1]].vectreg[33]=-1;
+                        //comunicadores[llActivo[1]].vectreg[32]=-1;
                     }
                     nucleos[invalidar[0]].estadoCacheDatos[invalidar[1]]='I';
                 }
@@ -380,7 +380,7 @@ public class HiloControlador extends javax.swing.JFrame{
     		(new Thread(nucleos[i])).start();
             }   
           
-        for(int i = 0; i < 88; i++){
+        for(int i = 0; i < 89; i++){
             memDatos[i] = 1; 
         }   
            // metodoPrincipal();
