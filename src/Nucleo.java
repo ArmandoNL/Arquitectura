@@ -68,6 +68,7 @@ public class Nucleo implements Runnable {
         }
     }     
    seTermino();
+   ImprimirMemoria();
    System.out.println("Se termino");
    
 }
@@ -464,12 +465,36 @@ private void ejecutarInstruccion(int[] vector){
         this.quantumNucleo--;
     } 
     
+    public void ImprimirMemoria(){
+        String datos="";
+        int cons=15;
+        int num=0;
+        int cont=0;        
+        
+        datos+=" Valores de la Memoria: "+ "\n ";
+        for(int j =0; j<memInstrucciones.size(); j++){
+            if(cont==num){
+                datos+="\n ";
+            }            
+            datos+= this.memInstrucciones.get(j)+"   ";
+            if(j==num){
+                num+=cons; 
+             }
+            //System.out.println((num*j)+1+"\n");
+            cont++;
+        }      
+        datos+="\n\n";
+         mainThread.imprimirPantallaDatos(datos);  
+    
+    } 
+    
+    
      /*
       Efecto: Instruccion que coloca la variable ocupado en falso 
       Requiere: Nada 
       Modifica: La variable ocupado de la clase comunicador
     */
-    public void fin(){
+     public void fin(){
         this.comunicadores[numProcesador].ocupado = false;
     }
     
@@ -481,6 +506,7 @@ private void ejecutarInstruccion(int[] vector){
     public void imprimirEstado(){ 
         int numero=0;
         String text="";
+        String datos="";
         //String numero2="";
         
         for(int i=1; i< mainThread.contArchivos*3; i=i+3){
@@ -496,25 +522,67 @@ private void ejecutarInstruccion(int[] vector){
           //System.out.println("Num Procesador" + this.numProcesador);
           
           if(numero!=-1){
-              text="Valor de Registros del archivo: "+ numero + "\n";
+              text=" Valor de Registros del archivo: "+ numero + "\n";
           }else{
-              text="Valor de Registros del archivo: Pr" + "\n";
+              text=" Valor de Registros del archivo: Pr" + "\n";
           }
           for(int i =0; i<34; i++){
-               text+=" Reg: " + i + " =" + comunicadores[this.numProcesador].pedirCampoRegistro(i)+", ";             
+               text+=" Reg: " + i + " = " + comunicadores[this.numProcesador].pedirCampoRegistro(i)+",";
+               if(i==5 || i==11 || i==17 || i==23 || i==29){
+                  text+="\n";
+               }
            }
           text+="\n";
-          text+="El quantum es :" + this.quantumNucleo;
+          text+=" El quantum es :" + this.quantumNucleo;
           text+="\n";
-          text+="El reloj es :" + mainThread.ciclosReloj;
+          text+=" El reloj es :" + mainThread.ciclosReloj;
           text+="\n";
           //text+="Contador Interno de programa Actual(hPC) :" + hPC;
           //text+="\n";
-          text+= "Numero de Procesador que corrio el archivo : " + this.numProcesador;
+          text+= " Numero de Procesador que corrio el archivo : " + this.numProcesador;
           //text+="Campo del vector :" +numero2 ;
           text+="\n\n";
          
+          datos=" Valor de la Cache de Datos del nucleo: "+ this.numProcesador + "\n\n";
+          for(int i =0; i<4; i++){
+              switch(i){
+                       case 0:
+                             datos+=" Palabra #1: ";           
+                          break;
+                        case 1:
+                             datos+=" Palabra #2: ";
+                          break;
+                        case 2:
+                             datos+=" Palabra #3: ";
+                          break;
+                        case 3:
+                            datos+=" Palabra #4: ";
+                          break;                        
+                        default:
+                          break;
+                   
+                   }
+               for(int j =0; j<8; j++){
+                   
+                   datos+= this.cacheDeDatos[i][j]+"    ";
+               }
+               datos+="\n";
+           }
+          
+          for(int i =4; i<5; i++){
+              
+               datos+=" NumBloc:    ";
+                          
+               for(int j =0; j<8; j++){
+                   
+                   datos+= this.cacheDeDatos[i][j]+"  ";
+               }
+               datos+="\n";
+           }
+            datos+="\n";
+            
            mainThread.imprimirPantalla(text);
+           mainThread.imprimirPantallaDatos(datos);
     }
     
     public void miEstado(){ 
@@ -530,8 +598,6 @@ private void ejecutarInstruccion(int[] vector){
                 
             }
         }
-        
-        
         if(num!=-1){
             text=""+ num; 
         }else{
@@ -832,17 +898,6 @@ private void ejecutarInstruccion(int[] vector){
                                 for(int j=0;j<4;j++){
                                     memDatos[posMem+j] = mainThread.nucleos[this.otraCache].cacheDeDatos[j][posCache];
                                 }
-                                /*if(this.estadoCacheDatos[posCache]=='M'){
-                                    posMem = ((this.cacheDeDatos[4][posCache]*16)%640)/4;
-                                    for(int j=0;j<4;j++){
-                                        memDatos[posMem+j] = this.cacheDeDatos[j][posCache];
-                                    }
-                                
-                                    while(i<mainThread.latencia){ 
-                                        cambiarCiclo();
-                                        i++;
-                                    }
-                                }*/
                                 for(int j=0;j<4;j++){
                                     this.cacheDeDatos[j][posCache] = mainThread.nucleos[this.otraCache].cacheDeDatos[j][posCache];
                                 }
@@ -860,12 +915,6 @@ private void ejecutarInstruccion(int[] vector){
                                 break;
                             case('I'): //no en mi caché y en la otra invalido
                                 liberarOtraCache();
-                                /*if(this.estadoCacheDatos[posCache]=='M'){
-                                    posMem = ((this.cacheDeDatos[4][posCache]*16)%640)/4;
-                                    for(int j=0;j<4;j++){
-                                        memDatos[posMem+j] = this.cacheDeDatos[j][posCache];
-                                    }
-                                }*/
                                 for(int j=0;j<4;j++){
                                     this.cacheDeDatos[j][posCache] =  memDatos[posMem+j];   
                                 }
@@ -879,18 +928,7 @@ private void ejecutarInstruccion(int[] vector){
                                 HiloControlador.liberarBusDatos();
                                 liberarMiCache();
                                 break;
-                            case('C'):
-                                /*if(this.estadoCacheDatos[posCache]=='M'){
-                                    posMem = ((this.cacheDeDatos[4][posCache]*16)%640)/4;
-                                    for(int j=0;j<4;j++){
-                                        memDatos[posMem+j] = this.cacheDeDatos[j][posCache];
-                                    }
-                                           tenemos que contar 2 veces la latencia 
-                                            while(i<mainThread.latencia){
-                                                cambiarCiclo();
-                                                i++;
-                                            }
-                                }*/
+                            case('C'):                             
                                 for(int j=0;j<4;j++){
                                     this.cacheDeDatos[j][posCache] =  memDatos[posMem+j];
                                 }
