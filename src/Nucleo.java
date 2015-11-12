@@ -491,6 +491,7 @@ private void ejecutarInstruccion(int[] vector){
     */
     public void imprimirEstado(){ 
         int numero=0;
+        String text="";
         //String numero2="";
         
         for(int i=1; i< mainThread.contArchivos*3; i=i+3){
@@ -501,10 +502,15 @@ private void ejecutarInstruccion(int[] vector){
         } 
        /* for(int j=0; j< mainThread.nombreArchivo.length; j++){
             
-            numero2+=mainThread.nombreArchivo[j];
+            numero2+=mainThread.nombreArchivo[j]+"   ";
         }*/
           //System.out.println("Num Procesador" + this.numProcesador);
-          String text="Valor de Registros del archivo: "+ numero + "\n";          
+          
+          if(numero!=-1){
+              text="Valor de Registros del archivo: "+ numero + "\n";
+          }else{
+              text="Valor de Registros del archivo: Pr" + "\n";
+          }
           for(int i =0; i<34; i++){
                text+=" Reg: " + i + " =" + comunicadores[this.numProcesador].pedirCampoRegistro(i)+", ";             
            }
@@ -516,7 +522,7 @@ private void ejecutarInstruccion(int[] vector){
           //text+="Contador Interno de programa Actual(hPC) :" + hPC;
           //text+="\n";
           text+= "Numero de Procesador que corrio el archivo : " + this.numProcesador;
-        //  text+="Campo del vector :" +numero2 ;
+          //text+="Campo del vector :" +numero2 ;
           text+="\n\n";
          
            mainThread.imprimirPantalla(text);
@@ -538,9 +544,9 @@ private void ejecutarInstruccion(int[] vector){
         
         
         if(num!=-1){
-            text+= num; 
+            text=""+ num; 
         }else{
-            text+= "Pr"; 
+            text=""+ "Pr"; 
         }
         if(this.numProcesador==0){
            mainThread.imprimirEstado0(text);

@@ -411,7 +411,7 @@ public class HiloControlador extends javax.swing.JFrame{
                 nombreArchivo[i]=-1;
             }
             i++;
-            System.out.println(file.getName().substring(4,5));
+            System.out.println("Este es en nombre   "+file.getName().substring(4,5));
         Charset charset = Charset.forName("US-ASCII");
         try(BufferedReader reader = Files.newBufferedReader(file.toPath(), charset)){
             
@@ -420,9 +420,10 @@ public class HiloControlador extends javax.swing.JFrame{
             String lineaArchivo = reader.readLine();
             while(!"".equals(lineaArchivo) && lineaArchivo != null){//se lee cada una de las líneas del achivo
                 contLineas++;//contamos las lineas del archivo para calcular el PC
-                if("63 0 0 0".equals(lineaArchivo)){                    
+                if("63 0 0 0".equals(lineaArchivo)|| "63 0 0 0 ".equals(lineaArchivo)){                    
                     int instfinal=contLineas;
                      nombreArchivo[i]=numLineas+instfinal*4;
+                      //System.out.println("esta es la 63   "+nombreArchivo[i]);
                     i++;
                 }
                 String[] instrucciones = lineaArchivo.split(" ");
@@ -437,6 +438,7 @@ public class HiloControlador extends javax.swing.JFrame{
             {
                 vecPC[contArchivos]= 0;
                 nombreArchivo[i]= 0;
+               // System.out.println(nombreArchivo[i]);
                 numLineas += contLineas*4; 
                 i++;
             }
@@ -444,6 +446,7 @@ public class HiloControlador extends javax.swing.JFrame{
             {
                 vecPC[contArchivos]= numLineas; 
                 nombreArchivo[i]= numLineas;
+               // System.out.println(nombreArchivo[i]);
                 numLineas += contLineas*4; 
                 i++;
             }
