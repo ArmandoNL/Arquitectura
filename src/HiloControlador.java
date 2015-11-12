@@ -12,6 +12,8 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.filechooser.*;
 import java.util.concurrent.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class HiloControlador extends javax.swing.JFrame{
     
@@ -34,6 +36,7 @@ public class HiloControlador extends javax.swing.JFrame{
     public boolean continuar = false;
     public int[] invalidar;
     public int[]  llActivo;
+    //private final static Lock busCacheInst = new Lock();
     private final static Semaphore busCacheInst = new Semaphore(1);
     private final static Semaphore busCacheDatos = new Semaphore(1);
     
@@ -349,6 +352,7 @@ public class HiloControlador extends javax.swing.JFrame{
     public static void liberarBusInst(){
         busCacheInst.release();
     }
+    
     
     
         /*

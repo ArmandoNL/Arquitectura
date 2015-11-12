@@ -75,11 +75,11 @@ public class Nucleo implements Runnable {
   //se encarga de verificar que ambos procesadores hayan termiando, si no se mantiene esperando en la barrera.
   private void seTermino(){
         while(!finalizar){
-        cambiarCiclo();
-        if(comunicadores[0].hiloPC==-1 && comunicadores[1].hiloPC==-1){
-             finalizar=true;
-        }
-    } 
+            cambiarCiclo();
+            if(comunicadores[0].hiloPC==-1 && comunicadores[1].hiloPC==-1){
+                finalizar=true;
+            }
+        } 
   }
   
   /*
@@ -90,7 +90,7 @@ public class Nucleo implements Runnable {
   public boolean estaenCache(int hpc){
        int bloque = hpc/16;
        int columCache = bloque%8;
-      return this.cacheDeInstrucciones[16][columCache] == bloque; 
+       return this.cacheDeInstrucciones[16][columCache] == bloque; 
   }
   
   
@@ -133,10 +133,14 @@ private void  ejecutarDeCache(){
         this.hPC+=4;
 	ejecutarInstruccion(vecInstruccion); //se encarga de ejecutar cada instrucciones en el cache
         cambiarCiclo();
+        liberarMiCache();
+        liberarOtraCache();
         
         while(!instCompletada){ //si la instruccion no se ha completado tiene que volver a ejecutarla hasta que se complete.
             instCompletada=true;
             ejecutarInstruccion(vecInstruccion); //se encarga de ejecutar cada instrucciones en el cache
+            liberarMiCache();
+            liberarOtraCache();
             cambiarCiclo();
         }
         
@@ -156,7 +160,6 @@ private void seAcaboQuantum()
     limpiarRegistros();
     this.comunicadores[numProcesador].ocupado=false;
     cambiarCiclo();  //una vez que se guarda el contexto, se asigna un nuevo PC.
-   
     
 } 
 
@@ -218,7 +221,7 @@ private void falloCache(){
             cambiarCiclo();
             i++;
         }
-        HiloControlador.liberarBusInst();
+        //HiloControlador.liberarBusInst();
         cambiarCiclo();
         HiloControlador.liberarBusInst();
     }else{
@@ -226,6 +229,7 @@ private void falloCache(){
             cambiarCiclo();
         }
     }
+    HiloControlador.liberarBusInst();
 }
 
 /*  Efecto: se encarga sincronizar los procesadores a la hora de pedir cambio de ciclo de reloj.
@@ -304,7 +308,7 @@ private void ejecutarInstruccion(int[] vector){
         instruccion[i]=vector[i];
         }    
    
-   System.out.println("Se leyo instruiccion: " +instruccion[0]+" " +instruccion[1]+ " " +instruccion[2]+" " +instruccion[3]);
+   //System.out.println("Se leyo instruiccion: " +instruccion[0]+" " +instruccion[1]+ " " +instruccion[2]+" " +instruccion[3]);
  
     switch(instruccion[0]){
       case 8:
@@ -689,8 +693,8 @@ private void ejecutarInstruccion(int[] vector){
                         instCompletada=false;
                     } 
              } 
-         }
          liberarMiCache();
+         }
     }
     
     public void sw(int regSum, int regDato,int dirMem){        
@@ -805,7 +809,8 @@ private void ejecutarInstruccion(int[] vector){
             else
             {//cuando no está el valor en mi cache
                 if(this.estadoCacheDatos[posCache]=='M'){ //como el bloque no esta hay que fijarse si en ESE bloque hay uno en M para bajarlo a memoria primero.
-                    posMem = ((this.cacheDeDatos[4][posCache]*16)%640)/4;
+                    //posMem = ((this.cacheDeDatos[4][posCache]*16)%640)/4;
+                    posMem= ((dirMem+regSum)%640)/4;
                     for(int j=0;j<4;j++){
                         memDatos[posMem+j] = this.cacheDeDatos[j][posCache];
                     }
@@ -947,11 +952,7 @@ private void ejecutarInstruccion(int[] vector){
     }
     
     public boolean pedirMiCache(){
-        boolean resp = false;
-        if(this.comunicadores[this.numProcesador].semaforoCache.tryAcquire()){
-            resp = true;
-        }        
-        return resp;
+       return this.comunicadores[this.numProcesador].semaforoCache.tryAcquire();
     }
     
     public void liberarMiCache(){
@@ -959,15 +960,12 @@ private void ejecutarInstruccion(int[] vector){
     }
     
     public boolean pedirOtraCache(){
-        boolean resp = false;
-        if(this.comunicadores[this.otraCache].semaforoCache.tryAcquire()){
-            resp = true;
-        }        
-        return resp;
-    }
+       
+        return comunicadores[this.otraCache].semaforoCache.tryAcquire();
+    }    
     
     public void liberarOtraCache(){
-        this.comunicadores[this.otraCache].semaforoCache.release();
+        comunicadores[this.otraCache].semaforoCache.release();
     }
     
     
