@@ -585,7 +585,7 @@ private void ejecutarInstruccion(int[] vector){
                              if(HiloControlador.pedirBusDatos()){
                                  
                                  while(!pedirOtraCache()){
-                                     cambiarCiclo(); //se encicla si no
+                                     //cambiarCiclo(); //se encicla si no
                                  } 
                                  int posMem = ((dirMem+regSum)%640)/4;
                                  // int posMem = ((this.cacheDeDatos[4][posCache]*16)%640)/4;
@@ -628,7 +628,7 @@ private void ejecutarInstruccion(int[] vector){
              }else{ //no esta en mi cache
                    if(HiloControlador.pedirBusDatos()){
                          while(!pedirOtraCache()){
-                            cambiarCiclo();
+                            //cambiarCiclo();
                          } 
                          if(mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache]==numBloque){//Si esta en la otra cache
                          
@@ -726,7 +726,7 @@ private void ejecutarInstruccion(int[] vector){
                     case('I'):
                         if(HiloControlador.pedirBusDatos()){
                             while(!pedirOtraCache()){
-                                cambiarCiclo();
+                                //cambiarCiclo();
                             }//mientras no este deiponible la otra cache, esperamos.
                             if(mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache] == numBloque){//si el bloque está en la otra caché
                                 char estadoOtraCache = mainThread.nucleos[this.otraCache].estadoCacheDatos[posCache]; //estado de otra caché
@@ -816,7 +816,7 @@ private void ejecutarInstruccion(int[] vector){
                 }  
                 if(HiloControlador.pedirBusDatos()){ //para ir a buscar en la otra caché
                     while(!pedirOtraCache()){
-                        cambiarCiclo();
+                        //cambiarCiclo();
                     }//mientras no este deiponible la otra cache, esperamos.
                     if(mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache] == numBloque){//si esta en la otra cache
                         char estadoOtraCache = mainThread.nucleos[this.otraCache].estadoCacheDatos[posCache];
