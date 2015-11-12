@@ -912,7 +912,8 @@ private void ejecutarInstruccion(int[] vector){
                     {//cuando No está en NINGUNA caché
                         liberarOtraCache();
                         if(this.estadoCacheDatos[posCache]=='M'){ //si se encuentra ocupado con M el bloque que voy a sobreescribir  en caché
-                            posMem = ((this.cacheDeDatos[4][posCache]*16)%640)/4; //donde se va a guardar en memoria el bloque a sobreescribir.
+                            //posMem = ((this.cacheDeDatos[4][posCache]*16)%640)/4; //donde se va a guardar en memoria el bloque a sobreescribir.
+                            posMem= ((dirMem+regSum)%640)/4;
                             for(int j=0;j<4;j++){
                                 memDatos[posMem+j] = this.cacheDeDatos[j][posCache]; //guardamos en memoria el bloque 
                             }
