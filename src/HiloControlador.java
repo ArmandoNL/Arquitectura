@@ -54,7 +54,7 @@ public class HiloControlador extends javax.swing.JFrame{
         initComponents();
         ciclosReloj = 0;
         memTemp = new ArrayList<Integer>();
-        memDatos = new int[89];
+        memDatos = new int[352];
         vectPc = new LinkedList<Integer>();
         vectPcFinal = new LinkedList<Integer>();
         numLineas=0;
@@ -432,7 +432,7 @@ public class HiloControlador extends javax.swing.JFrame{
     		(new Thread(nucleos[i])).start();
             }   
           
-        for(int i = 0; i < 89; i++){
+        for(int i = 0; i < 352; i++){
             memDatos[i] = 1; 
         }   
            // metodoPrincipal();

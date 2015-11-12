@@ -697,16 +697,17 @@ private void ejecutarInstruccion(int[] vector){
                          } 
                          if(mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache]==numBloque){//Si esta en la otra cache
                          
-                           int posMem = ((dirMem+regSum)%640)/4;            
-                           //int posMem = ((this.cacheDeDatos[4][posCache]*16)%640)/4; 
+                                     
                            if(mainThread.nucleos[this.otraCache].estadoCacheDatos[posCache]=='M'){
                                if(this.estadoCacheDatos[posCache]=='M'){ //bloque en mi cache esta en M. Lo bajo primero.
-                                   int posMem2=((dirMem+regSum)%640)/4;
-                                   //int posMem2 = ((this.cacheDeDatos[4][posCache]*16)%640)/4;
+                                   //int posMem2=((dirMem+regSum)%640)/4;
+                                   int posMem2 = ((this.cacheDeDatos[4][posCache]*16)%640)/4;
                                    for(int y=0; y<4; y++){
                                         memDatos[posMem2+y]=this.cacheDeDatos[y][posCache]; //bajo bloque de memoria en mi cache.
                                    }
                                }
+                               
+                               int posMem = ((mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache]*16)%640)/4; 
                                //si no esta en M el mio. Bajo bloque a memoria y lo copio en mi cache.
                                for(int x=0; x<4; x++){ //si mi blqoue no esta en M copio de la cache.
                                     this.cacheDeDatos[x][posCache]=mainThread.nucleos[this.otraCache].cacheDeDatos[x][posCache];
@@ -716,6 +717,7 @@ private void ejecutarInstruccion(int[] vector){
                                mainThread.nucleos[this.otraCache].estadoCacheDatos[posCache]='C';
         
                             }else{ //si no esta en M en la otra cache traigo de memoria
+                                int posMem = ((dirMem+regSum)%640)/4;  
                                 for(int x=0; x<4; x++){
                                     this. cacheDeDatos[x][posCache]=memDatos[posMem+x];                                      
                                 }
@@ -797,7 +799,8 @@ private void ejecutarInstruccion(int[] vector){
                                 char estadoOtraCache = mainThread.nucleos[this.otraCache].estadoCacheDatos[posCache]; //estado de otra caché
                                 int i = 0;
                                 switch(estadoOtraCache){
-                                    case('M'):
+                                    case('M')://está en M en la otra caché
+                                        posMem = ((mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache]*16)%640)/4; 
                                         for(int j=0;j<4;j++){
                                            memDatos[posMem+j] = mainThread.nucleos[this.otraCache].cacheDeDatos[j][posCache];
                                            this.cacheDeDatos[j][posCache] = mainThread.nucleos[this.otraCache].cacheDeDatos[j][posCache];
@@ -869,8 +872,8 @@ private void ejecutarInstruccion(int[] vector){
             else
             {//cuando no está el valor en mi cache
                 if(this.estadoCacheDatos[posCache]=='M'){ //como el bloque no esta hay que fijarse si en ESE bloque hay uno en M para bajarlo a memoria primero.
-                    //posMem = ((this.cacheDeDatos[4][posCache]*16)%640)/4;
-                    posMem= ((dirMem+regSum)%640)/4;
+                    posMem = ((this.cacheDeDatos[4][posCache]*16)%640)/4;
+                    //posMem= ((dirMem+regSum)%640)/4;
                     for(int j=0;j<4;j++){
                         memDatos[posMem+j] = this.cacheDeDatos[j][posCache];
                     }
@@ -889,6 +892,7 @@ private void ejecutarInstruccion(int[] vector){
                         int i = 0;
                         switch(estadoOtraCache){
                             case('M'):
+                                posMem = ((mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache]*16)%640)/4; 
                                 for(int j=0;j<4;j++){
                                     memDatos[posMem+j] = mainThread.nucleos[this.otraCache].cacheDeDatos[j][posCache];
                                 }
