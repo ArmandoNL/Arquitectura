@@ -14,13 +14,13 @@ public class Comunicador {
        public boolean seguir;
        public int pcFinal;
        public boolean cambiarCiclo;
-       public ArrayList<int[]> contextos;
+       //public ArrayList<int[]> contextos;
        
         
        public Comunicador(){
            vectreg = new int[34];
            vectreg[0]=0;
-           contextos = new ArrayList<int[]>();
+           //contextos = new ArrayList<int[]>();
            //busCacheInst = new Semaphore(1);
            //busCacheDatos = new Semaphore(1);
            semaforoCache = new Semaphore(1);
@@ -47,7 +47,7 @@ public class Comunicador {
        }
        
       //retorna un vector con un los valores del contexto y los borra de la cola de contextos.
-       public int[] pedirContexto()
+       /*public int[] pedirContexto()
        {
            int[] vec = contextos.get(0);
            contextos.remove(0);
@@ -58,7 +58,7 @@ public class Comunicador {
        public void guardarContexto(int[] vec)
        {
            contextos.add(vec);
-       }
+       }*/
        
        //Devuelve el campo del registro solicitado
        public int pedirCampoRegistro(int posicion)

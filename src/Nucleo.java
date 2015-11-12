@@ -187,9 +187,9 @@ public void obtenerPC(){
     Modifica: los registros del procesador
     */
 private void cambiarRegistro(int proc){
-    int[] vecTemp = this.comunicadores[proc].pedirContexto();
+    int[] vecTemp = mainThread.pedirContexto();
       for(int i =0; i<33;i++){
-          this.comunicadores[this.numProcesador].vectreg[i] = vecTemp[i];
+          this.comunicadores[proc].vectreg[i] = vecTemp[i];
       }
 }
 
@@ -261,16 +261,10 @@ private void pcSiguiente(){
     this.quantumNucleo = comunicadores[numProcesador].readQ();
     this.pcFinal=comunicadores[numProcesador].getPcFinal();
     
-    if(comunicadores[0].contextos.size()>0)
+    if(mainThread.contextos.size()>0)
     {
-        if(comunicadores[0].contextos.get(0)[33] ==this.hPC){
-                  cambiarRegistro(0); 
-        }
-    }
-    if(comunicadores[1].contextos.size()>0)
-    {
-        if(comunicadores[1].contextos.get(0)[33]==this.hPC){
-            cambiarRegistro(1);
+        if(mainThread.contextos.peek()[33] ==this.hPC){
+                  cambiarRegistro(this.numProcesador); 
         }
     }
     this.comunicadores[numProcesador].ocupado=true;
@@ -290,7 +284,7 @@ public void contexto()
         vec[32]= -1; //pongo -1 en RL
         vec[33] = this.hPC; //en la posicion 33 del contexto guarda el PC
         
-        this.comunicadores[this.numProcesador].guardarContexto(vec);
+        mainThread.guardarContexto(vec);
         System.out.println("Valor de PC " + this.hPC);
         mainThread.vectPc.add(this.hPC);
         System.out.println("METO A COLA:" + mainThread.vectPc.peek());
