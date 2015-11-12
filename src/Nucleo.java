@@ -203,41 +203,25 @@ private void limpiarRegistros(){
     Requiere: que un procesador pida el bus.
     Modifica: el valor del bus.
     */
-boolean pedirBus(){ 
-    if(this.comunicadores[this.numProcesador].busCacheInst.tryAcquire()){
-        busOcupado = true;
-        return true;
-    }else{
-        return false;
-    }
-}
 
-/*  Efecto: se encarga de soltar el semaforo del bus.
-    Requiere: que un procesador pida soltar el bus.
-    Modifica: el valor del bus.
-    */
-boolean liberarBus(){ //libera el bus una vez que no se necesita.
-    this.comunicadores[this.numProcesador].busCacheInst.release();
-    busOcupado = false;
-    return true;
-}
 
 /*  Efecto: si bloque no se encuentra en cache, solicita el bus para recuperar el bloque de memoria.
     Requiere: que el bloque solicitado no se encuentre en cache.
     Modifica: el cache de instrucciones
     */
 private void falloCache(){ 
-    if(pedirBus()){
+    if(HiloControlador.pedirBusInst()){
         traerBloque();
         int i=0;
-       while(i<mainThread.latencia){ //se encarga de cambiar de ciclo segun el valor de m y b ingresado por el usuario.
+       while(i<2){ //mainThread.latencia //se encarga de cambiar de ciclo segun el valor de m y b ingresado por el usuario.
             cambiarCiclo();
             i++;
         }
-        liberarBus();
+        HiloControlador.liberarBusInst();
         cambiarCiclo();
+        HiloControlador.liberarBusInst();
     }else{
-        while(!pedirBus()){
+        while(!HiloControlador.pedirBusInst()){
             cambiarCiclo();
         }
     }
@@ -598,7 +582,8 @@ private void ejecutarInstruccion(int[] vector){
                         } 
                          break;
                      case('I'):   //esta invalido en MI cache                      
-                             if(pedirBusDatos()){
+                             if(HiloControlador.pedirBusDatos()){
+                                 
                                  while(!pedirOtraCache()){
                                      cambiarCiclo(); //se encicla si no
                                  } 
@@ -622,7 +607,7 @@ private void ejecutarInstruccion(int[] vector){
                                         i++;
                                     }                                   
                                     liberarOtraCache();
-                                    liberarBusDatos();
+                                    HiloControlador.liberarBusDatos();
                                     this.estadoCacheDatos[posCache]='C';
                                     dato=cacheDeDatos[palabra][posCache];            
                                     comunicadores[this.numProcesador].vectreg[regLectura]=dato;
@@ -641,7 +626,7 @@ private void ejecutarInstruccion(int[] vector){
                     
                 }                 
              }else{ //no esta en mi cache
-                   if(pedirBusDatos()){
+                   if(HiloControlador.pedirBusDatos()){
                          while(!pedirOtraCache()){
                             cambiarCiclo();
                          } 
@@ -677,7 +662,7 @@ private void ejecutarInstruccion(int[] vector){
                                 i++;
                             }                            
                             liberarOtraCache();
-                            liberarBusDatos();
+                            HiloControlador.liberarBusDatos();
                             
                             
                          }else{// Si no esta del todo
@@ -687,7 +672,7 @@ private void ejecutarInstruccion(int[] vector){
                                 this.cacheDeDatos[z][posCache]=memDatos[posMem3+z];                                      
                             }
                             liberarOtraCache();
-                            liberarBusDatos();
+                            HiloControlador.liberarBusDatos();
                          }
                          this.cacheDeDatos[4][posCache]=numBloque; //poner num de bloque cuando se sube nuevo bloque
                          estadoCacheDatos[posCache]='C';
@@ -727,11 +712,11 @@ private void ejecutarInstruccion(int[] vector){
                         liberarMiCache();
                         break;
                     case('C'):
-                        if(pedirBusDatos()){
+                        if(HiloControlador.pedirBusDatos()){
                             this.cacheDeDatos[palabra][posCache] = dato;
                             this.estadoCacheDatos[posCache] = 'M';
                             invalidar(posCache);
-                            liberarBusDatos();//lo liberamos aqui o que el padre lo libere.
+                            HiloControlador.liberarBusDatos();//lo liberamos aqui o que el padre lo libere.
                             liberarMiCache();
                         }
                         else{
@@ -739,7 +724,7 @@ private void ejecutarInstruccion(int[] vector){
                         }
                         break;
                     case('I'):
-                        if(pedirBusDatos()){
+                        if(HiloControlador.pedirBusDatos()){
                             while(!pedirOtraCache()){
                                 cambiarCiclo();
                             }//mientras no este deiponible la otra cache, esperamos.
@@ -761,7 +746,7 @@ private void ejecutarInstruccion(int[] vector){
                                             i++;
                                         }
                                         liberarOtraCache();
-                                        liberarBusDatos();
+                                        HiloControlador.liberarBusDatos();
                                         liberarMiCache();
                                         break;
                                     case('I'): //esta en mi caché y en la otra invalido
@@ -776,7 +761,7 @@ private void ejecutarInstruccion(int[] vector){
                                             cambiarCiclo();
                                             i++;
                                         }
-                                        liberarBusDatos();
+                                        HiloControlador.liberarBusDatos();
                                         liberarMiCache();
                                         break;
                                     case('C'):
@@ -792,7 +777,7 @@ private void ejecutarInstruccion(int[] vector){
                                             i++;
                                         }
                                         liberarOtraCache();
-                                        liberarBusDatos();
+                                        HiloControlador.liberarBusDatos();
                                         liberarMiCache();
                                         break;
                                 }
@@ -805,7 +790,7 @@ private void ejecutarInstruccion(int[] vector){
                                 this.cacheDeDatos[4][posCache]=numBloque;
                                 this.cacheDeDatos[palabra][posCache] = dato;
                                 this.estadoCacheDatos[posCache] = 'M';
-                                liberarBusDatos();
+                                HiloControlador.liberarBusDatos();
                                 liberarMiCache();
                             }
                         }
@@ -829,7 +814,7 @@ private void ejecutarInstruccion(int[] vector){
                         i++;
                     }
                 }  
-                if(pedirBusDatos()){ //para ir a buscar en la otra caché
+                if(HiloControlador.pedirBusDatos()){ //para ir a buscar en la otra caché
                     while(!pedirOtraCache()){
                         cambiarCiclo();
                     }//mientras no este deiponible la otra cache, esperamos.
@@ -864,7 +849,7 @@ private void ejecutarInstruccion(int[] vector){
                                     i++;
                                 }
                                 liberarOtraCache();
-                                liberarBusDatos();
+                                HiloControlador.liberarBusDatos();
                                 liberarMiCache();
                                 break;
                             case('I'): //no en mi caché y en la otra invalido
@@ -885,7 +870,7 @@ private void ejecutarInstruccion(int[] vector){
                                     cambiarCiclo();
                                     i++;
                                 }
-                                liberarBusDatos();
+                                HiloControlador.liberarBusDatos();
                                 liberarMiCache();
                                 break;
                             case('C'):
@@ -912,7 +897,7 @@ private void ejecutarInstruccion(int[] vector){
                                     i++;
                                 }
                                 liberarOtraCache();
-                                liberarBusDatos();
+                                HiloControlador.liberarBusDatos();
                                 liberarMiCache();
                                 break;
                         }
@@ -938,7 +923,7 @@ private void ejecutarInstruccion(int[] vector){
                         this.cacheDeDatos[4][posCache]=numBloque;
                         this.cacheDeDatos[palabra][posCache] = dato; 
                         this.estadoCacheDatos[posCache] = 'M';
-                        liberarBusDatos();
+                        HiloControlador.liberarBusDatos();
                         liberarMiCache();
                     }
                 }
@@ -984,17 +969,7 @@ private void ejecutarInstruccion(int[] vector){
         this.comunicadores[this.otraCache].semaforoCache.release();
     }
     
-    public boolean pedirBusDatos(){
-        boolean resp = false;
-        if(this.comunicadores[this.numProcesador].busCacheDatos.tryAcquire()){
-            resp = true;
-        }        
-        return resp;
-    }
     
-    public void liberarBusDatos(){
-        this.comunicadores[this.numProcesador].busCacheDatos.release();
-    }
     
     public void ll(int inst2,int inst3){        
         this.comunicadores[this.numProcesador].vectreg[32]=inst3;  //se guarda la direccion del candado

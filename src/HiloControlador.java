@@ -34,6 +34,8 @@ public class HiloControlador extends javax.swing.JFrame{
     public boolean continuar = false;
     public int[] invalidar;
     public int[]  llActivo;
+    private final static Semaphore busCacheInst = new Semaphore(1);
+    private final static Semaphore busCacheDatos = new Semaphore(1);
     
     //variables para el manejo de la interfaz
     JFileChooser fc;
@@ -59,8 +61,6 @@ public class HiloControlador extends javax.swing.JFrame{
         invalidar[0] = -1;
         llActivo= new int[3];
         llActivo[0]=0;
-        
-        
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -332,6 +332,25 @@ public class HiloControlador extends javax.swing.JFrame{
             }
         }
     };
+    
+    
+    public static boolean pedirBusDatos(){
+        return busCacheDatos.tryAcquire();
+    }
+    
+    public static void liberarBusDatos(){
+        busCacheDatos.release();
+    }
+    
+    public static boolean pedirBusInst(){
+        return busCacheInst.tryAcquire();
+    }
+    
+    public static void liberarBusInst(){
+        busCacheInst.release();
+    }
+    
+    
         /*
           Efecto: asigna la primera vez los PC, inicializa los nucleos y crea los hilos a ejecutar.
           Requiere: que se presione el botón Ejecutar en la interfaz

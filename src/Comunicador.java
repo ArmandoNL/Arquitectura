@@ -21,8 +21,8 @@ public class Comunicador {
            vectreg = new int[34];
            vectreg[0]=0;
            contextos = new ArrayList<int[]>();
-           busCacheInst = new Semaphore(1,true);
-           busCacheDatos = new Semaphore(1,true);
+           busCacheInst = new Semaphore(1);
+           busCacheDatos = new Semaphore(1);
            semaforoCache = new Semaphore(1);
            terminado=false;
            seguir=false;
