@@ -519,22 +519,29 @@ private void ejecutarInstruccion(int[] vector){
         //  text+="Campo del vector :" +numero2 ;
           text+="\n\n";
          
-           mainThread.imprimirPantalla(text);       	
+           mainThread.imprimirPantalla(text);
     }
     
     public void miEstado(){ 
         int num=0;
+        String text="";
         for(int i=1; i<= mainThread.contArchivos*3; i=i+3){
             
             if(this.hPC<mainThread.nombreArchivo[i] && this.hPC>=mainThread.nombreArchivo[i+1]){ //se ocupa otra condicion porque 0 siempre va a ser menor que todos los demas.
                 //tiene que ser algo c omo >=PC donde empieza && <pc donde termina.
-                num=mainThread.nombreArchivo[i-1];
+                num=mainThread.nombreArchivo[i-1];                
                // System.out.println("Mayor o igual a  " + mainThread.nombreArchivo[i+1]);
               //  System.out.println("Menor a " + mainThread.nombreArchivo[i]);
                 
             }
         }
-        String text=""+ num; 
+        
+        
+        if(num!=-1){
+            text+= num; 
+        }else{
+            text+= "Pr"; 
+        }
         if(this.numProcesador==0){
            mainThread.imprimirEstado0(text);
         }else if(this.numProcesador==1){
