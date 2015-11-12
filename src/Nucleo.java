@@ -158,8 +158,9 @@ private void seAcaboQuantum()
     cambiarCiclo();  //una vez que se guarda el contexto, se asigna un nuevo PC.
    
     
-}
- 
+} 
+
+
    /* Efecto: Obtiene el PC inicial de cada procesador
       Modifica: el valor del primer PC
     */
