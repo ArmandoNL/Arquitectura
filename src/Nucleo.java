@@ -159,7 +159,7 @@ private void seAcaboQuantum()
 {
     contexto();  //guarda el contexto de los registros y el pc en un vector temporal
     limpiarRegistros();
-    this.comunicadores[numProcesador].ocupado=false;
+    this.comunicadores[this.numProcesador].ocupado=false;
     cambiarCiclo();  //una vez que se guarda el contexto, se asigna un nuevo PC.
     
 } 
@@ -256,10 +256,10 @@ private void cambiarCiclo(){
     Modifica: el PC local y el los registros segun el contexto, si tienen.
     */
 private void pcSiguiente(){
-    this.PC = comunicadores[numProcesador].read();
+    this.PC = comunicadores[this.numProcesador].read();
     this.hPC=PC;
-    this.quantumNucleo = comunicadores[numProcesador].readQ();
-    this.pcFinal=comunicadores[numProcesador].getPcFinal();
+    this.quantumNucleo = comunicadores[this.numProcesador].readQ();
+    this.pcFinal=comunicadores[this.numProcesador].getPcFinal();
     
     if(mainThread.contextos.size()>0)
     {
@@ -267,7 +267,7 @@ private void pcSiguiente(){
                   cambiarRegistro(this.numProcesador); 
         }
     }
-    this.comunicadores[numProcesador].ocupado=true;
+    this.comunicadores[this.numProcesador].ocupado=true;
 }
 
 /*  Efecto: guarda el contexto de los registros cuando se ha acabado el PC y agrega el PC a la cola de PCs
@@ -303,7 +303,7 @@ private void ejecutarInstruccion(int[] vector){
         instruccion[i]=vector[i];
         }    
    
-   //System.out.println("Se leyo instruiccion: " +instruccion[0]+" " +instruccion[1]+ " " +instruccion[2]+" " +instruccion[3]);
+   System.out.println("Se leyo instruiccion: " +instruccion[0]+" " +instruccion[1]+ " " +instruccion[2]+" " +instruccion[3]);
  
     switch(instruccion[0]){
       case 8:
@@ -466,11 +466,11 @@ private void ejecutarInstruccion(int[] vector){
         int cont=0;        
         
         datos+=" Valores de la Memoria: "+ "\n ";
-        for(int j =0; j<memInstrucciones.size(); j++){
+        for(int j =0; j<memDatos.length; j++){
             if(cont==num){
                 datos+="\n ";
             }            
-            datos+= this.memInstrucciones.get(j)+"   ";
+            datos+= this.memDatos[j]+"   ";
             if(j==num){
                 num+=cons; 
              }
@@ -489,7 +489,7 @@ private void ejecutarInstruccion(int[] vector){
       Modifica: La variable ocupado de la clase comunicador
     */
      public void fin(){
-        this.comunicadores[numProcesador].ocupado = false;
+        this.comunicadores[this.numProcesador].ocupado = false;
     }
     
      /*

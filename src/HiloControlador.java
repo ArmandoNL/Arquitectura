@@ -337,7 +337,7 @@ public class HiloControlador extends javax.swing.JFrame{
                         comunicadores[i].setPcFinal(vectPcFinal.poll());
                         comunicadores[i].ocupado = true;
                         comunicadores[i].seguir = true;
-                        //comunicadores[i].semaforoComunicador.release();
+                        
                         
                     }
                     else{
@@ -345,7 +345,7 @@ public class HiloControlador extends javax.swing.JFrame{
                         comunicadores[i].write(-1, quantum);
                         comunicadores[i].ocupado = true;
                         comunicadores[i].terminado = true;
-                        //comunicadores[i].semaforoComunicador.release();
+                        
                         
                     }
                 }
@@ -400,7 +400,11 @@ public class HiloControlador extends javax.swing.JFrame{
             tiempoEspera = Integer.parseInt(txtLatencia.getText());
             tiempoBus = Integer.parseInt(txtTiempoBus.getText());
             latencia = 4*((2*tiempoBus)+tiempoEspera); // cuanddo se usa??
-                       
+            
+                 
+            for(int i = 0; i < 352; i++){
+                memDatos[i] = 1; 
+            }   
             comunicadores = new Comunicador[2];
             for(int i = 0; i < 2; i++){
     		comunicadores[i] = new Comunicador();
@@ -431,10 +435,6 @@ public class HiloControlador extends javax.swing.JFrame{
           for(int i = 0; i < hilos; i++){
     		(new Thread(nucleos[i])).start();
             }   
-          
-        for(int i = 0; i < 352; i++){
-            memDatos[i] = 1; 
-        }   
            // metodoPrincipal();
     }//GEN-LAST:event_EjecutarActionPerformed
 

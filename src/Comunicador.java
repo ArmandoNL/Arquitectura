@@ -19,7 +19,10 @@ public class Comunicador {
         
        public Comunicador(){
            vectreg = new int[34];
-           vectreg[0]=0;
+           for(int i=0; i<34; i++){
+               vectreg[i]=0;
+           }
+          
            //contextos = new ArrayList<int[]>();
            //busCacheInst = new Semaphore(1);
            //busCacheDatos = new Semaphore(1);
