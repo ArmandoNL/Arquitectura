@@ -456,13 +456,13 @@ public class HiloControlador extends javax.swing.JFrame{
         int returnVal = fileChooser.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();  
-            if(!"p".equals(file.getName().substring(0,1))){
-                nombreArchivo[i]=Integer.parseInt(file.getName().substring(0,1));
+            if(!"-".equals(file.getName().substring(4,5))){
+                nombreArchivo[i]=Integer.parseInt(file.getName().substring(4,5));
             }else{
                 nombreArchivo[i]=-1;
             }
             i++;
-            System.out.println("Este es en nombre   "+file.getName().substring(0,1));
+            System.out.println("Este es en nombre   "+file.getName().substring(4,5));
         Charset charset = Charset.forName("US-ASCII");
         try(BufferedReader reader = Files.newBufferedReader(file.toPath(), charset)){
             
