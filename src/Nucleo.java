@@ -652,7 +652,7 @@ private void ejecutarInstruccion(int[] vector){
                                  while(!pedirOtraCache()){
                                      //cambiarCiclo(); //se encicla si no
                                  } 
-                                 int posMem = ((dirMem+regSum)%640)/4;// PosMen del bloque que ocupo subir a mi cache
+                                 int posMem = ((dirMem+this.comunicadores[this.numProcesador].vectreg[regSum])%640)/4;// PosMen del bloque que ocupo subir a mi cache
                                  int posMem2 = ((mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache]*16)%640)/4; //PosMem del bloque que ocupo pasar a la otra cache y a Mem
                                  
                                     if(mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache]==numBloque){// Es el bloque que ocupo?
@@ -711,7 +711,7 @@ private void ejecutarInstruccion(int[] vector){
                             }
                         }
                         int posMem2 = ((mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache]*16)%640)/4; //PosMem del bloque que ocupo pasar a la otra cache y a Mem
-                        int posMem = ((dirMem+regSum)%640)/4;// PosMen del bloque que ocupo subir a mi cache 
+                        int posMem = ((dirMem+this.comunicadores[this.numProcesador].vectreg[regSum])%640)/4;// PosMen del bloque que ocupo subir a mi cache 
                         
                          if(mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache]==numBloque){//Si esta en la otra cache
                                     
