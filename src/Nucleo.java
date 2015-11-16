@@ -612,7 +612,7 @@ private void ejecutarInstruccion(int[] vector){
         
          if(!pedirMiCache()){//Mato el hilo
              this.instCompletada=false;         
-         }else{             
+         }else{            
                  if(this.cacheDeDatos[4][posCache]==numBloque){
                      esta=true;
                  }else{//fallo
@@ -872,7 +872,7 @@ private void ejecutarInstruccion(int[] vector){
                                 this.estadoCacheDatos[posCache] = 'M';
                                 HiloControlador.liberarBusDatos();
                                 liberarMiCache();
-                                this.quantumNucleo--;
+                                this.quantumNucleo--; //se resta el Q solo si se termina la ejecución
                             }
                         }
                         else{
