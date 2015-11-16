@@ -307,6 +307,10 @@ public class HiloControlador extends javax.swing.JFrame{
                     if(llActivo[0]==1 && invalidar[0]==llActivo[1] && invalidar[1]==llActivo[2]){ //si el LL está activo y está en la misma caché y el mismo bloque donde se está mandando a invalidar.
                         //guardo en RL un -1
                         comunicadores[llActivo[1]].vectreg[32]=-1;
+                        llActivo[0]=-1;
+                        llActivo[1]=-1;
+                        llActivo[2]=-1;
+                        
                     }
                     nucleos[invalidar[0]].estadoCacheDatos[invalidar[1]]='I';
                     invalidar[0]=-1;
@@ -353,7 +357,10 @@ public class HiloControlador extends javax.swing.JFrame{
         }
     };
     
-    
+     /*  Efecto: se encarga de obtener el bus de datos devolviendo true, si no devuelve falso.
+    Requiere: que un procesador pida el bus.
+    Modifica: el valor del bus.
+    */
     public static boolean pedirBusDatos(){
         return busCacheDatos.tryAcquire();
     }
@@ -362,6 +369,11 @@ public class HiloControlador extends javax.swing.JFrame{
         busCacheDatos.release();
     }
     
+    
+    /*  Efecto: se encarga de obtener el bus devolviendo true, si no devuelve falso.
+    Requiere: que un procesador pida el bus.
+    Modifica: el valor del bus.
+    */
     public static boolean pedirBusInst(){
         return busCacheInst.tryAcquire();
     }
@@ -554,6 +566,18 @@ public class HiloControlador extends javax.swing.JFrame{
        String t=""+texto;
        txtProc1.setText(t);
     }
+     
+     public void imprimirCacheDatos(int numProc){
+         String datos="";
+         datos=" Valor de la Cache de Datos del nucleo: "+ numProc + "\n\n";
+         for(int i=0; i<5; i++){
+            for(int j=0; j<8; j++)
+             datos+=nucleos[numProc].cacheDeDatos[i][j]+"    ";       
+         }
+         datos+="\n";
+         String t=""+datos;
+         ta_Datos.setText(t);
+     }
  
      
   
