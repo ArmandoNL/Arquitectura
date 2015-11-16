@@ -137,8 +137,8 @@ private void  ejecutarDeCache(){
         liberarMiCache();
         liberarOtraCache();
         
-        while(!instCompletada){ //si la instruccion no se ha completado tiene que volver a ejecutarla hasta que se complete.
-            instCompletada=true;
+        while(!this.instCompletada){ //si la instruccion no se ha completado tiene que volver a ejecutarla hasta que se complete.
+            this.instCompletada=true;
             ejecutarInstruccion(vecInstruccion); //se encarga de ejecutar cada instrucciones en el cache
             liberarMiCache();
             liberarOtraCache();
@@ -594,11 +594,11 @@ private void ejecutarInstruccion(int[] vector){
             text=""+ "Pr"; 
         }
         if(this.numProcesador==0){
-           mainThread.imprimirCacheDatos(0);
+          //mainThread.imprimirCacheDatos(0);
            mainThread.imprimirEstado0(text);
            
         }else if(this.numProcesador==1){
-            mainThread.imprimirCacheDatos(1);
+            //mainThread.imprimirCacheDatos(1);
             mainThread.imprimirEstado1(text);
         }
      }
@@ -611,7 +611,7 @@ private void ejecutarInstruccion(int[] vector){
          int posCache = numBloque%8;
         
          if(!pedirMiCache()){//Mato el hilo
-             instCompletada=false;         
+             this.instCompletada=false;         
          }else{             
                  if(this.cacheDeDatos[4][posCache]==numBloque){
                      esta=true;
@@ -673,7 +673,7 @@ private void ejecutarInstruccion(int[] vector){
                                         }
                                     }
                                      
-                                    while(i<mainThread.latencia){//mainThread.latencia
+                                    while(i<1){//mainThread.latencia
                                         cambiarCiclo();
                                         i++;
                                     }                                   
@@ -690,7 +690,7 @@ private void ejecutarInstruccion(int[] vector){
                                          mainThread.llActivo[2]= posCache ;
                                     }
                              }else{
-                                 instCompletada=false;
+                                 this.instCompletada=false;
                              }                        
                           break;                     
                      default:
@@ -730,7 +730,7 @@ private void ejecutarInstruccion(int[] vector){
                                 }
                             }
                            this.cacheDeDatos[4][posCache]=numBloque; //poner num de bloque cuando se sube nuevo bloque
-                            while(i<mainThread.latencia){ //mainThread.latencia
+                            while(i<1){ //mainThread.latencia
                                 cambiarCiclo();
                                 i++;
                             }                            
@@ -756,7 +756,7 @@ private void ejecutarInstruccion(int[] vector){
                             mainThread.llActivo[2]= posCache ;
                         } 
                     }else{
-                        instCompletada=false;
+                        this.instCompletada=false;
                     } 
              } 
          liberarMiCache();
@@ -769,7 +769,7 @@ private void ejecutarInstruccion(int[] vector){
         int dato = this.comunicadores[this.numProcesador].vectreg[regDato];
         
         if(!pedirMiCache()){
-            instCompletada = false;
+            this.instCompletada = false;
         }
         else
         {
@@ -782,6 +782,7 @@ private void ejecutarInstruccion(int[] vector){
                     case('M'):
                         this.cacheDeDatos[palabra][posCache] = dato;
                         liberarMiCache();
+                        this.quantumNucleo--;
                         break;
                     case('C'):
                         if(HiloControlador.pedirBusDatos()){
@@ -790,9 +791,10 @@ private void ejecutarInstruccion(int[] vector){
                             invalidar(posCache);
                             HiloControlador.liberarBusDatos();//lo liberamos aqui o que el padre lo libere.
                             liberarMiCache();
+                            this.quantumNucleo--;
                         }
                         else{
-                            instCompletada = false;
+                            this.instCompletada = false;
                         }
                         break;
                     case('I'):
@@ -805,7 +807,7 @@ private void ejecutarInstruccion(int[] vector){
                                 int i = 0;
                                 
                                 switch(estadoOtraCache){
-                                    case('M')://está en M en la otra caché
+                                    case('M')://está en M en la otra caché, invalido en la mía
                                         posMem = ((mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache]*16)%640)/4; 
                                         for(int j=0;j<4;j++){
                                            int info = mainThread.nucleos[this.otraCache].cacheDeDatos[j][posCache];
@@ -816,15 +818,16 @@ private void ejecutarInstruccion(int[] vector){
                                         this.cacheDeDatos[4][posCache]=numBloque;
                                         this.cacheDeDatos[palabra][posCache] = dato;
                                         this.estadoCacheDatos[posCache] = 'M';
-                                        while(i<mainThread.latencia){//<mainThread.latencia
+                                        while(i<1){//<mainThread.latencia
                                             cambiarCiclo();
                                             i++;
                                         }
                                         liberarOtraCache();
                                         HiloControlador.liberarBusDatos();
                                         liberarMiCache();
+                                        this.quantumNucleo--;
                                         break;
-                                    case('I'): //esta en mi caché  invalido y en la otra invalido
+                                    case('I'): //esta en mi caché nvalido y en la otra invalido
                                         liberarOtraCache();
                                         for(int j=0;j<4;j++){ //se trae directo de memoria
                                            this.cacheDeDatos[j][posCache] =  memDatos[posMem+j];
@@ -832,12 +835,13 @@ private void ejecutarInstruccion(int[] vector){
                                         this.cacheDeDatos[4][posCache]=numBloque;
                                         this.cacheDeDatos[palabra][posCache] = dato;
                                         this.estadoCacheDatos[posCache] = 'M';
-                                        while(i<mainThread.latencia){ //mainThread.latencia
+                                        while(i<1){ //mainThread.latencia
                                             cambiarCiclo();
                                             i++;
                                         }
                                         HiloControlador.liberarBusDatos();
                                         liberarMiCache();
+                                        this.quantumNucleo--;
                                         break;
                                     case('C'):
                                         for(int j=0;j<4;j++){ //se trae directo de meroia
@@ -847,17 +851,18 @@ private void ejecutarInstruccion(int[] vector){
                                         this.cacheDeDatos[palabra][posCache] = dato;
                                         this.estadoCacheDatos[posCache] = 'M';
                                         mainThread.nucleos[this.otraCache].estadoCacheDatos[posCache] = 'I';
-                                        while(i<mainThread.latencia){ //mainThread.latencia
+                                        while(i<1){ //mainThread.latencia
                                             cambiarCiclo();
                                             i++;
                                         }
                                         liberarOtraCache();
                                         HiloControlador.liberarBusDatos();
                                         liberarMiCache();
+                                        this.quantumNucleo--;
                                         break;
                                 }
                             }
-                            else{ //si está en mi caché invalido pero NO en la otra.
+                            else{ //si está en mi caché invalido y  NO en la otra.
                                 liberarOtraCache(); //se trae directo de memoria
                                 for(int j=0;j<4;j++){
                                     this.cacheDeDatos[j][posCache] =  memDatos[posMem+j];
@@ -867,29 +872,32 @@ private void ejecutarInstruccion(int[] vector){
                                 this.estadoCacheDatos[posCache] = 'M';
                                 HiloControlador.liberarBusDatos();
                                 liberarMiCache();
+                                this.quantumNucleo--;
                             }
                         }
                         else{
-                            instCompletada = false;
+                            this.instCompletada = false;
                         }
                         break;
                     default: break;
                 }
             }
             else
-            {//cuando no está el bloque en mi cache
-                if(this.estadoCacheDatos[posCache]=='M'){ //como el bloque no esta hay que fijarse si en ESE bloque hay uno en M para bajarlo a memoria primero.
-                    posMem = ((this.cacheDeDatos[4][posCache]*16)%640)/4;
-                    for(int j=0;j<4;j++){
-                        memDatos[posMem+j] = this.cacheDeDatos[j][posCache];
-                    }
-                    int i=0;
-                    while(i<mainThread.latencia){ //mainThread.latencia
-                        cambiarCiclo();
-                        i++;
-                    }
-                }  
-                if(HiloControlador.pedirBusDatos()){ //para ir a buscar en la otra caché
+            {//cuando no está el bloque en mi cache pero puede estar en la otra
+                if(HiloControlador.pedirBusDatos()){ //pedimos bus para bajar bloque a memoria
+                    if(this.estadoCacheDatos[posCache]=='M'){ //como el bloque no esta hay que fijarse si en ESE bloque hay uno en M para bajarlo a memoria primero.
+                        posMem = ((this.cacheDeDatos[4][posCache]*16)%640)/4;
+                        for(int j=0;j<4;j++){
+                            memDatos[posMem+j] = this.cacheDeDatos[j][posCache];
+                        }
+                        int i=0;
+                        while(i<1){ //mainThread.latencia
+                            cambiarCiclo();
+                            i++;
+                        }
+                    }  
+               // if(HiloControlador.pedirBusDatos()){ //para ir a buscar en la otra caché
+                    //s
                     posMem = ((dirMem+this.comunicadores[this.numProcesador].vectreg[regSum])%640)/4;
                     while(!pedirOtraCache()){
                         //cambiarCiclo();
@@ -916,6 +924,7 @@ private void ejecutarInstruccion(int[] vector){
                                 liberarOtraCache();
                                 HiloControlador.liberarBusDatos();
                                 liberarMiCache();
+                                this.quantumNucleo--;
                                 break;
                             case('I'): //no está en mi caché y en la otra está invalido
                                 liberarOtraCache();
@@ -931,6 +940,7 @@ private void ejecutarInstruccion(int[] vector){
                                 }
                                 HiloControlador.liberarBusDatos();
                                 liberarMiCache();
+                                this.quantumNucleo--;
                                 break;
                             case('C'):                             
                                 for(int j=0;j<4;j++){
@@ -947,42 +957,47 @@ private void ejecutarInstruccion(int[] vector){
                                 liberarOtraCache();
                                 HiloControlador.liberarBusDatos();
                                 liberarMiCache();
+                                this.quantumNucleo--;
                                 break;
                         }
                     }
                     else
-                    {//cuando No está en NINGUNA caché
+                    {//cuando No está en NINGUNA caché pero si tengo el bus
                         liberarOtraCache();
                         if(this.estadoCacheDatos[posCache]=='M'){ //si se encuentra ocupado con M el bloque que voy a sobreescribir  en caché
                             posMem = ((this.cacheDeDatos[4][posCache]*16)%640)/4; //donde se va a guardar en memoria el bloque a sobreescribir.
-                            //posMem= ((dirMem+regSum)%640)/4;
                             for(int j=0;j<4;j++){
                                 memDatos[posMem+j] = this.cacheDeDatos[j][posCache]; //guardamos en memoria el bloque 
                             }
-                            this.cacheDeDatos[4][posCache]=numBloque;
+                            //this.cacheDeDatos[4][posCache]=numBloque;
                             int i=0;      
                             while(i<1){ //mainThread.latencia
                                 cambiarCiclo();
                                 i++;
                             }
-                        }
-                        posMem = ((dirMem+this.comunicadores[this.numProcesador].vectreg[regSum])%640)/4;
+                        } //se baja el bloque en mi cache si está en M para subir nuevo bloque
+                        posMem = ((dirMem+this.comunicadores[this.numProcesador].vectreg[regSum])%640)/4; //bloque a subir
                         for(int j=0;j<4;j++){
                             this.cacheDeDatos[j][posCache] =  memDatos[posMem+j]; //ponemos en el bloque los datos de memoria que necesitamos
                         }
                         this.cacheDeDatos[4][posCache]=numBloque;
                         this.cacheDeDatos[palabra][posCache] = dato; 
                         this.estadoCacheDatos[posCache] = 'M';
+                        int i=0;
+                        while(i<1){ //mainThread.latencia
+                            cambiarCiclo();
+                            i++;
+                        }
                         HiloControlador.liberarBusDatos();
                         liberarMiCache();
+                        this.quantumNucleo--;
                     }
                 }
                 else
                 {
-                    instCompletada = false;
+                    this.instCompletada = false;
                 }
             }
-            this.quantumNucleo--;
         }
         
     }
