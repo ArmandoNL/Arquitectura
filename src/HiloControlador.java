@@ -79,7 +79,7 @@ public class HiloControlador extends javax.swing.JFrame{
         txtTiempoBus = new javax.swing.JTextField();
         txtQuantum = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        ta_Datos = new javax.swing.JTextArea();
+        ta_DatosLento0 = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
         CicloReloj_TF = new javax.swing.JTextField();
         rdbModoLento = new javax.swing.JRadioButton();
@@ -91,6 +91,10 @@ public class HiloControlador extends javax.swing.JFrame{
         lbProc2 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         textarea = new javax.swing.JTextArea();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        ta_Datos = new javax.swing.JTextArea();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        ta_DatosLento1 = new javax.swing.JTextArea();
         jMenuBar1 = new javax.swing.JMenuBar();
         File = new javax.swing.JMenu();
         Open = new javax.swing.JMenuItem();
@@ -122,9 +126,9 @@ public class HiloControlador extends javax.swing.JFrame{
         lbQuantum.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         lbQuantum.setText("Quantum");
 
-        ta_Datos.setColumns(20);
-        ta_Datos.setRows(5);
-        jScrollPane1.setViewportView(ta_Datos);
+        ta_DatosLento0.setColumns(20);
+        ta_DatosLento0.setRows(5);
+        jScrollPane1.setViewportView(ta_DatosLento0);
 
         jLabel1.setText("Ciclo actual del Reloj :");
 
@@ -170,6 +174,14 @@ public class HiloControlador extends javax.swing.JFrame{
         textarea.setRows(5);
         jScrollPane2.setViewportView(textarea);
 
+        ta_Datos.setColumns(20);
+        ta_Datos.setRows(5);
+        jScrollPane3.setViewportView(ta_Datos);
+
+        ta_DatosLento1.setColumns(20);
+        ta_DatosLento1.setRows(5);
+        jScrollPane4.setViewportView(ta_DatosLento1);
+
         jMenuBar1.setBackground(new java.awt.Color(204, 204, 204));
 
         File.setBackground(new java.awt.Color(204, 204, 255));
@@ -208,8 +220,16 @@ public class HiloControlador extends javax.swing.JFrame{
                 .addGap(40, 40, 40)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnParar, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnContinuar)
+                        .addGap(27, 27, 27)
+                        .addComponent(Ejecutar, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(94, 94, 94))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(64, 64, 64)
                         .addComponent(lbLatencia)
-                        .addGap(18, 18, 18)
+                        .addGap(27, 27, 27)
                         .addComponent(txtLatencia, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(94, 94, 94)
                         .addComponent(lbTiempobus)
@@ -217,42 +237,43 @@ public class HiloControlador extends javax.swing.JFrame{
                         .addComponent(txtTiempoBus, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(lbQuantum)
-                        .addGap(18, 18, 18)
+                        .addGap(38, 38, 38)
                         .addComponent(txtQuantum, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(51, 51, 51))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnParar, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 486, Short.MAX_VALUE)
-                        .addComponent(btnContinuar)
-                        .addGap(27, 27, 27)))
-                .addComponent(Ejecutar, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(94, 94, 94))
+                        .addGap(176, 176, 176))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGap(91, 91, 91)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lbProc2)
+                    .addComponent(lbProc1))
+                .addGap(26, 26, 26)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(27, 27, 27)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 426, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(txtProc1, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lbProc1, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(lbProc2, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(txtProc1, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(63, 63, 63)
-                                .addComponent(jLabel1)
-                                .addGap(45, 45, 45)
-                                .addComponent(CicloReloj_TF, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(156, 156, 156)
-                                .addComponent(rdbModoLento))
-                            .addComponent(txtProc0, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(277, 277, 277)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 426, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addGap(19, 19, 19))
+                        .addComponent(txtProc0, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 511, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel1)
+                        .addGap(18, 18, 18)
+                        .addComponent(CicloReloj_TF, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(rdbModoLento)
+                        .addGap(31, 31, 31))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 435, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -261,21 +282,23 @@ public class HiloControlador extends javax.swing.JFrame{
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbProc1)
                     .addComponent(txtProc0, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(4, 4, 4)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(CicloReloj_TF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(rdbModoLento)
-                            .addComponent(lbProc2)
-                            .addComponent(txtProc1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(72, 72, 72)
+                .addGap(4, 4, 4)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(CicloReloj_TF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rdbModoLento)
+                    .addComponent(lbProc2)
+                    .addComponent(txtProc1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 27, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1)
+                            .addComponent(jScrollPane4))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 505, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbLatencia)
                     .addComponent(txtLatencia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -410,7 +433,7 @@ public class HiloControlador extends javax.swing.JFrame{
             barrier = new CyclicBarrier(cantHilos, barrierFuncion);
             quantum = Integer.parseInt(txtQuantum.getText());
             tiempoEspera = Integer.parseInt(txtLatencia.getText());
-            tiempoBus = Integer.parseInt(txtTiempoBus.getText());
+            tiempoBus = 0;//Integer.parseInt(txtTiempoBus.getText());
             latencia = 4*((2*tiempoBus)+tiempoEspera); // cuanddo se usa??
             
                  
@@ -567,18 +590,93 @@ public class HiloControlador extends javax.swing.JFrame{
        txtProc1.setText(t);
     }
      
-     public void imprimirCacheDatos(int numProc){
+     public void imprimirCacheDatos0(){
          String datos="";
-         datos=" Valor de la Cache de Datos del nucleo: "+ numProc + "\n\n";
-         for(int i=0; i<5; i++){
-            for(int j=0; j<8; j++)
-             datos+=nucleos[numProc].cacheDeDatos[i][j]+"    ";       
-         }
-         datos+="\n";
+         datos=" Valor de la Cache de Datos del nucleo: "+ 0 + "\n\n";
+          for(int i =0; i<4; i++){
+              switch(i){
+                       case 0:
+                             datos+=" Pal #1: ";           
+                          break;
+                        case 1:
+                             datos+=" Pal #2: ";
+                          break;
+                        case 2:
+                             datos+=" Pal #3: ";
+                          break;
+                        case 3:
+                            datos+="  Pal #4: ";
+                          break;                        
+                        default:
+                          break;
+                   
+                   }
+               for(int j =0; j<8; j++){
+                   
+                   datos+=nucleos[0].cacheDeDatos[i][j]+"     ";
+               }
+               datos+="\n";
+           }
+          
+          for(int i =4; i<5; i++){
+              
+               datos+=" NumBloc:    ";
+                          
+               for(int j =0; j<8; j++){
+                   
+                   datos+=nucleos[0].cacheDeDatos[i][j]+"    ";
+               }
+               datos+="\n";
+           }
+            datos+="\n";
+         
          String t=""+datos;
-         ta_Datos.setText(t);
+         ta_DatosLento0.setText(t);
      }
- 
+     
+     public void imprimirCacheDatos1(){
+         String datos="";
+         datos=" Valor de la Cache de Datos del nucleo: "+ 1 + "\n\n";
+          for(int i =0; i<4; i++){
+              switch(i){
+                       case 0:
+                             datos+=" Pal #1: ";           
+                          break;
+                        case 1:
+                             datos+=" Pal #2: ";
+                          break;
+                        case 2:
+                             datos+=" Pal #3: ";
+                          break;
+                        case 3:
+                            datos+="  Pal #4: ";
+                          break;                        
+                        default:
+                          break;
+                   
+                   }
+               for(int j =0; j<8; j++){
+                   
+                   datos+=nucleos[1].cacheDeDatos[i][j]+"     ";
+               }
+               datos+="\n";
+           }
+          
+          for(int i =4; i<5; i++){
+              
+               datos+=" NumBloc:    ";
+                          
+               for(int j =0; j<8; j++){
+                   
+                   datos+=nucleos[1].cacheDeDatos[i][j]+"    ";
+               }
+               datos+="\n";
+           }
+            datos+="\n";
+         
+         String t=""+datos;
+         ta_DatosLento1.setText(t);
+     }
      
   
     //se encarga de la ejecución del programa
@@ -603,6 +701,8 @@ public class HiloControlador extends javax.swing.JFrame{
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JLabel lbLatencia;
     private javax.swing.JLabel lbProc1;
     private javax.swing.JLabel lbProc2;
@@ -610,6 +710,8 @@ public class HiloControlador extends javax.swing.JFrame{
     private javax.swing.JLabel lbTiempobus;
     public javax.swing.JRadioButton rdbModoLento;
     private javax.swing.JTextArea ta_Datos;
+    private javax.swing.JTextArea ta_DatosLento0;
+    private javax.swing.JTextArea ta_DatosLento1;
     private javax.swing.JTextArea textarea;
     private javax.swing.JTextField txtLatencia;
     private javax.swing.JTextField txtProc0;

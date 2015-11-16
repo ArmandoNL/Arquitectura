@@ -214,7 +214,7 @@ private void falloCache(){
     if(HiloControlador.pedirBusInst()){
         traerBloque();
         int i=0;
-       while(i<2){ //mainThread.latencia //se encarga de cambiar de ciclo segun el valor de m y b ingresado por el usuario.
+       while(i<mainThread.latencia){ //mainThread.latencia //se encarga de cambiar de ciclo segun el valor de m y b ingresado por el usuario.
             cambiarCiclo();
             i++;
         }
@@ -457,18 +457,26 @@ private void ejecutarInstruccion(int[] vector){
     
     public void ImprimirMemoria(){
         String datos="";
-        int cons=15;
+        int cons=12;
+        int esp=4;
         int num=0;
+        int num2=0;
         int cont=0;        
         
         datos+=" Valores de la Memoria: "+ "\n ";
         for(int j =0; j<memDatos.length; j++){
+            if(cont==num2){
+                datos+="   ";
+            } 
             if(cont==num){
                 datos+="\n ";
             }            
-            datos+= this.memDatos[j]+"   ";
+            datos+= this.memDatos[j]+"       ";
             if(j==num){
-                num+=cons; 
+                num+=cons;
+             }
+            if(j==num2){ 
+                num2+=esp;
              }
             //System.out.println((num*j)+1+"\n");
             cont++;
@@ -554,7 +562,7 @@ private void ejecutarInstruccion(int[] vector){
                    }
                for(int j =0; j<8; j++){
                    
-                   datos+= this.cacheDeDatos[i][j]+"    ";
+                   datos+= this.cacheDeDatos[i][j]+"     ";
                }
                datos+="\n";
            }
@@ -593,14 +601,17 @@ private void ejecutarInstruccion(int[] vector){
         }else{
             text=""+ "Pr"; 
         }
-        if(this.numProcesador==0){
-          //mainThread.imprimirCacheDatos(0);
+        if(this.numProcesador==0){ 
+           mainThread.imprimirCacheDatos0();
            mainThread.imprimirEstado0(text);
            
         }else if(this.numProcesador==1){
-            //mainThread.imprimirCacheDatos(1);
+            mainThread.imprimirCacheDatos1();
             mainThread.imprimirEstado1(text);
         }
+        
+        
+        
      }
     
     public void lw(int regSum, int regLectura,int dirMem){
@@ -673,7 +684,7 @@ private void ejecutarInstruccion(int[] vector){
                                         }
                                     }
                                      
-                                    while(i<1){//mainThread.latencia
+                                    while(i<mainThread.latencia){//mainThread.latencia
                                         cambiarCiclo();
                                         i++;
                                     }                                   
@@ -730,7 +741,7 @@ private void ejecutarInstruccion(int[] vector){
                                 }
                             }
                            this.cacheDeDatos[4][posCache]=numBloque; //poner num de bloque cuando se sube nuevo bloque
-                            while(i<1){ //mainThread.latencia
+                            while(i<mainThread.latencia){ //mainThread.latencia
                                 cambiarCiclo();
                                 i++;
                             }                            
@@ -818,7 +829,7 @@ private void ejecutarInstruccion(int[] vector){
                                         this.cacheDeDatos[4][posCache]=numBloque;
                                         this.cacheDeDatos[palabra][posCache] = dato;
                                         this.estadoCacheDatos[posCache] = 'M';
-                                        while(i<1){//<mainThread.latencia
+                                        while(i<mainThread.latencia){//<mainThread.latencia
                                             cambiarCiclo();
                                             i++;
                                         }
@@ -835,7 +846,7 @@ private void ejecutarInstruccion(int[] vector){
                                         this.cacheDeDatos[4][posCache]=numBloque;
                                         this.cacheDeDatos[palabra][posCache] = dato;
                                         this.estadoCacheDatos[posCache] = 'M';
-                                        while(i<1){ //mainThread.latencia
+                                        while(i<mainThread.latencia){ //mainThread.latencia
                                             cambiarCiclo();
                                             i++;
                                         }
@@ -851,7 +862,7 @@ private void ejecutarInstruccion(int[] vector){
                                         this.cacheDeDatos[palabra][posCache] = dato;
                                         this.estadoCacheDatos[posCache] = 'M';
                                         mainThread.nucleos[this.otraCache].estadoCacheDatos[posCache] = 'I';
-                                        while(i<1){ //mainThread.latencia
+                                        while(i<mainThread.latencia){ //mainThread.latencia
                                             cambiarCiclo();
                                             i++;
                                         }
@@ -891,7 +902,7 @@ private void ejecutarInstruccion(int[] vector){
                             memDatos[posMem+j] = this.cacheDeDatos[j][posCache];
                         }
                         int i=0;
-                        while(i<1){ //mainThread.latencia
+                        while(i<mainThread.latencia){ //mainThread.latencia
                             cambiarCiclo();
                             i++;
                         }
@@ -917,7 +928,7 @@ private void ejecutarInstruccion(int[] vector){
                                 mainThread.nucleos[this.otraCache].estadoCacheDatos[posCache] = 'I';//invalidamos el bloque en la otra cache
                                 this.cacheDeDatos[palabra][posCache] = dato;//escribimos el nuevo dato
                                 this.estadoCacheDatos[posCache] = 'M';//cambiamos la etiqueta del bloque a modificado 
-                                while(i<1){ //mainThread.latencia
+                                while(i<mainThread.latencia){ //mainThread.latencia
                                     cambiarCiclo();
                                     i++;
                                 }
@@ -934,7 +945,7 @@ private void ejecutarInstruccion(int[] vector){
                                 this.cacheDeDatos[4][posCache]=numBloque;
                                 this.cacheDeDatos[palabra][posCache] = dato;
                                 this.estadoCacheDatos[posCache] = 'M';
-                                while(i<1){  //mainThread.latencia
+                                while(i<mainThread.latencia){  //mainThread.latencia
                                     cambiarCiclo();
                                     i++;
                                 }
@@ -950,7 +961,7 @@ private void ejecutarInstruccion(int[] vector){
                                 this.cacheDeDatos[palabra][posCache] = dato;
                                 this.estadoCacheDatos[posCache] = 'M';
                                 mainThread.nucleos[this.otraCache].estadoCacheDatos[posCache] = 'I';
-                                while(i<1){ //mainThread.latencia
+                                while(i<mainThread.latencia){ //mainThread.latencia
                                     cambiarCiclo();
                                     i++;
                                 }
@@ -971,7 +982,7 @@ private void ejecutarInstruccion(int[] vector){
                             }
                             //this.cacheDeDatos[4][posCache]=numBloque;
                             int i=0;      
-                            while(i<1){ //mainThread.latencia
+                            while(i<mainThread.latencia){ //mainThread.latencia
                                 cambiarCiclo();
                                 i++;
                             }
@@ -984,7 +995,7 @@ private void ejecutarInstruccion(int[] vector){
                         this.cacheDeDatos[palabra][posCache] = dato; 
                         this.estadoCacheDatos[posCache] = 'M';
                         int i=0;
-                        while(i<1){ //mainThread.latencia
+                        while(i<mainThread.latencia){ //mainThread.latencia
                             cambiarCiclo();
                             i++;
                         }
