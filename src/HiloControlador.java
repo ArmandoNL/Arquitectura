@@ -305,14 +305,14 @@ public class HiloControlador extends javax.swing.JFrame{
             if(comunicadores[0].cambiarCiclo && comunicadores[1].cambiarCiclo){
                 if(invalidar[0]!=-1){
                     if(llActivo[0]==1 && invalidar[0]==llActivo[1] && invalidar[1]==llActivo[2]){ //si el LL está activo y está en la misma caché y el mismo bloque donde se está mandando a invalidar.
-                        //guardo en RL un -1
+                        //guardo en RL un -1 en Rl si el LL está activo cuando se envia a invalidar.
                         comunicadores[llActivo[1]].vectreg[32]=-1;
-                        llActivo[0]=-1;
+                        llActivo[0]=-1;  //se desactiva el LL
                         llActivo[1]=-1;
                         llActivo[2]=-1;
                         
                     }
-                    nucleos[invalidar[0]].estadoCacheDatos[invalidar[1]]='I';
+                    nucleos[invalidar[0]].estadoCacheDatos[invalidar[1]]='I'; 
                     invalidar[0]=-1;
                 }
                 ciclosReloj++;

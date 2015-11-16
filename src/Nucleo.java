@@ -1003,48 +1003,54 @@ private void ejecutarInstruccion(int[] vector){
     }
     
     
-    
+    //se envia a invalidar el bloque y en la cache correcta
+     //si LL está activo hay que decirle al papá que invalide y ponga -1 en el RL
     private void invalidar(int posCache){
         mainThread.invalidar[0] = this.otraCache;
         mainThread.invalidar[1] = posCache;
     }
     
+    //se utiliza para solictar  la cache del núcleo
     public boolean pedirMiCache(){
        return this.comunicadores[this.numProcesador].semaforoCache.tryAcquire();
     }
     
+    //se utiliza para liberar la caché del núcleo
     public void liberarMiCache(){
         this.comunicadores[this.numProcesador].semaforoCache.release();
     }
-    
+
+    //se utiliza para  solicitar el uso de la otra cache
     public boolean pedirOtraCache(){
        
         return comunicadores[this.otraCache].semaforoCache.tryAcquire();
     }    
     
+    //se utiliza para liberar la cache del otro nucleo.
     public void liberarOtraCache(){
         comunicadores[this.otraCache].semaforoCache.release();
     }
     
     
-    
+    //se utiliza para liberar candados segun corresponda
     public void ll(int inst2,int inst3){        
         this.comunicadores[this.numProcesador].vectreg[32]=inst3;  //se guarda la direccion del candado
-        soyLoadLink=true;
-        lw(0, inst2, inst3);
+        soyLoadLink=true; //se avisa al papá que se está haciendo un LL
+        lw(0, inst2, inst3); // se ejecuta el Load
         
     }
     
+    //se utiliza para verificar si el candado correcto fue liberado
     public void sc(int inst2,int inst3){        
         if(this.comunicadores[this.numProcesador].vectreg[32]==inst3){ //si mi dir de candado es la misma que está en RL
-            this.comunicadores[this.numProcesador].vectreg[1]=1;
-            mainThread.llActivo[0]=-1;
+            this.comunicadores[this.numProcesador].vectreg[1]=1; //si es atomica se pone un 1 en el R1
+            mainThread.llActivo[0]=-1; //se invalida el load link activo
             mainThread.llActivo[1]=-1;
             mainThread.llActivo[2]=-1;
             sw(0, inst2, inst3);  
-            //si LL está activo hay que decirle al papá que invalide y ponga -| en ese RL
+           
         }else{
-            this.comunicadores[this.numProcesador].vectreg[1]=0; //no es atomica
+            this.comunicadores[this.numProcesador].vectreg[1]=0; //no es atomica se pone un 0 en R1
         }
     }
 }
