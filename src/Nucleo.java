@@ -204,8 +204,6 @@ private void limpiarRegistros(){
 }
 
 
-
-
 /*  Efecto: si bloque no se encuentra en cache, solicita el bus para recuperar el bloque de memoria.
     Requiere: que el bloque solicitado no se encuentre en cache.
     Modifica: el cache de instrucciones
@@ -245,7 +243,6 @@ private void cambiarCiclo(){
         this.comunicadores[this.numProcesador].seguir=false;
     }
 }
-
 
 /*  Efecto: se encarga de obtener el PC siguiente y si este tiene un contexto lo solicita.
     Requiere: que no se hayan acabado los PCs
@@ -455,6 +452,11 @@ private void ejecutarInstruccion(int[] vector){
         this.quantumNucleo--;
     } 
     
+    /* 
+      Efecto: Metodo que se utiliza para Imprimir la memoria  
+      Requiere: La memoria
+      Modifica: Nada
+    */
     public void ImprimirMemoria(){
         String datos="";
         int cons=12;
@@ -484,8 +486,7 @@ private void ejecutarInstruccion(int[] vector){
         datos+="\n\n";
          mainThread.imprimirPantallaDatos(datos);  
     
-    } 
-    
+    }    
     
      /*
       Efecto: Instruccion que coloca la variable ocupado en falso 
@@ -608,12 +609,14 @@ private void ejecutarInstruccion(int[] vector){
         }else if(this.numProcesador==1){
             mainThread.imprimirCacheDatos1();
             mainThread.imprimirEstado1(text);
-        }
-        
-        
-        
+        }        
      }
     
+    /* 
+      Efecto: Instruccion encargada de leer los datos   
+      Requiere: la direccione de memoria, un registro que se puede sumar a la direcion de memoria y el registro de lectura
+      Modifica: Nada
+    */
     public void lw(int regSum, int regLectura,int dirMem){
          int dato = 0;
          int i=0;

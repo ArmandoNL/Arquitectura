@@ -480,6 +480,7 @@ public class HiloControlador extends javax.swing.JFrame{
     private void ExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExitActionPerformed
         System.exit(0); 
     }//GEN-LAST:event_ExitActionPerformed
+   
     /*
       Efecto: lee los archivos y agrega los PC al vector de PCs temporal 
       Requiere: la entrada de un archivo
@@ -546,9 +547,7 @@ public class HiloControlador extends javax.swing.JFrame{
         }else{
             System.out.println("File access cancelled by user.");
         }       
-        hilos+=1;
-        
-        
+        hilos+=1;                
     }//GEN-LAST:event_OpenActionPerformed
 
     private void btnContinuarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContinuarActionPerformed
@@ -562,6 +561,7 @@ public class HiloControlador extends javax.swing.JFrame{
     private void txtProc1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtProc1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtProc1ActionPerformed
+    
     /*
       Efecto: Imprime en la interfaz los registros,el quantum y otros datos
       Requiere: Un string con los datos a mostrar 
@@ -571,25 +571,46 @@ public class HiloControlador extends javax.swing.JFrame{
        String t="";
        t=textarea.getText();
        t+=texto;
-        textarea.setText(t);
+       textarea.setText(t);
     }
    
+   /*
+      Efecto: Imprime en la interfaz las caches de Datos
+      Requiere: Un string con los datos a mostrar 
+      Modifica: El texarea de la Interfaz 
+    */
    public void imprimirPantallaDatos(String texto){
        String t="";
        t=ta_Datos.getText();
        t+=texto;
-        ta_Datos.setText(t);
+       ta_Datos.setText(t);
     }
    
+   /*
+      Efecto: Imprime en la interfaz el archivo que se esta corriendo en el nucleo 0
+      Requiere: Un string con los datos a mostrar 
+      Modifica: El textField de la Interfaz  
+    */
     public void imprimirEstado0(String texto){
        String t=""+texto;
        txtProc0.setText(t);
     }
+    
+    /*
+      Efecto: Imprime en la interfaz el archivo que se esta corriendo en el nucleo 1
+      Requiere: Un string con los datos a mostrar 
+      Modifica: El textField de la Interfaz 
+    */
      public void imprimirEstado1(String texto){
        String t=""+texto;
        txtProc1.setText(t);
     }
      
+     /*
+      Efecto: Imprime en la interfaz la cache de datos 0 
+      Requiere: Nada 
+      Modifica: El texarea de la Interfaz  
+    */
      public void imprimirCacheDatos0(){
          String datos="";
          datos=" Valor de la Cache de Datos del nucleo: "+ 0 + "\n\n";
@@ -632,8 +653,13 @@ public class HiloControlador extends javax.swing.JFrame{
          
          String t=""+datos;
          ta_DatosLento0.setText(t);
-     }
+     }     
      
+     /*
+      Efecto: Imprime en la interfaz la cache de datos 1
+      Requiere: Nada 
+      Modifica: El texarea de la Interfaz 
+    */
      public void imprimirCacheDatos1(){
          String datos="";
          datos=" Valor de la Cache de Datos del nucleo: "+ 1 + "\n\n";
@@ -652,8 +678,7 @@ public class HiloControlador extends javax.swing.JFrame{
                             datos+="  Pal #4: ";
                           break;                        
                         default:
-                          break;
-                   
+                          break;                   
                    }
                for(int j =0; j<8; j++){
                    
@@ -676,8 +701,7 @@ public class HiloControlador extends javax.swing.JFrame{
          
          String t=""+datos;
          ta_DatosLento1.setText(t);
-     }
-     
+     }     
   
     //se encarga de la ejecución del programa
     public static void main(String args[]) {
