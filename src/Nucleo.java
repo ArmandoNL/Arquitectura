@@ -632,7 +632,7 @@ private void ejecutarInstruccion(int[] vector){
                  }else{//fallo
                      esta=false;
                  }
-                int palabra = ((this.comunicadores[this.numProcesador].vectreg[regSum]+dirMem)-640)/4%4;
+                int palabra = (((this.comunicadores[this.numProcesador].vectreg[regSum]+dirMem)-640)/4)%4;
             
              if(esta){
              
@@ -923,7 +923,7 @@ private void ejecutarInstruccion(int[] vector){
                         int i = 0;
                         switch(estadoOtraCache){
                             case('M'):
-                                posMem = (mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache])*4;; //calculo segun bloque q tengo
+                                posMem = (mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache])*4; //calculo segun bloque q tengo
                                 for(int j=0;j<4;j++){
                                     int info = mainThread.nucleos[this.otraCache].cacheDeDatos[j][posCache];
                                     memDatos[posMem+j] = info;
