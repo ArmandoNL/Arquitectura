@@ -621,7 +621,7 @@ private void ejecutarInstruccion(int[] vector){
          int dato = 0;
          int i=0;
          boolean esta;
-         int numBloque = (this.comunicadores[this.numProcesador].vectreg[regSum]+dirMem)/16;
+         int numBloque = ((this.comunicadores[this.numProcesador].vectreg[regSum]+dirMem)-640)/16;
          int posCache = numBloque%8;
         
          if(!pedirMiCache()){//Mato el hilo
@@ -632,7 +632,7 @@ private void ejecutarInstruccion(int[] vector){
                  }else{//fallo
                      esta=false;
                  }
-                int palabra = ((this.comunicadores[this.numProcesador].vectreg[regSum] + dirMem)%16)/4;
+                int palabra = ((this.comunicadores[this.numProcesador].vectreg[regSum]+dirMem)-640)/4%4;
             
              if(esta){
              
@@ -665,8 +665,8 @@ private void ejecutarInstruccion(int[] vector){
                                  while(!pedirOtraCache()){
                                      //cambiarCiclo();
                                  } 
-                                 int posMem = ((dirMem+this.comunicadores[this.numProcesador].vectreg[regSum])%640)/4;// PosMen del bloque que ocupo subir a mi cache
-                                 int posMem2 = (((mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache]*16)%640)/4)+palabra; //PosMem del bloque que ocupo pasar a la otra cache y a Mem
+                                 int posMem = numBloque*4;// PosMen del bloque que ocupo subir a mi cache
+                                 int posMem2 = (mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache])*4; //PosMem del bloque que ocupo pasar a la otra cache y a Mem
                                  
                                     if(mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache]==numBloque){// Es el bloque que ocupo?
                                         if(mainThread.nucleos[this.otraCache].estadoCacheDatos[posCache]=='M'){ // Este tiene estado M?
@@ -718,14 +718,13 @@ private void ejecutarInstruccion(int[] vector){
                             //cambiarCiclo();
                          }
                         if(this.estadoCacheDatos[posCache]=='M'){ //Bloque en mi cache esta en M. Lo bajo primero.
-                            int palabra2= (this.cacheDeDatos[4][posCache])%8;       
-                            int posMem3 = (((this.cacheDeDatos[4][posCache]*16)%640)/4)+palabra2;//PosMem del bloque que ocupo bajar
+                           int posMem3 = (this.cacheDeDatos[4][posCache])*4;      
                             for(int y=0; y<4; y++){
                                 memDatos[posMem3+y]=this.cacheDeDatos[y][posCache]; //Bajo a mem el bloque con estado M que me estorba
                             }
                         }
-                        int posMem2 = (((mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache]*16)%640)/4)+palabra; //PosMem del bloque que ocupo pasar a la otra cache y a Mem
-                        int posMem = ((dirMem+this.comunicadores[this.numProcesador].vectreg[regSum])%640)/4;// PosMen del bloque que ocupo subir a mi cache 
+                        int posMem2 = (mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache])*4; //PosMem del bloque que ocupo pasar a la otra cache y a Mem
+                        int posMem = numBloque*4;// PosMen del bloque que ocupo subir a mi cache 
                         
                          if(mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache]==numBloque){ //Si esta en la otra cache
                                     
@@ -780,7 +779,7 @@ private void ejecutarInstruccion(int[] vector){
     }
     
     public void sw(int regSum, int regDato,int dirMem){        
-        int numBloque = (this.comunicadores[this.numProcesador].vectreg[regSum] + dirMem)/16;
+        int numBloque = ((this.comunicadores[this.numProcesador].vectreg[regSum]+dirMem)-640)/16;
         int posCache = numBloque%8;
         int dato = this.comunicadores[this.numProcesador].vectreg[regDato];
         
@@ -789,9 +788,10 @@ private void ejecutarInstruccion(int[] vector){
         }
         else
         {
-            int posMem = ((dirMem+this.comunicadores[this.numProcesador].vectreg[regSum])%640)/4; //mapeo de dir de memoria a nuestro vect de memoria
+            int posMem = (numBloque*4); //mapeo de dir de memoria a nuestro vect de memoria
             char estado = this.estadoCacheDatos[posCache];//estado de la caché
-            int palabra = ((this.comunicadores[this.numProcesador].vectreg[regSum]+dirMem)%16)/4;//# de palabra dentro del bloque
+            int palabra = (((this.comunicadores[this.numProcesador].vectreg[regSum]+dirMem)-640)/4)%4;//# de palabra dentro del bloque
+            
             
             if(this.cacheDeDatos[4][posCache] == numBloque){//si el bloque esta en mi cache
                 switch(estado){//verificamos el estado del bloque en mi caché
@@ -824,7 +824,7 @@ private void ejecutarInstruccion(int[] vector){
                                 
                                 switch(estadoOtraCache){
                                     case('M')://está en M en la otra caché, invalido en la mía
-                                        posMem = (((mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache]*16)%640)/4)+palabra; 
+                                        posMem = (mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache])*4;; 
                                         for(int j=0;j<4;j++){
                                            int info = mainThread.nucleos[this.otraCache].cacheDeDatos[j][posCache];
                                            memDatos[posMem+j] = info;
@@ -902,8 +902,8 @@ private void ejecutarInstruccion(int[] vector){
             {//cuando no está el bloque en mi cache pero puede estar en la otra
                 if(HiloControlador.pedirBusDatos()){ //pedimos bus para bajar bloque a memoria
                     if(this.estadoCacheDatos[posCache]=='M'){ //como el bloque no esta hay que fijarse si en ESE bloque hay uno en M para bajarlo a memoria primero.
-                        int palabra2= (this.cacheDeDatos[4][posCache])%8;  
-                        posMem = (((this.cacheDeDatos[4][posCache]*16)%640)/4)+palabra2;
+                         
+                        posMem = (this.cacheDeDatos[4][posCache])*4;
                         for(int j=0;j<4;j++){
                             memDatos[posMem+j] = this.cacheDeDatos[j][posCache];
                         }
@@ -914,7 +914,7 @@ private void ejecutarInstruccion(int[] vector){
                         }
                     }  
                     // if(HiloControlador.pedirBusDatos()){ //para ir a buscar en la otra caché
-                    posMem = ((dirMem+this.comunicadores[this.numProcesador].vectreg[regSum])%640)/4;
+                    posMem = numBloque*4; //directo de memoria 
                     while(!pedirOtraCache()){
                         //cambiarCiclo();
                     }//mientras no este deiponible la otra cache, esperamos.
@@ -923,7 +923,7 @@ private void ejecutarInstruccion(int[] vector){
                         int i = 0;
                         switch(estadoOtraCache){
                             case('M'):
-                                posMem = (((mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache]*16)%640)/4)+palabra; 
+                                posMem = (mainThread.nucleos[this.otraCache].cacheDeDatos[4][posCache])*4;; //calculo segun bloque q tengo
                                 for(int j=0;j<4;j++){
                                     int info = mainThread.nucleos[this.otraCache].cacheDeDatos[j][posCache];
                                     memDatos[posMem+j] = info;
@@ -981,8 +981,7 @@ private void ejecutarInstruccion(int[] vector){
                     {//cuando No está en NINGUNA caché pero si tengo el bus
                         liberarOtraCache();
                         if(this.estadoCacheDatos[posCache]=='M'){ //si se encuentra ocupado con M el bloque que voy a sobreescribir  en caché
-                            int palabra2= (this.cacheDeDatos[4][posCache])%8;  
-                            posMem = (((this.cacheDeDatos[4][posCache]*16)%640)/4)+palabra2; //donde se va a guardar en memoria el bloque a sobreescribir.
+                            posMem = (this.cacheDeDatos[4][posCache])*4; //donde se va a guardar en memoria el bloque a sobreescribir.
                             for(int j=0;j<4;j++){
                                 memDatos[posMem+j] = this.cacheDeDatos[j][posCache]; //guardamos en memoria el bloque 
                             }
@@ -993,7 +992,8 @@ private void ejecutarInstruccion(int[] vector){
                                 i++;
                             }
                         } //se baja el bloque en mi cache si está en M para subir nuevo bloque
-                        posMem = ((dirMem+this.comunicadores[this.numProcesador].vectreg[regSum])%640)/4; //bloque a subir
+                        
+                        posMem = numBloque*4; //bloque a subir
                         for(int j=0;j<4;j++){
                             this.cacheDeDatos[j][posCache] =  memDatos[posMem+j]; //ponemos en el bloque los datos de memoria que necesitamos
                         }

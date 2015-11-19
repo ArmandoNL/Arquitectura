@@ -54,7 +54,7 @@ public class HiloControlador extends javax.swing.JFrame{
         initComponents();
         ciclosReloj = 0;
         memTemp = new ArrayList<Integer>();
-        memDatos = new int[352];
+        memDatos = new int[353];
         vectPc = new LinkedList<Integer>();
         vectPcFinal = new LinkedList<Integer>();
         numLineas=0;
@@ -437,7 +437,7 @@ public class HiloControlador extends javax.swing.JFrame{
             latencia = 4*((2*tiempoBus)+tiempoEspera); // cuanddo se usa??
             
                  
-            for(int i = 0; i < 352; i++){
+            for(int i = 0; i < 353; i++){
                 memDatos[i] = 1; 
             }   
             comunicadores = new Comunicador[2];
