@@ -718,8 +718,8 @@ private void ejecutarInstruccion(int[] vector){
                             //cambiarCiclo();
                          }
                         if(this.estadoCacheDatos[posCache]=='M'){ //Bloque en mi cache esta en M. Lo bajo primero.
-                                   
-                            int posMem3 = (((this.cacheDeDatos[4][posCache]*16)%640)/4)+palabra;//PosMem del bloque que ocupo bajar
+                            int palabra2= (this.cacheDeDatos[4][posCache])%8;       
+                            int posMem3 = (((this.cacheDeDatos[4][posCache]*16)%640)/4)+palabra2;//PosMem del bloque que ocupo bajar
                             for(int y=0; y<4; y++){
                                 memDatos[posMem3+y]=this.cacheDeDatos[y][posCache]; //Bajo a mem el bloque con estado M que me estorba
                             }
@@ -902,7 +902,8 @@ private void ejecutarInstruccion(int[] vector){
             {//cuando no está el bloque en mi cache pero puede estar en la otra
                 if(HiloControlador.pedirBusDatos()){ //pedimos bus para bajar bloque a memoria
                     if(this.estadoCacheDatos[posCache]=='M'){ //como el bloque no esta hay que fijarse si en ESE bloque hay uno en M para bajarlo a memoria primero.
-                        posMem = (((this.cacheDeDatos[4][posCache]*16)%640)/4)+palabra;
+                        int palabra2= (this.cacheDeDatos[4][posCache])%8;  
+                        posMem = (((this.cacheDeDatos[4][posCache]*16)%640)/4)+palabra2;
                         for(int j=0;j<4;j++){
                             memDatos[posMem+j] = this.cacheDeDatos[j][posCache];
                         }
@@ -980,7 +981,8 @@ private void ejecutarInstruccion(int[] vector){
                     {//cuando No está en NINGUNA caché pero si tengo el bus
                         liberarOtraCache();
                         if(this.estadoCacheDatos[posCache]=='M'){ //si se encuentra ocupado con M el bloque que voy a sobreescribir  en caché
-                            posMem = (((this.cacheDeDatos[4][posCache]*16)%640)/4)+palabra; //donde se va a guardar en memoria el bloque a sobreescribir.
+                            int palabra2= (this.cacheDeDatos[4][posCache])%8;  
+                            posMem = (((this.cacheDeDatos[4][posCache]*16)%640)/4)+palabra2; //donde se va a guardar en memoria el bloque a sobreescribir.
                             for(int j=0;j<4;j++){
                                 memDatos[posMem+j] = this.cacheDeDatos[j][posCache]; //guardamos en memoria el bloque 
                             }
