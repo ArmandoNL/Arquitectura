@@ -778,6 +778,11 @@ private void ejecutarInstruccion(int[] vector){
          }
     }
     
+    /* 
+      Efecto: Instruccion encargada de guardar los datos   
+      Requiere: la direccione de memoria, un registro que se puede sumar a la direcion de memoria y el registro de lectura
+      Modifica: la caché de datos
+    */
     public void sw(int regSum, int regDato,int dirMem){        
         int numBloque = ((this.comunicadores[this.numProcesador].vectreg[regSum]+dirMem)-640)/16;
         int posCache = numBloque%8;
